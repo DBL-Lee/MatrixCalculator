@@ -8,121 +8,102 @@
 
 import Foundation
 
-func +(a:[[Double]],b:[[Double]])->[[Double]]{
-    assert(a.count == b.count && a[0].count == b[0].count, "size error")
-    var res:[[Double]] = []
-    let rowN = a.count
-    let colN = b[0].count
-    for row in 0..<rowN{
-        res.append([])
-        for col in 0..<colN{
-            res[row].append(a[row][col]+b[row][col])
+class NNLayer {
+    var neurons:[NNNeuron] = []
+    var weights:[NNWeight] = []
+    var previousLayer:NNLayer!
+    func sigmoid(x:Double) -> Double{
+        return (1.7159*tanh(0.66666667*x))
+    }
+    func calculate(){
+        for n in neurons{
+            var sum = weights[n.connections[0].WeightIndex].weight
+            for i in 1..<n.connections.count{
+                let c = n.connections[i]
+                sum += weights[c.WeightIndex].weight * previousLayer.neurons[c.NeuronIndex].output
+            }
+            n.output = sigmoid(sum)
         }
     }
-    return res
+}
+
+class NNNeuron{
+    var connections:[NNConnection] = []
+    var output:Double!
+}
+
+class NNWeight{
+    var weight:Double
+    init(weight:Double){
+        self.weight = weight
+    }
+}
+
+class NNConnection{
+    var NeuronIndex:Int = 0
+    var WeightIndex:Int = 0
 }
 
 class NeuralNetwork {
-    let N1 = 784
-    let N2 = 30
-    let N3 = 10
-    var weight:[[[Double]]] = [[],[]]
-    var biase:[[[Double]]] = [[],[]]
+    
+    var layers:[NNLayer] = []
+    var nLayers:Int = 0
     init () {
-        let path = NSBundle.mainBundle().pathForResource("Output", ofType: "txt")
+        let path = NSBundle.mainBundle().pathForResource("weight", ofType: "txt")
         let string = String(contentsOfFile: path!, encoding: NSUTF8StringEncoding, error: nil)
         var scanner = NSScanner(string: string!)
-        //init biase
-        for y in 0...N2-1{
-            biase[0].append([0.0])
-        }
         
-        for y in 0...N3-1{
-            biase[1].append([0.0])
-        }
-        
-        //init weight
-        for y in 0...N2-1{
-            weight[0].append([])
-            for z in 0...N1-1{
-                weight[0][y].append(0.0)
-            }
-        }
-        for y in 0...N3-1{
-            weight[1].append([])
-            for z in 0...N2-1{
-                weight[1][y].append(0.0)
-            }
-        }
-        //scan biase
-        for y in 0...N2-1{
-            scanner.scanDouble(&biase[0][y][0])
-        }
-        for y in 0...N3-1{
-            scanner.scanDouble(&biase[1][y][0])
-        }
-        
-        //scan weight
-        for y in 0...N2-1{
-            for z in 0...N1-1{
-                scanner.scanDouble(&weight[0][y][z])
-            }
-        }
-        for y in 0...N3-1{
-            for z in 0...N2-1{
-                scanner.scanDouble(&weight[1][y][z])
-            }
-        }
-    }
-    
-    func dot(a:[[Double]],b:[[Double]])->[[Double]]{
-        var res:[[Double]] = []
-        let rowN = a.count
-        let colN = b[0].count
-        let kN = b.count
-        for row in 0..<rowN{
-            res.append([])
-            for col in 0..<colN{
-                var temp:Double = 0.0
-                for k in 0..<kN{
-                    temp = temp + a[row][k]*b[k][col]
+        scanner.scanInteger(&nLayers)
+        for i in 0..<nLayers {
+            var layer = NNLayer()
+            var nNeuron:Int = 0
+            var nWeight:Int = 0
+            layers.append(layer)
+            scanner.scanInteger(&nNeuron)
+            scanner.scanInteger(&nWeight)
+            for j in 0..<nNeuron{
+                var neuron = NNNeuron()
+                layer.neurons.append(neuron)
+                var nConnection:Int = 0
+                scanner.scanInteger(&nConnection)
+                
+                for k in 0..<nConnection{
+                    var connection = NNConnection()
+                    scanner.scanInteger(&connection.NeuronIndex)
+                    scanner.scanInteger(&connection.WeightIndex)
+                    neuron.connections.append(connection)
                 }
-                res[row].append(temp)
+            }
+            
+            for j in 0..<nWeight {
+                var value:Double = 0.0
+                scanner.scanDouble(&value)
+                layer.weights.append(NNWeight(weight: value))
             }
         }
-        return res
-    }
-        
-    func sigmoid_vec(a:[[Double]])->[[Double]]{
-        var res:[[Double]] = []
-        let rowN = a.count
-        let colN = a[0].count
-        for row in 0..<rowN{
-            res.append([])
-            for col in 0..<colN{
-                res[row].append(1.0/(1.0+exp(-a[row][col])))
-            }
+        for i in 1..<nLayers{
+            layers[i].previousLayer = layers[i-1]
         }
-        return res
     }
     
-    
-    func feedforward(input:[[Double]])->Int{
-        var a:[[Double]] = input
-        for layers in 0...1{
-            let w = weight[layers]
-            let b = biase[layers]
-            a = sigmoid_vec(dot(w, b: a)+b)
+    func calculate(input:[Double]) -> Int{
+        assert(input.count == layers[0].neurons.count, "input size is not correct")
+        for i in 0..<layers[0].neurons.count {
+            layers[0].neurons[i].output = input[i]
         }
-        var max:Double = 0.0
+        for i in 1..<nLayers{
+            layers[i].calculate()
+        }
+        var max:Double = -2.0
         var res = -1
-        println(a)
-        for i in 0...9 {
-            if a[i][0] > max {
-                max = a[i][0]
+        for i in 0..<layers[nLayers-1].neurons.count{
+            //print(layers[nLayers-1].neurons[i].output)
+            if max<layers[nLayers-1].neurons[i].output{
+                max = layers[nLayers-1].neurons[i].output
                 res = i
             }
         }
         return res
     }
+    
 }
