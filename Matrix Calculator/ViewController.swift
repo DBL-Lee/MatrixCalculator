@@ -7,7 +7,6 @@
 //
 import MobileCoreServices
 import UIKit
-import GPUImage
 
 protocol inputMatrixDelegate{
     func didFinishInputMatrix(nrow:Int,ncol:Int,entries:[Int],alias:String)

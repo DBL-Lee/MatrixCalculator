@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		9B4980B71B51AB9900F2BC47 /* weight.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9B4980B61B51AB9900F2BC47 /* weight.txt */; };
 		9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */; };
+		9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D01B5DA09300F2BC47 /* Matrix.swift */; };
+		9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D11B5DA09300F2BC47 /* Polynomial.swift */; };
+		9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D41B5DA19A00F2BC47 /* Fraction.swift */; };
 		9B5696241AED168B00AE0BEF /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5696211AED161A00AE0BEF /* GPUImage.framework */; };
 		9B5696251AED16BA00AE0BEF /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9B5696211AED161A00AE0BEF /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696261AED23EF00AE0BEF /* CameraViewController.swift */; };
@@ -91,6 +94,9 @@
 /* Begin PBXFileReference section */
 		9B4980B61B51AB9900F2BC47 /* weight.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = weight.txt; sourceTree = "<group>"; };
 		9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorMainScreenViewController.swift; sourceTree = "<group>"; };
+		9B4980D01B5DA09300F2BC47 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		9B4980D11B5DA09300F2BC47 /* Polynomial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Polynomial.swift; sourceTree = "<group>"; };
+		9B4980D41B5DA19A00F2BC47 /* Fraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
 		9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = "../../../Downloads/GPUImage-master/framework/GPUImage.xcodeproj"; sourceTree = "<group>"; };
 		9B5696261AED23EF00AE0BEF /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		9B589F361B42DFA30009A355 /* ConnectedComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectedComponent.swift; sourceTree = "<group>"; };
@@ -130,14 +136,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9B4980CE1B5D8EB700F2BC47 /* ViewController */ = {
+		9B4980CE1B5D8EB700F2BC47 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
 				9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */,
 				9B5696261AED23EF00AE0BEF /* CameraViewController.swift */,
 				9B78E1801A8CDB3D0069CBF3 /* ViewController.swift */,
 			);
-			name = ViewController;
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		9B4980D61B5DA1A700F2BC47 /* MatrixClasses */ = {
+			isa = PBXGroup;
+			children = (
+				9B4980D01B5DA09300F2BC47 /* Matrix.swift */,
+				9B4980D11B5DA09300F2BC47 /* Polynomial.swift */,
+				9B4980D41B5DA19A00F2BC47 /* Fraction.swift */,
+			);
+			name = MatrixClasses;
+			sourceTree = "<group>";
+		};
+		9B4980D81B5DA1D700F2BC47 /* RecognitionClasses */ = {
+			isa = PBXGroup;
+			children = (
+				9B589F391B4355100009A355 /* Queue.swift */,
+				9B4980B61B51AB9900F2BC47 /* weight.txt */,
+				9B589F361B42DFA30009A355 /* ConnectedComponent.swift */,
+				9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */,
+			);
+			name = RecognitionClasses;
 			sourceTree = "<group>";
 		};
 		9B5696191AED161900AE0BEF /* Products */ = {
@@ -171,9 +198,11 @@
 		9B78E17B1A8CDB3C0069CBF3 /* Matrix Calculator */ = {
 			isa = PBXGroup;
 			children = (
-				9B4980CE1B5D8EB700F2BC47 /* ViewController */,
-				9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */,
+				9B4980CE1B5D8EB700F2BC47 /* ViewControllers */,
+				9B4980D81B5DA1D700F2BC47 /* RecognitionClasses */,
+				9B4980D61B5DA1A700F2BC47 /* MatrixClasses */,
 				9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */,
+				9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */,
 				9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */,
 				9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */,
 				9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */,
@@ -185,11 +214,7 @@
 		9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				9B589F361B42DFA30009A355 /* ConnectedComponent.swift */,
-				9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */,
 				9B6CD83B1A9E3766000C1841 /* Resize.h */,
-				9B589F391B4355100009A355 /* Queue.swift */,
-				9B4980B61B51AB9900F2BC47 /* weight.txt */,
 				9B6CD83C1A9E3766000C1841 /* Resize.m */,
 				9B78E17D1A8CDB3C0069CBF3 /* Info.plist */,
 			);
@@ -343,13 +368,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B78E1811A8CDB3D0069CBF3 /* ViewController.swift in Sources */,
+				9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */,
 				9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */,
+				9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */,
 				9B589F371B42DFA30009A355 /* ConnectedComponent.swift in Sources */,
 				9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */,
 				9B6CD83D1A9E3766000C1841 /* Resize.m in Sources */,
 				9B78E17F1A8CDB3C0069CBF3 /* AppDelegate.swift in Sources */,
 				9B589F3A1B4355100009A355 /* Queue.swift in Sources */,
 				9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */,
+				9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
