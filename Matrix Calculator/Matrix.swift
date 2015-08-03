@@ -73,7 +73,7 @@ class Matrix {
                 if i<row && j<column {
                     v.append(matrix[i][j])
                 }else{
-                    v.append(Fraction(0))
+                    v.append(Fraction(i: 0))
                 }
             }
         }
@@ -81,23 +81,23 @@ class Matrix {
     }
 
     func matrixCopy() -> Matrix{        
-        return Matrix(r: row, c: column, value: newEntries(row,column))
+        return Matrix(r: row, c: column, value: newEntries(row,newcolumn: column))
     }
     
     func removeRow() -> Matrix {
-        return Matrix(r: row-1, c: column, value: newEntries(row-1,column))
+        return Matrix(r: row-1, c: column, value: newEntries(row-1,newcolumn: column))
     }
 
     func removeColumn() -> Matrix {
-        return Matrix(r: row, c: column-1, value: newEntries(row,column-1))
+        return Matrix(r: row, c: column-1, value: newEntries(row,newcolumn: column-1))
     }
 
     func addRow() -> Matrix {
-        return Matrix(r: row+1, c: column, value: newEntries(row+1,column))
+        return Matrix(r: row+1, c: column, value: newEntries(row+1,newcolumn: column))
     }
 
     func addColumn() -> Matrix {
-        return Matrix(r: row, c: column+1, value: newEntries(row,column+1))
+        return Matrix(r: row, c: column+1, value: newEntries(row,newcolumn: column+1))
     }
 
 
