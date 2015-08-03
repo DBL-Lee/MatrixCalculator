@@ -9,7 +9,7 @@ import MobileCoreServices
 import UIKit
 
 protocol inputMatrixDelegate{
-    func didFinishInputMatrix(nrow:Int,ncol:Int,entries:[Int],alias:String)
+    func didFinishInputMatrix(matrix:Matrix,alias:String)
 }
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -26,7 +26,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     var imagePicker:UIImagePickerController!
     
+    //how black is black
     let BLACKTHRESHOLD = 80
+    //how small is small
     let DETECTIONTHRESHOLD = 100
     
     
@@ -49,11 +51,28 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let MAXCOLUMN = 10
 
     var matrix:Matrix = Matrix(r: 2, c: 2)
-    var width:[Int] = [1,1]    
+    var width:[Int] = [1,1]
+    var allWidth:[[Int]] = [[1,1],[1,1]]  
     var currentCursor = (0,0)
     
     var entering = false //flag to indicate whether user is entering
     
+    private func updateWidth(){
+        for j in 0..<matrix.column{
+            for i in 0..<matrix.row{
+                width[j] = max(width[j],allWidth[i][j])
+            }
+        }
+    }
+
+    private func addWidth(){
+        width[currentCursor.1] = max(width[currentCursor.1],++allWidth[currentCursor.0][currentCursor.1])
+    }
+
+    private func reduceWidth(){
+        allWidth[currentCursor.0][currentCursor.1]--
+        updateWidth()
+    }
     
     func updateLabel(){
         var aString = NSMutableAttributedString()
@@ -62,7 +81,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 if i!=currentCursor.0 || j!=currentCursor.1 || !entering {
                     let entry:String = matrix.matrix[i][j].toString()
                 }else{
-                    let entry:String = (negative ? "-" : "") + numerator + (numberlineEntered ? "/" : "") + denominator
+                    let entry:String = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+ denominator) : "") 
                 }
                 var spaceBefore = (width[j]-count(entry))/2
                 let spaceAfter = width[j]-spaceBefore
@@ -97,18 +116,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             case "DEL": {
                 if numberlineEntered && denominator=="" {
                     numberlineEntered = false
-                    width[currentCursor.1]--
+                    reduceWidth()
                 }else{
                     if !numberlineEntered {
                         if count(numerator)==1 {
                             numerator = "0"
                         }else{
                             numerator = dropLast(numerator)
-                            width[currentCursor.1]--
+                            reduceWidth()
                         }
                     }else{
                         denominator = dropLast(denominator)
-                        width[currentCursor.1]--
+                        reduceWidth()
                         floatingPoint--
                     }
                 }
@@ -118,21 +137,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if !numberlineEntered{
                         numerator+="."
                     }else{
+                        if denominator==""{
+                            denominator = "0"
+                        }
                         denominator+="."
                     }
                     floatpointEntered = true
-                    width[currentCursor.1]++
+                    addWidth()
                 }
             }
             case "/": {
                 if !numberlineEntered{
-                    width[currentCursor.1]++
+                    addWidth()
                     floatingPoint = 1
                     numberlineEntered = true
                     floatpointEntered = false
                 }
             }
             case "+/-": {
+                negative ? reduceWidth() : addWidth()
                 negative = !negative
             }
             default:{                
@@ -141,13 +164,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         numerator = sender.titleLabel.text
                     }else{
                         numerator += sender.titleLabel.text
-                        width[currentCursor.1]++
+                        addWidth()
                     }
                 }else{
                     if floatingPoint<FLOATPOINTUPPER {
                         denominator += sender.titleLabel.text
                         floatingPoint ++
-                        width[currentCursor.1]++
+                        addWidth()
                     }
                 }
             }
@@ -159,16 +182,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     private func calculateCurrentCell(){
         entering = false
+        if numerator
         let n = Fraction(NSString(string:(negative ? "-" : "")+numerator).doublevalue())
-        if numberlineEntered {
+        if numberlineEntered && denominator!="" {
             d = Fraction(NSString(string:denominator).doublevalue())
         }else {
             d = Fraction(1)
         }
+
+        //When user inputs 0 at denominator
+        if d.n ==0 { d = Fraction(1)}
+
         matrix.matrix[currentCursor.0][currentCursor.1] = n/d
 
         //change width
-        width[currentCursor.1] = count(matrix.matrix[currentCursor.0][currentCursor.1].toString())
+        allWidth[currentCursor.0][currentCursor.1] = count(matrix.matrix[currentCursor.0][currentCursor.1].toString())
+        updateWidth()
 
         //reset to default
         numerator:String = "0"
@@ -228,6 +257,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             {
                 if matrix.row+1<=MAXROW {
                     matrix = matrix.addRow()
+                    allWidth.append([Int](count:matrix.column,repeatedValue:1))
                     updateLabel()
                 }
             }
@@ -238,11 +268,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.0 >= matrix.row {
                          currentCursor.0--
                     }
-                    for j in 0..<matrix.column{
-                        for i in 0..<matrix.row{
-                            width[i] = max(width[i],count(matrix.matrix[i][j].toString()))
-                        }
-                    }
+                    updateWidth()
                     updateLabel()
                 }
             }
@@ -250,6 +276,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             {
                 if matrix.column+1<=MAXCOLUMN {
                     matrix = matrix.addColumn()
+                    for x in allWidth{
+                        x.append(1)
+                    }
                     width.append(1)
                     updateLabel()
                 }
@@ -262,6 +291,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.1 >= matrix.column {
                          currentCursor.1--
                     }
+                    for x in allWidth{
+                        x.removeLast()
+                    }
                     width.removeLast()
                     updateLabel()
                 }
@@ -270,36 +302,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }  
     
-    // MARK: Camera
 
 
-    
+
+    // MARK: Camera   
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
-    func showAlertViewWithPicker(){
-        
-        if UIImagePickerController.isSourceTypeAvailable(
-            UIImagePickerControllerSourceType.Camera) {
-                
-                imagePicker = UIImagePickerController()
-                
-                imagePicker.delegate = self
-                imagePicker.sourceType =
-                    UIImagePickerControllerSourceType.Camera
-                imagePicker.mediaTypes = [kUTTypeImage as NSString]
-                imagePicker.allowsEditing = false
-                
-                
-                newMedia = true
-        }
-        
-
-    }
-    
-    
     
     
     @IBAction func useCamera(sender: UIButton) {
@@ -332,13 +342,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 as! UIImage
         
             
-            image = scaledownImage(image)
-            
-            var blackWhite = grayScaleImage(image)
-            
+            image = scaledownImage(image)            
+            var blackWhite = grayScaleImage(image)            
             var cc = connectedComponents(blackWhite)
-            
-            
             
             println(cc.count)
             
@@ -346,18 +352,24 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             var currentrow = 0
             var finished:[[ConnectedComponent]] = []
             
+            //label each row
             while (!cc.isEmpty){
                 finished.append([])
                 var highest:CGFloat = CGFloat(blackWhite.count)
                 var highestBox:CGRect!
+
+                //find highest bounding box
                 for c in cc {
                     if c.boundBox.minY<highest{
                         highest = c.boundBox.minY
                         highestBox = c.boundBox
                     }
                 }
+
+                //change the bounding box to a horizontal strip
                 highestBox = CGRect(x: 0.0, y: highestBox.origin.y, width: CGFloat(blackWhite[0].count), height: highestBox.height)
                 
+                //find all cc that intersect this strip and label them in same row
                 for c in cc {
                     if c.boundBox.intersects(highestBox) {
                         c.row = currentrow
@@ -366,26 +378,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     }
                 }
                 
+                //sort according to left right
                 finished[currentrow].sort({
                     (cc1:ConnectedComponent,cc2:ConnectedComponent) -> Bool in
                         return cc1.boundBox.midX<cc2.boundBox.midX
                 })
-                
-
-                
-
                     
                 currentrow++
             }
             
             
+            //Use something like SVM to separate out the columns
+
+            //As the digit in same column must be close to each other
+            //while the digit in different column must be wider apart
+            //Therefore, we first find the distance between each cc and the
+            //next cc. Then we sort these distances, they should be grouped
+            //around a small value and a big value.
+            //Then we find distance between these distances. When there is a
+            //large jump, we treat this jump as the split between the distances.
+
             //distance and index          
-            var distance:[(CGFloat,Int)] = []
-            
+            var distance:[(CGFloat,Int)] = []            
             for i in 0..<finished[0].count-1{
                 distance.append(finished[0][i+1].boundBox.minX-finished[0][i].boundBox.maxX,i)
             }
             
+            //prevent situation of only one gap
             distance.append(CGFloat(10.0),finished[0].count)
             
             distance.sort({
@@ -394,8 +413,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             })
             
             //distance between distance
-            var distance2:[(CGFloat,Int)] = []
-            
+            var distance2:[(CGFloat,Int)] = []            
             for i in 0..<distance.count-1{
                 distance2.append(CGFloat(distance[i+1].0)-CGFloat(distance[i].0),i)
             }
@@ -406,50 +424,51 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             })
             
             var splitDistance:CGFloat!
-            
+            var maxColumn = 0
+            //index of the distance
             let maxIndex:Int = distance2[distance2.count-1].1
             splitDistance = distance[maxIndex].0
             
+            //take the average
             splitDistance = (distance[maxIndex+1].0-splitDistance)/2
             
            
-            
+            //label according to the splitDistance found
+            //if distance to next cc is less than splitDistance, they are in same column
             for ccs in finished{
                 var currentCol = 0
                 ccs[0].col = currentCol
                 for i in 1..<ccs.count{
                     if ccs[i].boundBox.minX-ccs[i-1].boundBox.maxX>splitDistance {currentCol++}
                     ccs[i].col = currentCol
+                    maxColumn = max(maxColumn,currentCol)
                 }
             }
+
+            matrix = Matrix(currentrow,maxColumn+1)
+            var currentrow = 0
+            //Use NN to calculate corresponding digit
             for ccs in finished{
                 var currentCol = 0
+                var currentEntry = 0
                 for c in ccs{
-                    
-//                    let out = c.output()
-//                    for i in 0..<29{
-//                        for j in 0..<29{
-//                            if out[i*29+j]>0.99218 {
-//                                print(" ")
-//                            }else{
-//                                print("*")
-//                            }
-//                        }
-//                        println()
-//                    }
-
-                    if c.col>currentCol {print(" ");currentCol=c.col}
-                    print(NN.calculate(c.output()))
-                    
+                    if c.col>currentCol {
+                        matrix.matrix[currentrow][currentCol] = Fraction(currentEntry)
+                        currentEntry = 0
+                        currentCol=c.col
+                    }
+                    let thisDigit = NN.calculate(c.output()) 
+                    currentEntry = currentEntry*10+thisDigit                 
                 }
-                println()
+                matrix.matrix[currentrow][currentCol] = Fraction(currentEntry)
+                currentrow++
             }
-            
+            updateLabel()
         }
     }
     
     
-    
+    //First Step: scale the image down to 1280*960 or 960*1280
     func scaledownImage(image:UIImage)->UIImage {
         let N:CGFloat = 0.5
         var rect:CGRect! //= CGRectMake(0, 0, image.size.width/2, image.size.height/2)
@@ -461,6 +480,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return image.resizedImage(rect.size, interpolationQuality: kCGInterpolationHigh)
     }
     
+    //First Turn image to grayscale then apply threshold to obtain Binary image
     func grayScaleImage(image:UIImage) ->[[Bool]] {
         let imageRect = CGRectMake(0, 0, image.size.width, image.size.height)
         let colorSpace = CGColorSpaceCreateDeviceGray()
@@ -507,7 +527,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
 
-    
+    //Find connected component of an image using BFS
     func connectedComponents(image:[[Bool]]) -> [ConnectedComponent]{
         var nrow = image.count
         var ncol = image[0].count
@@ -570,7 +590,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     //var (l,r,u,d,answer,flag) = DFS(i,j: j,imageArray: image, pixels: temp, flag: flag)
                     
-                    
+                    //Delete cc smaller than a threshold to remove noise
                     if temp.count>DETECTIONTHRESHOLD{
                         result.append(ConnectedComponent(pixel: temp, l: l, r: r, u: u, d: d))
                     }
@@ -579,6 +599,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         return result
     }
-    
+
+
+
+    //MARK: DONE
+    @IBAction func done(sender: UIButton) {
+        calculateCurrentCell()
+        delegate.didFinishInputMatrix(matrix,alias)
+        self.dismissViewControllerAnimated(true,completion:nil)
+    }    
 }
 
