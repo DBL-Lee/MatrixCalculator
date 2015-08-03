@@ -25,7 +25,7 @@ func -(left:Fraction, right:Fraction) -> Fraction{
 }
 
 
-class Fraction: NSObject {
+class Fraction{
     var n:Int
     var d:Int
     

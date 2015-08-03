@@ -20,7 +20,7 @@ func -(m1:Matrix,m2:Matrix)->Matrix{
     return m1.subtract(m2)
 }
 
-class Matrix: NSObject {
+class Matrix {
     let row:Int
     let column:Int
     var matrix:[[Fraction]] = []
@@ -36,6 +36,12 @@ class Matrix: NSObject {
             }
         }
     
+    }
+    
+    init(r:Int, c:Int){
+        row = r
+        column = c
+        self.matrix = [[Fraction]](count:row,repeatedValue:[Fraction](count: column, repeatedValue: Fraction(i: 0)))
     }
     
     
@@ -117,7 +123,7 @@ class Matrix: NSObject {
     
     //divide row r by d, normally d equals to the first element of row r
     func dividerow(r:Int,d:Fraction)-> Matrix{
-        assert(r >= 0 && r < row && d != 0, "can not divide row")
+        //assert(r >= 0 && r < row && d != 0, message: "can not divide row")
         var v:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<column{
@@ -231,7 +237,7 @@ class Matrix: NSObject {
         for i in 0..<row{
             if copy.matrix[i][i].n == 0 {
                 var c = i+1
-                while copy.matrix[c][i] == 0{
+                while copy.matrix[c][i].n == 0{
                     c++
                 }
                 copy = copy.exchangerow(i, r2: c)

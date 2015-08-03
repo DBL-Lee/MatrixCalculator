@@ -14,6 +14,8 @@ protocol inputMatrixDelegate{
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
+    @IBOutlet weak var matrixLabel: UILabel!
+    
     var delegate:inputMatrixDelegate!
     
     @IBOutlet weak var CameraButton: UIButton!
@@ -26,17 +28,50 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     let BLACKTHRESHOLD = 80
     let DETECTIONTHRESHOLD = 100
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0), {
             self.NN = NeuralNetwork()
         })
+        updateLabel()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    
+    var matrix:Matrix = Matrix(r: 2, c: 2)
+    var width:[Int] = [1,1]
+    
+    var currentCursor = (0,0)
+    
+    
+    
+    func updateLabel(){
+        var aString = NSMutableAttributedString()
+        for i in 0..<matrix.row {
+            for j in 0..<matrix.column{
+                let entry:String = matrix.matrix[i][j].toString()
+                var spaceBefore = (width[j]-count(entry))/2
+                if (j>0) {spaceBefore++}
+                let spaceAfter = width[j]-spaceBefore
+                let str = String(count: spaceBefore, repeatedValue: " " as Character)+entry+String(count: spaceAfter, repeatedValue: " " as Character)
+                let currentString = NSMutableAttributedString(string: str)
+                if i==currentCursor.0 && j==currentCursor.1 {
+                    currentString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry)) )
+                }
+                aString.appendAttributedString(currentString)
+            }
+            aString.appendAttributedString(NSAttributedString(string: "\n"))
+            
+        }
+        self.matrixLabel.attributedText = aString
+    }
+    
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         self.dismissViewControllerAnimated(true, completion: nil)

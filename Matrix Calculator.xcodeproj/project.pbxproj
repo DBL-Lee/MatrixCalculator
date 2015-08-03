@@ -12,8 +12,6 @@
 		9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D01B5DA09300F2BC47 /* Matrix.swift */; };
 		9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D11B5DA09300F2BC47 /* Polynomial.swift */; };
 		9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D41B5DA19A00F2BC47 /* Fraction.swift */; };
-		9B5696241AED168B00AE0BEF /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5696211AED161A00AE0BEF /* GPUImage.framework */; };
-		9B5696251AED16BA00AE0BEF /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9B5696211AED161A00AE0BEF /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696261AED23EF00AE0BEF /* CameraViewController.swift */; };
 		9B589F371B42DFA30009A355 /* ConnectedComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B589F361B42DFA30009A355 /* ConnectedComponent.swift */; };
 		9B589F3A1B4355100009A355 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B589F391B4355100009A355 /* Queue.swift */; };
@@ -28,27 +26,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		9B56961E1AED161A00AE0BEF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
-			remoteInfo = GPUImage;
-		};
-		9B5696201AED161A00AE0BEF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BCE209E51943F20C002FEED8;
-			remoteInfo = GPUImageFramework;
-		};
-		9B5696221AED163600AE0BEF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = BCE209E41943F20C002FEED8;
-			remoteInfo = GPUImageFramework;
-		};
 		9B78E18F1A8CDB3D0069CBF3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9B78E1711A8CDB3C0069CBF3 /* Project object */;
@@ -85,7 +62,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9B5696251AED16BA00AE0BEF /* GPUImage.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +73,6 @@
 		9B4980D01B5DA09300F2BC47 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		9B4980D11B5DA09300F2BC47 /* Polynomial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Polynomial.swift; sourceTree = "<group>"; };
 		9B4980D41B5DA19A00F2BC47 /* Fraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
-		9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = "../../../Downloads/GPUImage-master/framework/GPUImage.xcodeproj"; sourceTree = "<group>"; };
 		9B5696261AED23EF00AE0BEF /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		9B589F361B42DFA30009A355 /* ConnectedComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectedComponent.swift; sourceTree = "<group>"; };
 		9B589F391B4355100009A355 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
@@ -122,7 +97,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B5696241AED168B00AE0BEF /* GPUImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,22 +141,12 @@
 			name = RecognitionClasses;
 			sourceTree = "<group>";
 		};
-		9B5696191AED161900AE0BEF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				9B56961F1AED161A00AE0BEF /* libGPUImage.a */,
-				9B5696211AED161A00AE0BEF /* GPUImage.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		9B78E1701A8CDB3C0069CBF3 = {
 			isa = PBXGroup;
 			children = (
 				9B78E17B1A8CDB3C0069CBF3 /* Matrix Calculator */,
 				9B78E1911A8CDB3D0069CBF3 /* Matrix CalculatorTests */,
 				9B78E17A1A8CDB3C0069CBF3 /* Products */,
-				9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -255,7 +219,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				9B5696231AED163600AE0BEF /* PBXTargetDependency */,
 			);
 			name = "Matrix Calculator";
 			productName = "Matrix Calculator";
@@ -310,12 +273,6 @@
 			mainGroup = 9B78E1701A8CDB3C0069CBF3;
 			productRefGroup = 9B78E17A1A8CDB3C0069CBF3 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 9B5696191AED161900AE0BEF /* Products */;
-					ProjectRef = 9B5696181AED161900AE0BEF /* GPUImage.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				9B78E1781A8CDB3C0069CBF3 /* Matrix Calculator */,
@@ -323,23 +280,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		9B56961F1AED161A00AE0BEF /* libGPUImage.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libGPUImage.a;
-			remoteRef = 9B56961E1AED161A00AE0BEF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		9B5696211AED161A00AE0BEF /* GPUImage.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = GPUImage.framework;
-			remoteRef = 9B5696201AED161A00AE0BEF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9B78E1771A8CDB3C0069CBF3 /* Resources */ = {
@@ -392,11 +332,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9B5696231AED163600AE0BEF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = GPUImageFramework;
-			targetProxy = 9B5696221AED163600AE0BEF /* PBXContainerItemProxy */;
-		};
 		9B78E1901A8CDB3D0069CBF3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9B78E1781A8CDB3C0069CBF3 /* Matrix Calculator */;
