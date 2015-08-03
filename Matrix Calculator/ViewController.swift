@@ -44,21 +44,29 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     
+    //MARK: printing matrix
+    let MAXROW = 10
+    let MAXCOLUMN = 10
+
     var matrix:Matrix = Matrix(r: 2, c: 2)
-    var width:[Int] = [1,1]
-    
+    var width:[Int] = [1,1]    
     var currentCursor = (0,0)
     
+    var entering = false //flag to indicate whether user is entering
     
     
     func updateLabel(){
         var aString = NSMutableAttributedString()
         for i in 0..<matrix.row {
             for j in 0..<matrix.column{
-                let entry:String = matrix.matrix[i][j].toString()
+                if i!=currentCursor.0 || j!=currentCursor.1 || !entering {
+                    let entry:String = matrix.matrix[i][j].toString()
+                }else{
+                    let entry:String = (negative ? "-" : "") + numerator + (numberlineEntered ? "/" : "") + denominator
+                }
                 var spaceBefore = (width[j]-count(entry))/2
-                if (j>0) {spaceBefore++}
                 let spaceAfter = width[j]-spaceBefore
+                if (j>0) {spaceBefore++}
                 let str = String(count: spaceBefore, repeatedValue: " " as Character)+entry+String(count: spaceAfter, repeatedValue: " " as Character)
                 let currentString = NSMutableAttributedString(string: str)
                 if i==currentCursor.0 && j==currentCursor.1 {
@@ -71,6 +79,200 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         self.matrixLabel.attributedText = aString
     }
+
+    //MARK: inputvalue
+    var numerator:String = "0"
+    var denominator:String = ""
+    var floatingPoint:Int = 1
+    let FLOATPOINTUPPER = 5
+
+    //flags
+    var negative = false
+    var floatpointEntered:Bool = false
+    var numberlineEntered:Bool = false
+
+    //user started entering
+    @IBAction func digitPressed(sender: UIButton) {
+        switch sender.titleLabel.text {
+            case "DEL": {
+                if numberlineEntered && denominator=="" {
+                    numberlineEntered = false
+                    width[currentCursor.1]--
+                }else{
+                    if !numberlineEntered {
+                        if count(numerator)==1 {
+                            numerator = "0"
+                        }else{
+                            numerator = dropLast(numerator)
+                            width[currentCursor.1]--
+                        }
+                    }else{
+                        denominator = dropLast(denominator)
+                        width[currentCursor.1]--
+                        floatingPoint--
+                    }
+                }
+            }
+            case ".": {
+                if !floatpointEntered{
+                    if !numberlineEntered{
+                        numerator+="."
+                    }else{
+                        denominator+="."
+                    }
+                    floatpointEntered = true
+                    width[currentCursor.1]++
+                }
+            }
+            case "/": {
+                if !numberlineEntered{
+                    width[currentCursor.1]++
+                    floatingPoint = 1
+                    numberlineEntered = true
+                    floatpointEntered = false
+                }
+            }
+            case "+/-": {
+                negative = !negative
+            }
+            default:{                
+                if !numberlineEntered{
+                    if numerator == "0" {
+                        numerator = sender.titleLabel.text
+                    }else{
+                        numerator += sender.titleLabel.text
+                        width[currentCursor.1]++
+                    }
+                }else{
+                    if floatingPoint<FLOATPOINTUPPER {
+                        denominator += sender.titleLabel.text
+                        floatingPoint ++
+                        width[currentCursor.1]++
+                    }
+                }
+            }
+        }
+        entering = true
+        updateLabel()
+    }
+
+
+    private func calculateCurrentCell(){
+        entering = false
+        let n = Fraction(NSString(string:(negative ? "-" : "")+numerator).doublevalue())
+        if numberlineEntered {
+            d = Fraction(NSString(string:denominator).doublevalue())
+        }else {
+            d = Fraction(1)
+        }
+        matrix.matrix[currentCursor.0][currentCursor.1] = n/d
+
+        //change width
+        width[currentCursor.1] = count(matrix.matrix[currentCursor.0][currentCursor.1].toString())
+
+        //reset to default
+        numerator:String = "0"
+        denominator:String = ""
+        floatingPoint:Int = 1
+        negative = false
+        floatpointEntered:Bool = false
+        numberlineEntered:Bool = false
+    }
+
+    //User is moving across cells
+    @IBAction func directionPressed(sender: UIButton) {
+        if entering { // calculate the current value and insert to matrix
+            calculateCurrentCell()
+        }
+        switch sender.tag {
+            case 0 : //up
+            {
+                if currentCursor.1-1>=0 {
+                    currentCursor.1--
+                    updateLabel()
+                }
+            }
+            case 1 : //down
+            {
+                if currentCursor.1+1< matrix.column {
+                    currentCursor.1++
+                    updateLabel()
+                }
+            }
+            case 2 : //left
+            {
+                if currentCursor.0-1>=0 {
+                    currentCursor.0--
+                    updateLabel()
+                }
+            }
+            case 3 : //right
+            {
+                if currentCursor.0+1< matrix.row {
+                    currentCursor.0++
+                    updateLabel()
+                }
+            }
+            default:
+        }
+
+    }
+
+    //User is changing size of matrix
+    @IBAction func sizeChange(sender: UIButton) {
+        if entering { // calculate the current value and insert to matrix
+            calculateCurrentCell()
+        }
+        switch sender.tag {
+            case 0 : //addrow
+            {
+                if matrix.row+1<=MAXROW {
+                    matrix = matrix.addRow()
+                    updateLabel()
+                }
+            }
+            case 1 : //removerow
+            {
+                if matrix.row-1>0 {
+                    matrix = matrix.removeRow()
+                    if currentCursor.0 >= matrix.row {
+                         currentCursor.0--
+                    }
+                    for j in 0..<matrix.column{
+                        for i in 0..<matrix.row{
+                            width[i] = max(width[i],count(matrix.matrix[i][j].toString()))
+                        }
+                    }
+                    updateLabel()
+                }
+            }
+            case 2 : //addcolumn
+            {
+                if matrix.column+1<=MAXCOLUMN {
+                    matrix = matrix.addColumn()
+                    width.append(1)
+                    updateLabel()
+                }
+                
+            }
+            case 3 : //removecolumn
+            {
+                if matrix.column-1>0 {
+                    matrix = matrix.removeColumn()
+                    if currentCursor.1 >= matrix.column {
+                         currentCursor.1--
+                    }
+                    width.removeLast()
+                    updateLabel()
+                }
+            }
+            default:
+        }
+    }  
+    
+    // MARK: Camera
+
+
     
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -99,8 +301,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     
-    
-    // MARK: Camera
     
     @IBAction func useCamera(sender: UIButton) {
         if UIImagePickerController.isSourceTypeAvailable(

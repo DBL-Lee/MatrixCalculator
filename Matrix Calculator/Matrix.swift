@@ -20,7 +20,29 @@ func -(m1:Matrix,m2:Matrix)->Matrix{
     return m1.subtract(m2)
 }
 
-class Matrix {
+
+// this class is immutable
+class Matrix { 
+
+
+    //static functions
+    class func identity(n:Int) -> Matrix{
+        var v:[Fraction]=[]
+        for i in 0..<n{
+            for j in 0..<n{
+                if (i == j){
+                    v.append(Fraction(i: 1))
+                }
+                else{
+                    v.append(Fraction(i: 0))
+                }
+            }
+        }
+        return Matrix(r: n, c: n, value: v)
+    }
+
+
+    //non-static functions
     let row:Int
     let column:Int
     var matrix:[[Fraction]] = []
@@ -43,7 +65,43 @@ class Matrix {
         column = c
         self.matrix = [[Fraction]](count:row,repeatedValue:[Fraction](count: column, repeatedValue: Fraction(i: 0)))
     }
+
+    private func newEntries(newrow:Int,newcolumn:Int) -> [Fraction] {
+        var v:[Fraction]=[]
+        for i in 0..<newrow{
+            for j in 0..<newcolumn{
+                if i<row && j<column {
+                    v.append(matrix[i][j])
+                }else{
+                    v.append(Fraction(0))
+                }
+            }
+        }
+        return v
+    }
+
+    func matrixCopy() -> Matrix{        
+        return Matrix(r: row, c: column, value: newEntries(row,column))
+    }
     
+    func removeRow() -> Matrix {
+        return Matrix(r: row-1, c: column, value: newEntries(row-1,column))
+    }
+
+    func removeColumn() -> Matrix {
+        return Matrix(r: row, c: column-1, value: newEntries(row,column-1))
+    }
+
+    func addRow() -> Matrix {
+        return Matrix(r: row+1, c: column, value: newEntries(row+1,column))
+    }
+
+    func addColumn() -> Matrix {
+        return Matrix(r: row, c: column+1, value: newEntries(row,column+1))
+    }
+
+
+
     
     func mult(m:Matrix) -> Matrix {
         assert(m.row == column, "can not multiply")
@@ -265,32 +323,9 @@ class Matrix {
         
         return inverse
     }
-    
-    
-    class func identity(n:Int) -> Matrix{
-        var v:[Fraction]=[]
-        for i in 0..<n{
-            for j in 0..<n{
-                if (i == j){
-                    v.append(Fraction(i: 1))
-                }
-                else{
-                    v.append(Fraction(i: 0))
-                }
-            }
-        }
-        return Matrix(r: n, c: n, value: v)
-    }
 
-    func matrixCopy() -> Matrix{
-        var v:[Fraction]=[]
-        for i in 0..<row{
-            for j in 0..<column{
-                v.append(matrix[i][j])
-            }
-        }
-        return Matrix(r: row, c: column, value: v)
-    }
+
+
     
     func toString() -> String{
         var s:String = "(  "
