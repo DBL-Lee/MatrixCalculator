@@ -53,7 +53,56 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0), {
             self.NN = NeuralNetwork()
         })
+        var swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        var swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        self.view.addGestureRecognizer(swipeDown)
+        
+        var swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        self.view.addGestureRecognizer(swipeLeft)
+        
+        var swipeUp = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+        self.view.addGestureRecognizer(swipeUp)
+        
         updateLabel()
+    }
+    
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if entering { // calculate the current value and insert to matrix
+                calculateCurrentCell()
+            }
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.Left:
+                if currentCursor.1-1>=0 {
+                    currentCursor.1--
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Right:
+                if (currentCursor.1+1) < matrix.column {
+                    currentCursor.1++
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Up:
+                if currentCursor.0-1>=0 {
+                    currentCursor.0--
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Down:
+                if currentCursor.0+1 < matrix.row {
+                    currentCursor.0++
+                    updateLabel()
+                }
+            default:
+                break
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -93,8 +142,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func updateLabel(){
         var aString = NSMutableAttributedString()
-        println(allWidth)
-        println(width)
         for i in 0..<matrix.row {
             for j in 0..<matrix.column{
                 let entry:String!
@@ -122,7 +169,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: inputvalue
     var numerator:String = "0"
     var denominator:String = ""
-    var floatingPoint:Int = 1
+    var floatingPoint:Int = 0
+    var numeratorFloatingPoint = 0
     let FLOATPOINTUPPER = 5
 
     //flags
@@ -133,28 +181,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //user started entering
     @IBAction func digitPressed(sender: UIButton) {
         switch sender.titleLabel!.text! {
-            case "DEL":
-                if numberlineEntered && denominator=="" {
-                    numberlineEntered = false
-                    reduceWidth(1)
-                }else{
-                    if !numberlineEntered {
-                        if count(numerator)==1 {
-                            numerator = "0"
-                            allWidth[currentCursor.0][currentCursor.1] = 2
-                        }else{
-                            if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{
-                                floatpointEntered = false
-                                reduceWidth(1)
-                            }else{
-                                reduceWidth(2)
-                                if floatpointEntered{
-                                    floatingPoint--
-                                }
-                            }
-                        }
+        case "DEL":
+            if numberlineEntered && denominator=="" {
+                numberlineEntered = false
+                if numeratorFloatingPoint > 0 {
+                    floatpointEntered = true
+                }
+                floatingPoint = numeratorFloatingPoint
+                reduceWidth(1)
+            }else{
+                if !numberlineEntered {
+                    if count(numerator)==1 {
+                        numerator = "0"
+                        allWidth[currentCursor.0][currentCursor.1] = 2
                     }else{
-                        if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{
+                        if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{
                             floatpointEntered = false
                             reduceWidth(1)
                         }else{
@@ -164,54 +205,71 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                             }
                         }
                     }
-                }
-            case ".":
-                if !floatpointEntered{
-                    if !numberlineEntered{
-                        numerator+="."
-                    }else{
-                        if denominator==""{
-                            denominator = "0"
-                        }
-                        denominator+="."
-                    }
-                    floatpointEntered = true
-                    addWidth(1)
-                }
-            case "/":
-                if !numberlineEntered{
-                    addWidth(1)
-                    floatingPoint = 1
-                    numberlineEntered = true
-                    floatpointEntered = false
-                }
-            case "+/-":
-                if negative {
-                    reduceWidth(1)
                 }else{
-                    if !numberlineEntered && numerator=="0"{
-                        allWidth[currentCursor.0][currentCursor.1] = 3
-                        updateWidth()
+                    if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{
+                        floatpointEntered = false
+                        reduceWidth(1)
                     }else{
-                        addWidth(1)
+                        reduceWidth(2)
+                        if floatpointEntered{
+                            floatingPoint--
+                        }
                     }
                 }
-                negative = !negative
-            default:
+            }
+        case ".":
+            if !floatpointEntered{
+                if !numberlineEntered{
+                    numerator+="."
+                }else{
+                    if denominator==""{
+                        denominator = "0"
+                    }
+                    denominator+="."
+                }
+                floatpointEntered = true
+                addWidth(1)
+            }
+        case "/":
+            if !numberlineEntered{
+                if numerator[numerator.endIndex.predecessor()] != "."{
+                    numeratorFloatingPoint = floatingPoint
+                    addWidth(1)
+                }else{
+                    numerator.removeAtIndex(numerator.endIndex.predecessor())
+                }
+                floatingPoint = 0
+                numberlineEntered = true
+                floatpointEntered = false
+            }
+        case "+/-":
+            if negative {
+                reduceWidth(1)
+            }else{
+                if !numberlineEntered && numerator=="0"{
+                    allWidth[currentCursor.0][currentCursor.1] = 3
+                    updateWidth()
+                }else{
+                    addWidth(1)
+                }
+            }
+            negative = !negative
+        default:
+            if floatingPoint<FLOATPOINTUPPER {
                 if !numberlineEntered{
                     if numerator == "0" {
                         numerator = sender.titleLabel!.text!
                     }else{
+                        if floatpointEntered {floatingPoint++}
                         numerator += sender.titleLabel!.text!
                         addWidth(2)
                     }
                 }else{
-                    if floatingPoint<FLOATPOINTUPPER {
-                        denominator += sender.titleLabel!.text!
-                        floatingPoint++
-                        addWidth(2)
-                    }
+                    if floatpointEntered {floatingPoint++}
+                    denominator += sender.titleLabel!.text!
+                    addWidth(2)
                 }
+            }
         }
         entering = true
         updateLabel()
@@ -253,41 +311,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //reset to default
         numerator = "0"
         denominator = ""
-        floatingPoint = 1
+        floatingPoint = 0
         negative = false
         floatpointEntered = false
         numberlineEntered = false
-    }
-
-    //User is moving across cells
-    @IBAction func directionPressed(sender: UIButton) {
-        if entering { // calculate the current value and insert to matrix
-            calculateCurrentCell()
-        }
-        switch sender.tag {
-            case 0 : //left
-                if currentCursor.1-1>=0 {
-                    currentCursor.1--
-                    updateLabel()
-                }
-            case 1 : //right
-                if (currentCursor.1+1) < matrix.column {
-                    currentCursor.1++
-                    updateLabel()
-                }
-            case 2 : //up
-                if currentCursor.0-1>=0 {
-                    currentCursor.0--
-                    updateLabel()
-                }
-            case 3 : //down
-                if currentCursor.0+1 < matrix.row {
-                    currentCursor.0++
-                    updateLabel()
-                }
-            default: ()
-        }
-
     }
 
     //User is changing size of matrix
