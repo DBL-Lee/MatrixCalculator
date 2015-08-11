@@ -22,7 +22,7 @@ public class LoadingOverlay{
     
     public func showOverlay(view: UIView) {
         
-        overlayView.frame = view.frame
+        overlayView.frame = CGRectMake(0, 0, 40, 40)
         overlayView.center = view.center
         overlayView.backgroundColor = UIColor(white: 0.2, alpha: 0.4)
         overlayView.clipsToBounds = true
