@@ -73,38 +73,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         updateLabel()
     }
     
-    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-        
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if entering { // calculate the current value and insert to matrix
-                calculateCurrentCell()
-            }
-            switch swipeGesture.direction {
-            case UISwipeGestureRecognizerDirection.Left:
-                if currentCursor.1-1>=0 {
-                    currentCursor.1--
-                    updateLabel()
-                }
-            case UISwipeGestureRecognizerDirection.Right:
-                if (currentCursor.1+1) < matrix.column {
-                    currentCursor.1++
-                    updateLabel()
-                }
-            case UISwipeGestureRecognizerDirection.Up:
-                if currentCursor.0-1>=0 {
-                    currentCursor.0--
-                    updateLabel()
-                }
-            case UISwipeGestureRecognizerDirection.Down:
-                if currentCursor.0+1 < matrix.row {
-                    currentCursor.0++
-                    updateLabel()
-                }
-            default:
-                break
-            }
-        }
-    }
+   
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -147,7 +116,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         allWidth[currentCursor.0][currentCursor.1] -= n
         updateWidth()
     }
-    
+
+    //In the following calculations, numbers are 2 spaces, / and . are 1 space    
     func updateLabel(){
         var aString = NSMutableAttributedString()
         for i in 0..<matrix.row {
@@ -182,7 +152,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var numerator:String = "0"
     var denominator:String = ""
     var floatingPoint:Int = 0
-    var numeratorFloatingPoint = 0
+    var numeratorFloatingPoint = 0 //remember floating point of numerator
     let FLOATPOINTUPPER = 5
 
     //flags
@@ -194,23 +164,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func digitPressed(sender: UIButton) {
         switch sender.titleLabel!.text! {
         case "DEL":
-            if numberlineEntered && denominator=="" {
+            if numberlineEntered && denominator=="" { //Deleting numberline
                 numberlineEntered = false
-                if numeratorFloatingPoint > 0 {
+                if numeratorFloatingPoint > 0 { //Numerator is float
                     floatpointEntered = true
                 }
                 floatingPoint = numeratorFloatingPoint
                 reduceWidth(1)
             }else{
                 if !numberlineEntered {
-                    if count(numerator)==1 {
+                    if count(numerator)==1 { //Deleting last digit in numerator
                         numerator = "0"
                         allWidth[currentCursor.0][currentCursor.1] = 2
-                    }else{
-                        if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{
+                    }else{ 
+                        if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{ //Deleting floating point in numerator
                             floatpointEntered = false
                             reduceWidth(1)
-                        }else{
+                        }else{  //Deleting a digit in numerator
                             reduceWidth(2)
                             if floatpointEntered{
                                 floatingPoint--
@@ -218,10 +188,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         }
                     }
                 }else{
-                    if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{
+                    if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{ //Deleting floatingPoint in denominator
                         floatpointEntered = false
                         reduceWidth(1)
-                    }else{
+                    }else{  //Deleting a digit in denominator
                         reduceWidth(2)
                         if floatpointEntered{
                             floatingPoint--
@@ -234,7 +204,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 if !numberlineEntered{
                     numerator+="."
                 }else{
-                    if denominator==""{
+                    if denominator==""{ //Case whereby denominator is empty
                         denominator = "0"
                     }
                     denominator+="."
@@ -244,7 +214,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             }
         case "/":
             if !numberlineEntered{
-                if numerator[numerator.endIndex.predecessor()] != "."{
+                if numerator[numerator.endIndex.predecessor()] != "."{ //Previous character is not floating point
                     numeratorFloatingPoint = floatingPoint
                     addWidth(1)
                 }else{
@@ -258,7 +228,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             if negative {
                 reduceWidth(1)
             }else{
-                if !numberlineEntered && numerator=="0"{
+                if !numberlineEntered && numerator=="0"{ //no digit entered yet
                     allWidth[currentCursor.0][currentCursor.1] = 3
                     updateWidth()
                 }else{
@@ -269,7 +239,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         default:
             if floatingPoint<FLOATPOINTUPPER {
                 if !numberlineEntered{
-                    if numerator == "0" {
+                    if numerator == "0" { //no digit entered yet
                         numerator = sender.titleLabel!.text!
                     }else{
                         if floatpointEntered {floatingPoint++}
@@ -287,10 +257,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         updateLabel()
     }
 
-
+    //This function is called when user finish editing a cell and move to another cell
     private func calculateCurrentCell(){
         entering = false
-        //if numerator
         if negative {
             numerator = "-"+numerator
         }
@@ -310,11 +279,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //change width
         let fraction = matrix.matrix[currentCursor.0][currentCursor.1]
         var deduct = 0
-        if fraction.d != 1{
+        if fraction.d != 1{ //The width of numberline
             deduct++
         }
-        print(fraction.toString())
-        if fraction.toString()[0] == "-" {
+
+        if fraction.toString()[0] == "-" { //The width of minus sign
             deduct++
         }
         allWidth[currentCursor.0][currentCursor.1] = count(fraction.toString())*2-deduct
@@ -324,9 +293,44 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         numerator = "0"
         denominator = ""
         floatingPoint = 0
+        numeratorFloatingPoint = 0
         negative = false
         floatpointEntered = false
         numberlineEntered = false
+    }
+
+    //User moving through cells
+     func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if entering { // calculate the current value and insert to matrix
+                calculateCurrentCell()
+            }
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.Left:
+                if currentCursor.1-1>=0 {
+                    currentCursor.1--
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Right:
+                if (currentCursor.1+1) < matrix.column {
+                    currentCursor.1++
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Up:
+                if currentCursor.0-1>=0 {
+                    currentCursor.0--
+                    updateLabel()
+                }
+            case UISwipeGestureRecognizerDirection.Down:
+                if currentCursor.0+1 < matrix.row {
+                    currentCursor.0++
+                    updateLabel()
+                }
+            default:
+                break
+            }
+        }
     }
 
     //User is changing size of matrix
