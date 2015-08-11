@@ -227,7 +227,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="sizeChange:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="ZuN-xv-quc"/>
+                                    <action selector="sizeChange:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="XBI-Ju-Kmh"/>
                                 </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hqh-HO-tUu">
@@ -237,7 +237,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="sizeChange:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Tol-hM-xqt"/>
+                                    <action selector="sizeChange:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="75q-rv-85F"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W8z-4A-ES3">

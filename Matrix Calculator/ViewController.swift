@@ -29,6 +29,7 @@ extension String
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
+
     @IBOutlet weak var matrixLabel: UILabel!
     
     var delegate:inputMatrixDelegate!
@@ -118,8 +119,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var width:[Int] = [2,2]
     var allWidth:[[Int]] = [[2,2],[2,2]]
     var currentCursor = (0,0)
+    var fraction = true
     
     var entering = false //flag to indicate whether user is entering
+    
+
+//    @IBAction func displayFraction(sender: AnyObject) {
+//        fraction = !fraction
+//        updateLabel()
+//    }
     
     private func updateWidth(){
         for j in 0..<matrix.column{
@@ -146,7 +154,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             for j in 0..<matrix.column{
                 let entry:String!
                 if i != currentCursor.0 || j != currentCursor.1 || !entering {
-                    entry = matrix.matrix[i][j].toString()
+                    if fraction{
+                        entry = matrix.matrix[i][j].toString()
+                    }else{
+                        entry = (Float(matrix.matrix[i][j].n)/Float(matrix.matrix[i][j].d)).description
+                    }
                 }else{
                     entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
                 }
@@ -335,6 +347,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.0 >= matrix.row {
                          currentCursor.0--
                     }
+                    allWidth.removeLast()
                     updateWidth()
                     updateLabel()
                 }
@@ -402,129 +415,168 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             var image:UIImage = info[UIImagePickerControllerOriginalImage]
                 as! UIImage
         
-            
-            image = scaledownImage(image)            
-            var blackWhite = grayScaleImage(image)            
-            var cc = connectedComponents(blackWhite)
-            
-            println(cc.count)
-            
-            
-            var currentrow = 0
-            var finished:[[ConnectedComponent]] = []
-            
-            //label each row
-            while (!cc.isEmpty){
-                finished.append([])
-                var highest:CGFloat = CGFloat(blackWhite.count)
-                var highestBox:CGRect!
-
-                //find highest bounding box
-                for c in cc {
-                    if c.boundBox.minY<highest{
-                        highest = c.boundBox.minY
-                        highestBox = c.boundBox
-                    }
-                }
-
-                //change the bounding box to a horizontal strip
-                highestBox = CGRect(x: 0.0, y: highestBox.origin.y, width: CGFloat(blackWhite[0].count), height: highestBox.height)
+            LoadingOverlay.shared.showOverlay(self.view)
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+                image = self.scaledownImage(image)
+                var blackWhite = self.grayScaleImage(image)
+                var cc = self.connectedComponents(blackWhite)
                 
-                //find all cc that intersect this strip and label them in same row
-                for c in cc {
-                    if c.boundBox.intersects(highestBox) {
-                        c.row = currentrow
-                        cc.removeAtIndex(find(cc, c)!)
-                        finished[currentrow].append(c)
-                    }
-                }
+                println(cc.count)
                 
-                //sort according to left right
-                finished[currentrow].sort({
-                    (cc1:ConnectedComponent,cc2:ConnectedComponent) -> Bool in
-                        return cc1.boundBox.midX<cc2.boundBox.midX
-                })
+                if cc.count>0 {
+                    var currentrow = 0
+                    var finished:[[ConnectedComponent]] = []
                     
-                currentrow++
-            }
-            
-            
-            //Use something like SVM to separate out the columns
-
-            //As the digit in same column must be close to each other
-            //while the digit in different column must be wider apart
-            //Therefore, we first find the distance between each cc and the
-            //next cc. Then we sort these distances, they should be grouped
-            //around a small value and a big value.
-            //Then we find distance between these distances. When there is a
-            //large jump, we treat this jump as the split between the distances.
-
-            //distance and index          
-            var distance:[(CGFloat,Int)] = []            
-            for i in 0..<finished[0].count-1{
-                distance.append(finished[0][i+1].boundBox.minX-finished[0][i].boundBox.maxX,i)
-            }
-            
-            //prevent situation of only one gap
-            distance.append(CGFloat(10.0),finished[0].count)
-            
-            distance.sort({
-                (a,b) -> Bool in
-                return a.0<b.0
-            })
-            
-            //distance between distance
-            var distance2:[(CGFloat,Int)] = []            
-            for i in 0..<distance.count-1{
-                distance2.append(CGFloat(distance[i+1].0)-CGFloat(distance[i].0),i)
-            }
-        
-            distance2.sort({
-                (a,b) -> Bool in
-                return a.0<b.0
-            })
-            
-            var splitDistance:CGFloat!
-            var maxColumn = 0
-            //index of the distance
-            let maxIndex:Int = distance2[distance2.count-1].1
-            splitDistance = distance[maxIndex].0
-            
-            //take the average
-            splitDistance = (distance[maxIndex+1].0-splitDistance)/2
-            
-           
-            //label according to the splitDistance found
-            //if distance to next cc is less than splitDistance, they are in same column
-            for ccs in finished{
-                var currentCol = 0
-                ccs[0].col = currentCol
-                for i in 1..<ccs.count{
-                    if ccs[i].boundBox.minX-ccs[i-1].boundBox.maxX>splitDistance {currentCol++}
-                    ccs[i].col = currentCol
-                    maxColumn = max(maxColumn,currentCol)
-                }
-            }
-
-            matrix = Matrix(r: currentrow,c: maxColumn+1)
-            currentrow = 0
-            //Use NN to calculate corresponding digit
-            for ccs in finished{
-                var currentCol = 0
-                var currentEntry = 0
-                for c in ccs{
-                    if c.col>currentCol {
-                        matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
-                        currentEntry = 0
-                        currentCol=c.col
+                    //label each row
+                    while (!cc.isEmpty){
+                        finished.append([])
+                        var highest:CGFloat = CGFloat(blackWhite.count)
+                        var highestBox:CGRect!
+                        
+                        //find highest bounding box
+                        for c in cc {
+                            if c.boundBox.minY<highest{
+                                highest = c.boundBox.minY
+                                highestBox = c.boundBox
+                            }
+                        }
+                        
+                        //change the bounding box to a horizontal strip
+                        highestBox = CGRect(x: 0.0, y: highestBox.origin.y, width: CGFloat(blackWhite[0].count), height: highestBox.height)
+                        
+                        //find all cc that intersect this strip and label them in same row
+                        for c in cc {
+                            if c.boundBox.intersects(highestBox) {
+                                c.row = currentrow
+                                cc.removeAtIndex(find(cc, c)!)
+                                finished[currentrow].append(c)
+                            }
+                        }
+                        
+                        //sort according to left right
+                        finished[currentrow].sort({
+                            (cc1:ConnectedComponent,cc2:ConnectedComponent) -> Bool in
+                            return cc1.boundBox.midX<cc2.boundBox.midX
+                        })
+                        
+                        currentrow++
                     }
-                    let thisDigit = NN.calculate(c.output()) 
-                    currentEntry = currentEntry*10+thisDigit                 
+                    
+                    var maxColumn = -1
+                    
+                    for cc in finished {
+                        if cc.count == 1{
+                            maxColumn = 0
+                            break
+                        }
+                    }
+                    
+                    if maxColumn == 0{
+                        for ccs in finished{
+                            for cc in ccs{
+                                cc.col = 0
+                            }
+                        }
+                    }else{
+                        
+                        //Use something like SVM to separate out the columns
+                        
+                        //As the digit in same column must be close to each other
+                        //while the digit in different column must be wider apart
+                        //Therefore, we first find the distance between each cc and the
+                        //next cc. Then we sort these distances, they should be grouped
+                        //around a small value and a big value.
+                        //Then we find distance between these distances. When there is a
+                        //large jump, we treat this jump as the split between the distances.
+                        
+                        //distance and index
+                        var distance:[(CGFloat,Int)] = []
+                        for i in 0..<finished[0].count-1{
+                            let dist = finished[0][i+1].boundBox.minX-finished[0][i].boundBox.maxX
+                            distance.append(max(dist,0),i)
+                        }
+                        
+                        //prevent situation of only one gap
+                        distance.append(CGFloat(10.0),finished[0].count)
+                        
+                        distance.sort({
+                            (a,b) -> Bool in
+                            return a.0<b.0
+                        })
+                        
+                        //distance between distance
+                        var distance2:[(CGFloat,Int)] = []
+                        for i in 0..<distance.count-1{
+                            distance2.append(CGFloat(distance[i+1].0)-CGFloat(distance[i].0),i)
+                        }
+                        
+                        distance2.sort({
+                            (a,b) -> Bool in
+                            return a.0<b.0
+                        })
+                        
+                        var splitDistance:CGFloat!
+                        //index of the distance
+                        let maxIndex:Int = distance2[distance2.count-1].1
+                        
+                        //take the average
+                        splitDistance = (distance[maxIndex+1].0+distance[maxIndex].0)/2
+                        
+                        
+                        //label according to the splitDistance found
+                        //if distance to next cc is less than splitDistance, they are in same column
+                        for ccs in finished{
+                            var currentCol = 0
+                            ccs[0].col = currentCol
+                            for i in 1..<ccs.count{
+                                if ccs[i].boundBox.minX-ccs[i-1].boundBox.maxX>splitDistance {currentCol++}
+                                ccs[i].col = currentCol
+                                maxColumn = max(maxColumn,currentCol)
+                            }
+                        }
+                    }
+                    
+                    self.allWidth = [[Int]](count: finished.count, repeatedValue: [Int](count: maxColumn+1,repeatedValue:0))
+                    self.width = [Int](count:maxColumn+1, repeatedValue: 0)
+                    self.matrix = Matrix(r: finished.count,c: maxColumn+1)
+                    currentrow = 0
+                    //Use NN to calculate corresponding digit
+                    for ccs in finished{
+                        var currentCol = 0
+                        var currentEntry = 0
+                        for c in ccs{
+                            if c.col>currentCol {
+                                self.matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
+                                currentEntry = 0
+                                currentCol=c.col
+                            }
+                            let thisDigit = self.NN.calculate(c.output())
+                            print(thisDigit.description+" ")
+                            currentEntry = currentEntry*10+thisDigit
+                            self.allWidth[currentrow][currentCol] += 2
+                        }
+                        println()
+                        self.matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
+                        currentrow++
+                    }
+                    
+                    for i in 0..<self.allWidth.count{
+                        for j in 0..<self.allWidth[i].count {
+                            if self.allWidth[i][j] == 0 { self.allWidth[i][j] = 2 }
+                        }
+                    }
                 }
-                matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
-                currentrow++
-            }
-            updateLabel()
+                println("finished")
+                dispatch_async(dispatch_get_main_queue(), {
+                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                    LoadingOverlay.shared.hideOverlayView()
+                    self.currentCursor = (0,0)
+                    self.updateWidth()
+                    self.updateLabel()
+                })
+            })
+            
         }
     }
     

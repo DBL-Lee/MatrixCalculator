@@ -23,6 +23,7 @@
 		9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */; };
 		9B78E1951A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */; };
 		9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */; };
+		9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		9B78E1931A8CDB3D0069CBF3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix_CalculatorTests.swift; sourceTree = "<group>"; };
 		9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeuralNetwork.swift; sourceTree = "<group>"; };
+		9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +180,7 @@
 		9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */,
 				9B6CD83B1A9E3766000C1841 /* Resize.h */,
 				9B6CD83C1A9E3766000C1841 /* Resize.m */,
 				9B78E17D1A8CDB3C0069CBF3 /* Info.plist */,
@@ -318,6 +321,7 @@
 				9B589F3A1B4355100009A355 /* Queue.swift in Sources */,
 				9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */,
 				9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */,
+				9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
