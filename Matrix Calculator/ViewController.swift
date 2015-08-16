@@ -27,7 +27,7 @@ extension String
     }
 }
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
     
 
     @IBOutlet weak var matrixLabel: UILabel!
@@ -127,7 +127,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if fraction{
                         entry = matrix.matrix[i][j].toString()
                     }else{
-                        entry = (Float(matrix.matrix[i][j].n)/Float(matrix.matrix[i][j].d)).description
+                        entry = (Double(matrix.matrix[i][j].n)/Double(matrix.matrix[i][j].d)).description
                     }
                 }else{
                     entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
@@ -717,13 +717,52 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return result
     }
 
+    
+    var usedCharacter:NSSet!
 
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        var error:NSError?
+        var regex:NSRegularExpression = NSRegularExpression(pattern: "[a-zA-Z]", options: .CaseInsensitive, error: &error)!
+        if ((range.length + range.location > count(textField.text)) || (string=="") || (regex.matchesInString(string, options: nil, range: NSMakeRange(0, count(string))).count == 0))
+        {
+            return false;
+        }
+        textField.text = string.uppercaseString
+        let newLength = count(textField.text) + count(string) - range.length
+        return newLength <= 1
+    }
 
+    
+    
     //MARK: DONE
     @IBAction func done(sender: UIButton) {
         calculateCurrentCell()
-        delegate.didFinishInputMatrix(matrix,alias: "A")
-        self.dismissViewControllerAnimated(true,completion:nil)
+        var inputTextField: UITextField?
+        var message = "Used Characters: "
+        if usedCharacter.count == 0{
+            message += "None"
+        }else{
+            for c in usedCharacter{
+                message += (c as! String)+","
+            }
+            message.removeAtIndex(message.endIndex.predecessor())
+        }
+        message += "\nUsing same character will overwrite existing matrix."
+        var alert = UIAlertController(title: "Save Matrix As", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+            textField.text = "A"
+            inputTextField = textField
+            inputTextField?.delegate = self
+        })
+
+        alert.addAction(UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: ({
+            action in
+            self.delegate.didFinishInputMatrix(self.matrix,alias: inputTextField!.text!)
+            self.dismissViewControllerAnimated(true,completion:nil)
+        })))
+        self.presentViewController(alert, animated: true, completion: nil)
+
+        
     }    
 }
 

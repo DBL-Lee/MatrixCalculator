@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>1FB51044-4E1B-4464-8412-DB2A80FEF746</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Matrix Calculator</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>15BAB702D1B8621EE0A0D2B8B97BCE7885463718</key>
 		<string>https://github.com/DBL-Lee/MatrixCalculator.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Matrix Calculator.xcodeproj</string>
+	<string>Matrix Calculator.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>15BAB702D1B8621EE0A0D2B8B97BCE7885463718</key>

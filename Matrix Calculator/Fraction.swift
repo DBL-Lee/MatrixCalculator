@@ -43,7 +43,7 @@ class Fraction{
     }
     
     init(i:Double){
-        var newn:Int = Int(i*100000)
+        var newn:Int = Int(round(i*100000))
         var newd:Int = 100000
         let (rn, rd) = Fraction.reduce(newn , d: newd)
         self.n = rn

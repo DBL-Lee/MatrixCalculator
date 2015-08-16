@@ -24,6 +24,9 @@
 		9B78E1951A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */; };
 		9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */; };
 		9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */; };
+		9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */; };
+		9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB51B7D338400894EDD /* matrixTableView.swift */; };
+		9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +95,9 @@
 		9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix_CalculatorTests.swift; sourceTree = "<group>"; };
 		9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeuralNetwork.swift; sourceTree = "<group>"; };
 		9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
+		9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixCalculationCell.swift; sourceTree = "<group>"; };
+		9BDD6AB51B7D338400894EDD /* matrixTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = matrixTableView.swift; sourceTree = "<group>"; };
+		9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = storedMatrixView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +174,8 @@
 				9B4980D81B5DA1D700F2BC47 /* RecognitionClasses */,
 				9B4980D61B5DA1A700F2BC47 /* MatrixClasses */,
 				9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */,
+				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
+				9BF80D5E1B811264002AF21C /* CustomClasses */,
 				9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */,
 				9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */,
 				9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */,
@@ -180,7 +188,6 @@
 		9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */,
 				9B6CD83B1A9E3766000C1841 /* Resize.h */,
 				9B6CD83C1A9E3766000C1841 /* Resize.m */,
 				9B78E17D1A8CDB3C0069CBF3 /* Info.plist */,
@@ -203,6 +210,16 @@
 				9B78E1931A8CDB3D0069CBF3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9BF80D5E1B811264002AF21C /* CustomClasses */ = {
+			isa = PBXGroup;
+			children = (
+				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
+				9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */,
+				9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */,
+			);
+			name = CustomClasses;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,6 +327,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */,
+				9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */,
 				9B78E1811A8CDB3D0069CBF3 /* ViewController.swift in Sources */,
 				9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */,
 				9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */,
@@ -322,6 +341,7 @@
 				9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */,
 				9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */,
 				9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */,
+				9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
