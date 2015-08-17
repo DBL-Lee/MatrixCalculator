@@ -55,7 +55,8 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     }
 	
 	func didPickMatrixWithAlias(alias:String){
-	
+		
+		tableView.reloadData()
 	}
    
 
