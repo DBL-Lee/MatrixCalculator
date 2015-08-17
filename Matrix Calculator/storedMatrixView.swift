@@ -9,8 +9,9 @@
 import UIKit
 
 protocol storeMatrixViewDelegate{
-	var storedMatrices:[String:Matrix]
+    var storedMatrices:[String:Matrix] {get set}
 	func didPickMatrixWithAlias(alias:String)
+    func performSegueWithIdentifier(identifier: String?, sender: AnyObject?)
 }
 
 class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMatrixDelegate {
@@ -18,42 +19,43 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
 	let CellIdentifier = "MatrixCalculationCell"
 	var storedAlias:[String] = []
 	var storedMatrices:[Matrix] = []
-	var tableView:UITableView!
-	var delegate:storeMatrixViewDelegate
+	var storedTableView:UITableView!
+	var delegate:storeMatrixViewDelegate!
 	
 	init(storedMatrices:[String:Matrix],frame:CGRect){
 		for (n,m) in storedMatrices {
-			storedAlias.append(n)
-			storedMatrices.append(m)
+			self.storedAlias.append(n)
+			self.storedMatrices.append(m)
 		}
-		super.init(frame)
+		super.init(frame: frame)
 		self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-		tableView = UITableView()
+		storedTableView = UITableView()
 		
-		var smallframe = CGRect(0,0,frame.width*0.8,frame.height*0.8)
+		var smallframe = CGRect(x: frame.width*0.1,y: frame.height*0.1,width: frame.width*0.8,height: frame.height*0.8)
 		var containerView = UIView()
 		containerView.frame = smallframe
+        containerView.backgroundColor = UIColor.whiteColor()
 		containerView.layer.borderWidth = 2
 		self.addSubview(containerView)
 		
-		let button   = UIButton.buttonWithType(UIButtonType.ContactAdd) as UIButton
+		let button   = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
 		let buttonframe = CGRectMake(0, 0, frame.width*0.1, frame.width*0.1)
-		buttonframe.center = CGPoint(frame.width*0.75,frame.height*0.15)
-		button.frame = buttonframe
+        button.frame = buttonframe
+		button.center = CGPoint(x: frame.width*0.85,y: frame.height*0.15)
 		button.addTarget(self, action: "addMatrix:", forControlEvents: UIControlEvents.TouchUpInside)
-		self.view.addSubview(button)
+		self.addSubview(button)
 		
-		smallframe = CGRect(0,0,frame.width*0.8,frame.height*0.7)
-		smallframe.center = frame.center
-		tableView.frame = smallframe
-		tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100.0
-        tableView.showsVerticalScrollIndicator = false
-        tableView.tableFooterView = UIView(frame: CGRect.zeroRect)
-		tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-		tableView.delegate = self
-		tableView.dataSource = self
-		self.addSubview(tableView)
+		smallframe = CGRect(x: frame.width*0.1,y: frame.height*0.2,width: frame.width*0.8,height: frame.height*0.7)
+        storedTableView.frame = smallframe
+        
+		storedTableView.rowHeight = UITableViewAutomaticDimension
+        storedTableView.estimatedRowHeight = 100.0
+        storedTableView.showsVerticalScrollIndicator = false
+        storedTableView.tableFooterView = UIView(frame: CGRect.zeroRect)
+		storedTableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
+		storedTableView.delegate = self
+		storedTableView.dataSource = self
+		self.addSubview(storedTableView)
 	}
 	
     required init(coder aDecoder: NSCoder) {
@@ -61,18 +63,19 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
     }
 	
 	func addMatrix(sender:UIButton!){
-		performSegueWithIdentifier("insertMatrixSegue", sender: sender)
+		delegate.performSegueWithIdentifier("insertMatrixSegue", sender: sender)
 	}
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storedAlias.count
+        return delegate.storedMatrices.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as! MatrixCalculationCell
-        cell.label.text = storedAlias[indexPath.row]
+        let cell:MatrixCalculationCell = storedTableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
+        let text = delegate.storedMatrices.keys.array[indexPath.row]
+        cell.label.text = text
 		cell.label.sizeToFit()
-        cell.resultMatrixView.setMatrix(storedMatrices[indexPath.row])
+        cell.resultMatrixView.setMatrix(delegate.storedMatrices[text]!)
 		while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
 			cell.resultMatrixView.decreaseFont()
 		}
@@ -80,25 +83,15 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
     }
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
-		delegate?.didPickMatrixWithAlias(storedAlias[indexPath.row])
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell
+		delegate.didPickMatrixWithAlias(cell.label.text!)
 		self.hidden = true
 	}
 	
 	func didFinishInputMatrix(matrix: Matrix, alias: String) {
-        storedAlias.append(alias)
-        storedMatrices.append(matrix)
         delegate.storedMatrices[alias] = matrix
-        self.tableView.reloadData()
+        self.storedTableView.reloadData()
     }
 	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue.identifier!{
-        case "insertMatrixSegue" :
-            let vc = segue.destinationViewController as! ViewController
-            vc.delegate = self
-            vc.usedCharacter = NSSet(array: storedAlias)
-        default:
-            break
-        }
-    }
+
 }

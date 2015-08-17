@@ -14,7 +14,8 @@ class matrixTableView: UIView {
     var label:[[UILabel]] = []
     var widthConstraint:NSLayoutConstraint!
     var heightConstraint:NSLayoutConstraint!
-	var currentFontSize = 0
+    var currentFontSize:CGFloat = 0
+    var maxWidth:[CGFloat]!
     
     
     let xMARGIN:CGFloat = 10.0
@@ -22,10 +23,14 @@ class matrixTableView: UIView {
 
     func setMatrix(matrix:Matrix){
         self.matrix = matrix
+        for v in self.subviews {
+            v.removeFromSuperview()
+        }
+        self.label = []
         let nrow = matrix.matrix.count
         let ncol = matrix.matrix[0].count
         var strings:[[String]] = []
-        var maxWidth:[CGFloat] = [CGFloat](count:ncol,repeatedValue:0)
+        maxWidth = [CGFloat](count:ncol,repeatedValue:0)
         for i in 0..<nrow{
             label.append([])
             for j in 0..<ncol{
@@ -42,6 +47,8 @@ class matrixTableView: UIView {
     }
 	
 	func adjustLayout(){
+        let ncol = label[0].count
+        let nrow = label.count
 		var totalWidth:CGFloat = 0
         for i in 0..<ncol {
             totalWidth += xMARGIN + maxWidth[i]
@@ -49,7 +56,7 @@ class matrixTableView: UIView {
         totalWidth += xMARGIN        
 		
         let maxHeight = label[0][0].frame.size.height
-        let totalHeight:CGFloat = maxHeight * CGFloat(nrow) + yMARGIN * CGFloat(nrow+1)
+        let totalHeight:CGFloat = maxHeight * CGFloat(label.count) + yMARGIN * CGFloat(nrow+1)
         widthConstraint.constant = totalWidth
         heightConstraint.constant = totalHeight
         self.setNeedsLayout()
@@ -72,7 +79,7 @@ class matrixTableView: UIView {
 		currentFontSize--
 		for i in 0..<label.count{
 			for j in 0..<label[0].count{
-				label[i][j].font.pointSize = currentFontSize
+                label[i][j].font = label[i][j].font.fontWithSize(currentFontSize)
 				label[i][j].sizeToFit()
                 maxWidth[j] = max(maxWidth[j],label[i][j].frame.size.width)
 			}

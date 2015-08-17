@@ -24,8 +24,10 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         tableView.estimatedRowHeight = 100.0
         tableView.showsVerticalScrollIndicator = false
         tableView.tableFooterView = UIView(frame: CGRect.zeroRect)
+        tableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
 		
-		storedMatricesView = storedMatrixView(storedMatrices,self.frame)
+		storedMatricesView = storedMatrixView(storedMatrices: storedMatrices,frame: self.view.frame)
+        storedMatricesView.delegate = self
 		self.view.addSubview(storedMatricesView)
 		storedMatricesView.hidden = true
     }
@@ -40,7 +42,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as! MatrixCalculationCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
         cell.label.text = expressions[indexPath.row]
 		cell.label.sizeToFit()
         cell.resultMatrixView.setMatrix(matrices[indexPath.row])
@@ -58,6 +60,17 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		
 		tableView.reloadData()
 	}
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch segue.identifier!{
+        case "insertMatrixSegue" :
+            let vc = segue.destinationViewController as! ViewController
+            vc.delegate = storedMatricesView
+            vc.usedCharacter = NSSet(array: storedMatrices.keys.array)
+        default:
+            break
+        }
+    }
    
 
 }

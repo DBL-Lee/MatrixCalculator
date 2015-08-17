@@ -404,7 +404,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
                 newMedia = true
         }
-		self.editing = false
+		self.entering = false
         self.presentViewController(self.imagePicker, animated: true,
             completion: nil)
     }
@@ -737,8 +737,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //MARK: DONE
     @IBAction func done(sender: UIButton) {
-		if editing {
-			editing = false
+		if entering {
 			calculateCurrentCell()
 		}
         var inputTextField: UITextField?
@@ -754,7 +753,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         message += "\nUsing same character will overwrite existing matrix."
         var alert = UIAlertController(title: "Save Matrix As", message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
-            textField.text = "A"
+            for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"{
+                if !self.usedCharacter.containsObject(String(c)){
+                    textField.text = String(c)
+                    break
+                }else{
+                    textField.text = "A"
+                }
+            }
             inputTextField = textField
             inputTextField?.delegate = self
         })

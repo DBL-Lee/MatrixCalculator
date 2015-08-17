@@ -27,6 +27,7 @@
 		9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */; };
 		9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB51B7D338400894EDD /* matrixTableView.swift */; };
 		9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */; };
+		9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BF80D611B829418002AF21C /* MatrixCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +99,7 @@
 		9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixCalculationCell.swift; sourceTree = "<group>"; };
 		9BDD6AB51B7D338400894EDD /* matrixTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = matrixTableView.swift; sourceTree = "<group>"; };
 		9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = storedMatrixView.swift; sourceTree = "<group>"; };
+		9BF80D611B829418002AF21C /* MatrixCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatrixCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +219,7 @@
 			children = (
 				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
 				9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */,
+				9BF80D611B829418002AF21C /* MatrixCell.xib */,
 				9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */,
 			);
 			name = CustomClasses;
@@ -310,6 +313,7 @@
 				9B78E1841A8CDB3D0069CBF3 /* Main.storyboard in Resources */,
 				9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */,
 				9B78E1861A8CDB3D0069CBF3 /* Images.xcassets in Resources */,
+				9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
