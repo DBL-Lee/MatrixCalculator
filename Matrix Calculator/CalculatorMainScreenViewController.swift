@@ -12,7 +12,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     @IBOutlet weak var tableView: UITableView!
 
     
-    var storedMatrices:[String:Matrix] = [String:Matrix]()
+    
     let CellIdentifier = "MatrixCalculationCell"
     var expressions:[String] = []
     var matrices:[Matrix] = []
@@ -26,12 +26,11 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         tableView.tableFooterView = UIView(frame: CGRect.zeroRect)
         tableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
 		
-		storedMatricesView = storedMatrixView(storedMatrices: storedMatrices,frame: self.view.frame)
+		storedMatricesView = storedMatrixView(frame: self.view.frame)
         storedMatricesView.delegate = self
 		self.view.addSubview(storedMatricesView)
 		storedMatricesView.hidden = true
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -56,17 +55,22 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         return matrices.count
     }
 	
-	func didPickMatrixWithAlias(alias:String){
+    func didPickMatrixWithAlias(alias:String,matrix:Matrix){
 		
 		tableView.reloadData()
 	}
+    
+
+    func performSegue(identifier: String?) {
+        self.performSegueWithIdentifier(identifier!, sender: self)
+    }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier!{
         case "insertMatrixSegue" :
             let vc = segue.destinationViewController as! ViewController
             vc.delegate = storedMatricesView
-            vc.usedCharacter = NSSet(array: storedMatrices.keys.array)
+            vc.usedCharacter = NSSet(array: storedMatricesView.storedMatrices.keys.array)
         default:
             break
         }

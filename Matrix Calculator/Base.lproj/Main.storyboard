@@ -38,6 +38,7 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="8i7-Vb-uNM" id="I7f-Ay-g3N"/>
+                        <segue destination="vXZ-lx-hvc" kind="modal" identifier="insertMatrixSegue" id="eJ6-ih-3BZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z08-yM-DUt" userLabel="First Responder" sceneMemberID="firstResponder"/>
