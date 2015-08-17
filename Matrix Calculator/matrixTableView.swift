@@ -21,6 +21,7 @@ class matrixTableView: UIView {
     var label:[[UILabel]] = []
     var widthConstraint:NSLayoutConstraint!
     var heightConstraint:NSLayoutConstraint!
+	var currentFontSize = 0
     
     
     let xMARGIN:CGFloat = 10.0
@@ -43,12 +44,17 @@ class matrixTableView: UIView {
                 maxWidth[j] = max(maxWidth[j],label[i][j].frame.size.width)
             }
         }
-        var totalWidth:CGFloat = 0
+		currentFontSize = label[0][0].font.pointSize
+        adjustLayout()
+    }
+	
+	func adjustLayout(){
+		var totalWidth:CGFloat = 0
         for i in 0..<ncol {
             totalWidth += xMARGIN + maxWidth[i]
         }
-        totalWidth += xMARGIN
-        
+        totalWidth += xMARGIN        
+		
         let maxHeight = label[0][0].frame.size.height
         let totalHeight:CGFloat = maxHeight * CGFloat(nrow) + yMARGIN * CGFloat(nrow+1)
         widthConstraint.constant = totalWidth
@@ -67,7 +73,19 @@ class matrixTableView: UIView {
             }
             y += yMARGIN + maxHeight
         }
-    }
+	}
+	
+	func decreaseFont(){
+		currentFontSize--
+		for i in 0..<label.count{
+			for j in 0..<label[0].count{
+				label[i][j].font.pointSize = currentFontSize
+				label[i][j].sizeToFit()
+                maxWidth[j] = max(maxWidth[j],label[i][j].frame.size.width)
+			}
+		}
+		adjustLayout()
+	}
 
     
     required init(coder aDecoder: NSCoder) {

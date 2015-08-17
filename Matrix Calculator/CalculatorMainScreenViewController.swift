@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,inputMatrixDelegate {
+class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate {
     @IBOutlet weak var tableView: UITableView!
 
     
@@ -16,6 +16,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     let CellIdentifier = "MatrixCalculationCell"
     var expressions:[String] = []
     var matrices:[Matrix] = []
+	var storedMatricesView:storedMatrixView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +24,10 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         tableView.estimatedRowHeight = 100.0
         tableView.showsVerticalScrollIndicator = false
         tableView.tableFooterView = UIView(frame: CGRect.zeroRect)
-        // Do any additional setup after loading the view.
+		
+		storedMatricesView = storedMatrixView(storedMatrices,self.frame)
+		self.view.addSubview(storedMatricesView)
+		storedMatricesView.hidden = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,36 +36,27 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     }
     
     @IBAction func showStoredMatrices(sender: AnyObject) {
+		storedMatricesView.hidden = false
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as! MatrixCalculationCell
         cell.label.text = expressions[indexPath.row]
+		cell.label.sizeToFit()
         cell.resultMatrixView.setMatrix(matrices[indexPath.row])
-        //println(cell.resultMatrixView.frame)
+        while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
+			cell.resultMatrixView.decreaseFont()
+		}
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return matrices.count
     }
-    
-    func didFinishInputMatrix(matrix: Matrix, alias: String) {
-        expressions.append(alias)
-        matrices.append(matrix)
-        storedMatrices[alias] = matrix
-        self.tableView.reloadData()
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue.identifier!{
-        case "insertMatrixSegue" :
-            let vc = segue.destinationViewController as! ViewController
-            vc.delegate = self
-            vc.usedCharacter = NSSet(array: storedMatrices.keys.array)
-        default:
-            break
-        }
-    }
+	
+	func didPickMatrixWithAlias(alias:String){
+	
+	}
+   
 
 }

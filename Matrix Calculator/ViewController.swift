@@ -404,6 +404,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
                 newMedia = true
         }
+		self.editing = false
         self.presentViewController(self.imagePicker, animated: true,
             completion: nil)
     }
@@ -736,7 +737,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //MARK: DONE
     @IBAction func done(sender: UIButton) {
-        calculateCurrentCell()
+		if editing {
+			editing = false
+			calculateCurrentCell()
+		}
         var inputTextField: UITextField?
         var message = "Used Characters: "
         if usedCharacter.count == 0{
