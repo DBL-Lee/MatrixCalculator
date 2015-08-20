@@ -8,14 +8,32 @@
 
 import UIKit
 
-class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate {
-    @IBOutlet weak var tableView: UITableView!
+enum matrixOperations{
+	case add
+	case subtract
+	case multiplication
+	case GJe
+	case transpose
+	case inverse
+	case chol
+	case QR
+	case LU
+	case diagonalize
+	case eigenpair
+	case rank
+	case trace
+	case det
+}
 
-    
+class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate {
+    @IBOutlet weak var tableView: UITableView!    
     
     let CellIdentifier = "MatrixCalculationCell"
     var expressions:[String] = []
-    var matrices:[Matrix] = []
+    var results:[Any] = []
+	var firstOperand:Matrix?
+	var secondOperand:Matrix?
+	var operation:MatrixOperations?
 	var storedMatricesView:storedMatrixView!
     
     override func viewDidLoad() {
@@ -44,19 +62,74 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
         cell.label.text = expressions[indexPath.row]
 		cell.label.sizeToFit()
-        cell.resultMatrixView.setMatrix(matrices[indexPath.row])
-        while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
-			cell.resultMatrixView.decreaseFont()
+		switch results[indexPath.row] {
+		case let matrix as Matrix:
+			cell.resultMatrixView.setMatrix(matrix)
+			while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
+				cell.resultMatrixView.decreaseFont()
+			}
+		case let scalar as Double:
+		case let error as String:
+		default:
+		break
 		}
+        
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return matrices.count
+        return expressions.count
     }
 	
-    func didPickMatrixWithAlias(alias:String,matrix:Matrix){
+	func doCalculation(){
+		switch operation{
+		//two matrices -> one matrix
+		case .add:
 		
+		case .subtract:
+		
+		case .multiplication:
+		
+		//one matrix -> one matrix
+		case .GJe:
+		
+		case .transpose:
+		
+		case .inverse:
+		
+		//one matrix -> two matrices
+		case .chol:
+		
+		case .QR:
+		
+		case .LU:
+		
+		case .diagonalize:
+		
+		case .eigenpair:
+		
+		//one matrix -> scalar
+		case .rank:
+		
+		case .trace:
+		
+		case .det:
+		}
+	
+		firstOperand = nil
+		secondOperand = nil
+		operation = nil
+		tableView.reloadData()
+	}
+	
+    func didPickMatrixWithAlias(alias:String,matrix:Matrix){
+		if firstOperand != nil {
+			secondOperand = matrix
+			doCalculation()
+		}else{
+			firstOperand = matrix
+			results.append(matrix)
+		}
 		tableView.reloadData()
 	}
     

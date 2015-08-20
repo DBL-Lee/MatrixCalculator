@@ -17,6 +17,11 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
 
 	let CellIdentifier = "MatrixCalculationCell"
 	var storedMatrices:[String:Matrix] = [String:Matrix]()
+	var sortedKeys:[String] {
+		get {
+			Array(storedMatrices.keys)].sorted(<)
+		}
+	}
 	var storedTableView:UITableView!
 	var delegate:storeMatrixViewDelegate!
 	
@@ -25,11 +30,12 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         storedTableView = UITableView()
         
-        var smallframe = CGRect(x: frame.width*0.1,y: frame.height*0.1,width: frame.width*0.8,height: frame.height*0.8)
+		let borderWidth:CGFloat = 2
+        var smallframe = CGRect(x: frame.width*0.1-borderWidth,y: frame.height*0.1-borderWidth,width: frame.width*0.8+borderWidth*2,height: frame.height*0.8+borderWidth*2)
         var containerView = UIView()
         containerView.frame = smallframe
-        containerView.backgroundColor = UIColor.whiteColor()
-        containerView.layer.borderWidth = 2
+        containerView.backgroundColor = UIColor.blackColor()
+        containerView.layer.borderWidth = borderWidth
         self.addSubview(containerView)
         
         let button   = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
@@ -66,7 +72,7 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell:MatrixCalculationCell = storedTableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
-        let text = storedMatrices.keys.array[indexPath.row]
+        let text = sortedKeys[indexPath.row]
         cell.label.text = text
 		cell.label.sizeToFit()
         cell.resultMatrixView.setMatrix(storedMatrices[text]!)
@@ -77,8 +83,7 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
     }
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell
-        
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell        
 		delegate.didPickMatrixWithAlias(cell.label.text!,matrix: storedMatrices[cell.label.text!]!)
 		self.hidden = true
 	}

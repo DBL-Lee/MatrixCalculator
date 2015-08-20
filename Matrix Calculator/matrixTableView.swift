@@ -20,7 +20,18 @@ class matrixTableView: UIView {
     
     let xMARGIN:CGFloat = 10.0
     let yMARGIN:CGFloat = 5.0
-
+	
+	//Matrix borders
+	let borderWidth:CGFloat = 1
+	let borderLength:CGFloat = 3
+	let leftu:UIView!
+	let left:UIView!
+	let leftd:UIView!
+	let rightu:UIView!
+	let right:UIView!
+	let rightd:UIView!
+	
+	
     func setMatrix(matrix:Matrix){
         self.matrix = matrix
         for v in self.subviews {
@@ -44,6 +55,8 @@ class matrixTableView: UIView {
         }
 		currentFontSize = label[0][0].font.pointSize
         adjustLayout()
+		
+		
     }
 	
 	func adjustLayout(){
@@ -73,6 +86,15 @@ class matrixTableView: UIView {
             }
             y += yMARGIN + maxHeight
         }
+		let o = self.frame.origin
+		let w = self.frame.width
+		let h = self.frame.height
+		leftu.frame = CGRect(o,CGSize(borderLength,borderWidth))
+		l.frame = CGRect(o,CGSize(borderWidth,h))
+		leftd.frame = CGRect(o.x,o.y+h,borderLength,borderWidth)
+		rightu.frame = CGRect(o.x+w-borderLength,o.y,borderLength,borderWidth)
+		right.frame = CGRect(o.x+w-borderWidth,o.y,borderWidth,borderLength)
+		rightd.frame = CGRect(o.x+w-borderLength,o.y+h-borderWidth,borderLength,borderWidth)
 	}
 	
 	func decreaseFont(){
@@ -87,16 +109,41 @@ class matrixTableView: UIView {
 		adjustLayout()
 	}
 
+	func preconfig()->UIView{
+		let view = UIView(frame:CGRect.zeroRect)
+		view.backgroundColor = UIColor.blackColor()
+		return(view)
+	}
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         widthConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: 80)
         heightConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: 80)
         self.addConstraints([widthConstraint,heightConstraint])
-        
+		leftu = preconfig()
+		left = preconfig()
+		leftd = preconfig()
+		rightu = preconfig()
+		right = preconfig()
+		rightd = = preconfig()
+		for v in [leftu,left,leftd,rightu,right,rightd]{
+			self.addSubview(v)
+		}
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
+		widthConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: frame.width)
+        heightConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: frame.height)
+        self.addConstraints([widthConstraint,heightConstraint])
+		leftu = preconfig()
+		left = preconfig()
+		leftd = preconfig()
+		rightu = preconfig()
+		right = preconfig()
+		rightd = = preconfig()
+		for v in [leftu,left,leftd,rightu,right,rightd]{
+			self.addSubview(v)
+		}
     }
     
 }
