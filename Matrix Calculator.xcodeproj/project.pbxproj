@@ -176,7 +176,6 @@
 				9B4980D81B5DA1D700F2BC47 /* RecognitionClasses */,
 				9B4980D61B5DA1A700F2BC47 /* MatrixClasses */,
 				9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */,
-				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
 				9BF80D5E1B811264002AF21C /* CustomClasses */,
 				9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */,
 				9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */,
@@ -217,6 +216,7 @@
 		9BF80D5E1B811264002AF21C /* CustomClasses */ = {
 			isa = PBXGroup;
 			children = (
+				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
 				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
 				9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */,
 				9BF80D611B829418002AF21C /* MatrixCell.xib */,

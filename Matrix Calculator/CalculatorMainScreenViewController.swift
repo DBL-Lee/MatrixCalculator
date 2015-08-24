@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum matrixOperations{
+enum MatrixOperations{
 	case add
 	case subtract
 	case multiplication
@@ -65,11 +65,10 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		switch results[indexPath.row] {
 		case let matrix as Matrix:
 			cell.resultMatrixView.setMatrix(matrix)
-			while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
-				cell.resultMatrixView.decreaseFont()
-			}
 		case let scalar as Double:
+            break
 		case let error as String:
+            break
 		default:
 		break
 		}
@@ -82,38 +81,41 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     }
 	
 	func doCalculation(){
-		switch operation{
+		switch operation!{
 		//two matrices -> one matrix
 		case .add:
-		
+		break
 		case .subtract:
-		
+		break
 		case .multiplication:
-		
+		break
 		//one matrix -> one matrix
 		case .GJe:
-		
+		break
 		case .transpose:
-		
+		break
 		case .inverse:
-		
+		break
 		//one matrix -> two matrices
 		case .chol:
-		
+		break
 		case .QR:
-		
+		break
 		case .LU:
-		
+		break
 		case .diagonalize:
-		
+		break
 		case .eigenpair:
-		
+		break
 		//one matrix -> scalar
 		case .rank:
-		
+		break
 		case .trace:
-		
+		break
 		case .det:
+        break
+        default:
+            break
 		}
 	
 		firstOperand = nil
@@ -130,7 +132,10 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 			firstOperand = matrix
 			results.append(matrix)
 		}
-		tableView.reloadData()
+		self.tableView.reloadData()
+        self.tableView.setNeedsLayout()
+        self.tableView.layoutIfNeeded()
+        self.tableView.reloadData()
 	}
     
 

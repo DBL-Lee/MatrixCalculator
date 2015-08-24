@@ -35,7 +35,9 @@ class matrixTableView: UIView {
     func setMatrix(matrix:Matrix){
         self.matrix = matrix
         for v in self.subviews {
-            v.removeFromSuperview()
+            if v is UILabel {
+                v.removeFromSuperview()
+            }
         }
         self.label = []
         let nrow = matrix.matrix.count
@@ -72,78 +74,129 @@ class matrixTableView: UIView {
         let totalHeight:CGFloat = maxHeight * CGFloat(label.count) + yMARGIN * CGFloat(nrow+1)
         widthConstraint.constant = totalWidth
         heightConstraint.constant = totalHeight
-        self.setNeedsLayout()
-        
-        var y:CGFloat = yMARGIN + maxHeight/2
-        for i in 0..<nrow{
-            var x:CGFloat = xMARGIN + maxWidth[0]/2
-            label[i][0].center = CGPoint(x: x, y: y)
-            self.addSubview(label[i][0])
-            for j in 1..<ncol{
-                x += xMARGIN + maxWidth[j-1]/2 + maxWidth[j]/2
-                label[i][j].center = CGPoint(x: x, y: y)
-                self.addSubview(label[i][j])
+        if totalWidth > self.superview!.frame.width * 3/4{
+            decreaseFont()
+        }else{
+            self.setNeedsLayout()
+            
+            var y:CGFloat = yMARGIN + maxHeight/2
+            for i in 0..<nrow{
+                var x:CGFloat = xMARGIN + maxWidth[0]/2
+                label[i][0].center = CGPoint(x: x, y: y)
+                self.addSubview(label[i][0])
+                for j in 1..<ncol{
+                    x += xMARGIN + maxWidth[j-1]/2 + maxWidth[j]/2
+                    label[i][j].center = CGPoint(x: x, y: y)
+                    self.addSubview(label[i][j])
+                }
+                y += yMARGIN + maxHeight
             }
-            y += yMARGIN + maxHeight
         }
-		let o = self.frame.origin
-		let w = self.frame.width
-		let h = self.frame.height
-		leftu.frame = CGRect(o,CGSize(borderLength,borderWidth))
-		l.frame = CGRect(o,CGSize(borderWidth,h))
-		leftd.frame = CGRect(o.x,o.y+h,borderLength,borderWidth)
-		rightu.frame = CGRect(o.x+w-borderLength,o.y,borderLength,borderWidth)
-		right.frame = CGRect(o.x+w-borderWidth,o.y,borderWidth,borderLength)
-		rightd.frame = CGRect(o.x+w-borderLength,o.y+h-borderWidth,borderLength,borderWidth)
 	}
 	
 	func decreaseFont(){
 		currentFontSize--
+        maxWidth = [CGFloat](count:label[0].count,repeatedValue:0)
 		for i in 0..<label.count{
 			for j in 0..<label[0].count{
                 label[i][j].font = label[i][j].font.fontWithSize(currentFontSize)
 				label[i][j].sizeToFit()
-                maxWidth[j] = max(maxWidth[j],label[i][j].frame.size.width)
+                maxWidth[j] = max(maxWidth[j],label[i][j].frame.width)
 			}
 		}
 		adjustLayout()
 	}
-
-	func preconfig()->UIView{
-		let view = UIView(frame:CGRect.zeroRect)
-		view.backgroundColor = UIColor.blackColor()
-		return(view)
-	}
+    
+    class func preconfig()->UIView{
+        let view = UIView(frame:CGRect.zeroRect)
+        view.backgroundColor = UIColor.blackColor()
+        return(view)
+    }
     
     required init(coder aDecoder: NSCoder) {
+
+        leftu = matrixTableView.preconfig()
+        left = matrixTableView.preconfig()
+        leftd = matrixTableView.preconfig()
+        rightu = matrixTableView.preconfig()
+        right = matrixTableView.preconfig()
+        rightd = matrixTableView.preconfig()
         super.init(coder: aDecoder)
         widthConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: 80)
         heightConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: 80)
         self.addConstraints([widthConstraint,heightConstraint])
-		leftu = preconfig()
-		left = preconfig()
-		leftd = preconfig()
-		rightu = preconfig()
-		right = preconfig()
-		rightd = = preconfig()
-		for v in [leftu,left,leftd,rightu,right,rightd]{
-			self.addSubview(v)
-		}
+        
+        self.addSubview(left)
+        left.setTranslatesAutoresizingMaskIntoConstraints(true)
+        left.frame = CGRect(x: 0, y: 0, width: borderWidth, height: self.frame.height)
+        left.autoresizingMask = UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleHeight
+        
+        self.addSubview(leftu)
+        leftu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftu.frame = CGRect(x: 0, y: 0, width: borderLength, height: borderWidth)
+        leftu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleRightMargin
+        
+        self.addSubview(leftd)
+        leftd.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftd.frame = CGRect(x: 0, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
+        leftd.autoresizingMask = UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleRightMargin
+        
+        self.addSubview(right)
+        right.setTranslatesAutoresizingMaskIntoConstraints(true)
+        right.frame = CGRect(x: self.frame.width-borderWidth, y: 0, width: borderWidth, height: self.frame.height)
+        right.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleLeftMargin
+        
+        self.addSubview(rightu)
+        rightu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        rightu.frame = CGRect(x: self.frame.width-borderLength, y: 0, width: borderLength, height: borderWidth)
+        rightu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleLeftMargin
+        
+        self.addSubview(rightd)
+        rightd.frame = CGRect(x: self.frame.width-borderLength, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
+        rightd.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleTopMargin
+        
     }
+    
     override init(frame: CGRect) {
+        leftu = matrixTableView.preconfig()
+        left = matrixTableView.preconfig()
+        leftd = matrixTableView.preconfig()
+        rightu = matrixTableView.preconfig()
+        right = matrixTableView.preconfig()
+        rightd = matrixTableView.preconfig()
         super.init(frame: frame)
 		widthConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: frame.width)
         heightConstraint = NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: frame.height)
         self.addConstraints([widthConstraint,heightConstraint])
-		leftu = preconfig()
-		left = preconfig()
-		leftd = preconfig()
-		rightu = preconfig()
-		right = preconfig()
-		rightd = = preconfig()
-		for v in [leftu,left,leftd,rightu,right,rightd]{
-			self.addSubview(v)
-		}
+        
+        self.addSubview(left)
+        left.setTranslatesAutoresizingMaskIntoConstraints(true)
+        left.frame = CGRect(x: 0, y: 0, width: borderWidth, height: self.frame.height)
+        left.autoresizingMask = UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleHeight
+        
+        self.addSubview(leftu)
+        leftu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftu.frame = CGRect(x: 0, y: 0, width: borderLength, height: borderWidth)
+        leftu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleRightMargin
+        
+        self.addSubview(leftd)
+        leftd.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftd.frame = CGRect(x: 0, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
+        leftd.autoresizingMask = UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleRightMargin
+        
+        self.addSubview(right)
+        right.setTranslatesAutoresizingMaskIntoConstraints(true)
+        right.frame = CGRect(x: self.frame.width-borderWidth, y: 0, width: borderWidth, height: self.frame.height)
+        right.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleLeftMargin
+        
+        self.addSubview(rightu)
+        rightu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        rightu.frame = CGRect(x: self.frame.width-borderLength, y: 0, width: borderLength, height: borderWidth)
+        rightu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleLeftMargin
+        
+        self.addSubview(rightd)
+        rightd.frame = CGRect(x: self.frame.width-borderLength, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
+        rightd.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleTopMargin
     }
     
 }

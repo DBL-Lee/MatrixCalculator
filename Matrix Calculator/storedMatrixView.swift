@@ -19,7 +19,7 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
 	var storedMatrices:[String:Matrix] = [String:Matrix]()
 	var sortedKeys:[String] {
 		get {
-			Array(storedMatrices.keys)].sorted(<)
+			return Array(storedMatrices.keys).sorted(<)
 		}
 	}
 	var storedTableView:UITableView!
@@ -76,20 +76,20 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         cell.label.text = text
 		cell.label.sizeToFit()
         cell.resultMatrixView.setMatrix(storedMatrices[text]!)
-		while (CGRectIntersectsRect(cell.label.frame,cell.resultMatrixView.frame)){
-			cell.resultMatrixView.decreaseFont()
-		}
         return cell
     }
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell        
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell
 		delegate.didPickMatrixWithAlias(cell.label.text!,matrix: storedMatrices[cell.label.text!]!)
 		self.hidden = true
 	}
 	
 	func didFinishInputMatrix(matrix: Matrix, alias: String) {
         storedMatrices[alias] = matrix
+        self.storedTableView.reloadData()
+        self.storedTableView.setNeedsLayout()
+        self.storedTableView.layoutIfNeeded()
         self.storedTableView.reloadData()
     }
 	

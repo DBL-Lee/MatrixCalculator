@@ -745,8 +745,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if usedCharacter.count == 0{
             message += "None"
         }else{
-            for c in usedCharacter{
-                message += (c as! String)+","
+            for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"{
+                if self.usedCharacter.containsObject(String(c)){
+                    message += String(c) + ","
+                }
             }
             message.removeAtIndex(message.endIndex.predecessor())
         }

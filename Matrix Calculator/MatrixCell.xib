@@ -13,7 +13,7 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sF2-LN-qC3" id="f7T-E2-kt4">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aU9-B5-xDC">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aU9-B5-xDC">
                         <rect key="frame" x="8" y="8" width="42" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -28,6 +28,8 @@
                     <constraint firstItem="NuM-QE-as7" firstAttribute="top" secondItem="f7T-E2-kt4" secondAttribute="topMargin" id="4Tg-ax-FID"/>
                     <constraint firstItem="NuM-QE-as7" firstAttribute="bottom" secondItem="f7T-E2-kt4" secondAttribute="bottomMargin" id="8GV-KO-zU2"/>
                     <constraint firstItem="NuM-QE-as7" firstAttribute="trailing" secondItem="f7T-E2-kt4" secondAttribute="trailingMargin" id="VQx-Mu-fFA"/>
+                    <constraint firstItem="aU9-B5-xDC" firstAttribute="top" secondItem="f7T-E2-kt4" secondAttribute="topMargin" id="omX-IH-hoz"/>
+                    <constraint firstItem="aU9-B5-xDC" firstAttribute="leading" secondItem="f7T-E2-kt4" secondAttribute="leadingMargin" id="p1P-FB-qG7"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
