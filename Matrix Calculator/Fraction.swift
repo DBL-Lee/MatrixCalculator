@@ -91,6 +91,14 @@ class Fraction{
             return "\(n)/\(d)"
         }
     }
+	
+	func toString(decimal:Bool) -> String{
+		if !decimal{
+			return toString()
+		}else{
+			return (n/d).description
+		}
+	}
     
     
     class func reduce(var n:Int, var d:Int) -> (Int,Int){

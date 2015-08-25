@@ -46,6 +46,8 @@ class Matrix {
     let row:Int
     let column:Int
     var matrix:[[Fraction]] = []
+	//decimal or fractional representation
+	var decimal:[[Bool]] = []
     
     init(r:Int, c:Int, var value:[Fraction]){
         assert(value.count==r*c, "length does not match")
@@ -57,14 +59,15 @@ class Matrix {
                 matrix[i].append(value.removeAtIndex(0))
             }
         }
-    
+		self.decimal = [[Bool]](count:row,repeatedValue:[Bool](count: column, repeatedValue: false))
     }
     
     init(r:Int, c:Int){
         row = r
         column = c
         self.matrix = [[Fraction]](count:row,repeatedValue:[Fraction](count: column, repeatedValue: Fraction(i: 0)))
-    }
+		self.decimal = [[Bool]](count:row,repeatedValue:[Bool](count: column, repeatedValue: false))
+	}
 
     private func newEntries(newrow:Int,newcolumn:Int) -> [Fraction] {
         var v:[Fraction]=[]
@@ -331,7 +334,7 @@ class Matrix {
         var s:String = "(  "
         for i in 0..<row{
             for j in 0..<column{
-                s = s+matrix[i][j].toString()
+                s = s+matrix[i][j].toString(decimal[i][j])
                 s = s+"  "
             }
             if i == row-1{

@@ -39,6 +39,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var NN:NeuralNetwork!
     var newMedia:Bool?
     var image:UIImage!
+	var matrixView:matrixTableView = matrixTableView(frame: CGRect.zeroRect)
 
     var imagePicker:UIImagePickerController!
     
@@ -70,7 +71,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         swipeUp.direction = UISwipeGestureRecognizerDirection.Up
         self.view.addGestureRecognizer(swipeUp)
         
-        updateLabel()
+		matrixView.setMatrix(matrix:matrix,underline:currentCursor)
     }
     
    
@@ -85,68 +86,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let MAXCOLUMN = 10
 
     var matrix:Matrix = Matrix(r: 2, c: 2)
-    var width:[Int] = [2,2]
-    var allWidth:[[Int]] = [[2,2],[2,2]]
     var currentCursor = (0,0)
     var fraction = true
     
     var entering = false //flag to indicate whether user is entering
-    
-
-//    @IBAction func displayFraction(sender: AnyObject) {
-//        fraction = !fraction
-//        updateLabel()
-//    }
-    
-    private func updateWidth(){
-        for j in 0..<matrix.column{
-            width[j] = 0
-            for i in 0..<matrix.row{
-                width[j] = max(width[j],allWidth[i][j])
-            }
-        }
-    }
-
-    private func addWidth(n:Int){
-        allWidth[currentCursor.0][currentCursor.1] += n
-        width[currentCursor.1] = max(width[currentCursor.1],allWidth[currentCursor.0][currentCursor.1])
-    }
-
-    private func reduceWidth(n:Int){
-        allWidth[currentCursor.0][currentCursor.1] -= n
-        updateWidth()
-    }
-
-    //In the following calculations, numbers are 2 spaces, / and . are 1 space    
-    func updateLabel(){
-        var aString = NSMutableAttributedString()
-        for i in 0..<matrix.row {
-            for j in 0..<matrix.column{
-                let entry:String!
-                if i != currentCursor.0 || j != currentCursor.1 || !entering {
-                    if fraction{
-                        entry = matrix.matrix[i][j].toString()
-                    }else{
-                        entry = (Double(matrix.matrix[i][j].n)/Double(matrix.matrix[i][j].d)).description
-                    }
-                }else{
-                    entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
-                }
-                var spaceBefore = width[j]-allWidth[i][j]
-                if (j>0) {spaceBefore+=2}
-                let str = String(count: spaceBefore, repeatedValue: " " as Character)+entry
-                let currentString = NSMutableAttributedString(string: str)
-                currentString.addAttribute(NSFontAttributeName, value: UIFont(name: "TeluguSangamMN-Bold", size: 16.0)!, range: NSRange(location: 0, length: count(currentString.string)) )
-                if i==currentCursor.0 && j==currentCursor.1 {
-                    currentString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry)) )
-                }
-                aString.appendAttributedString(currentString)
-            }
-            aString.appendAttributedString(NSAttributedString(string: "\n"))
-            
-        }
-        self.matrixLabel.attributedText = aString
-    }
 
     //MARK: inputvalue
     var numerator:String = "0"
@@ -170,18 +113,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     floatpointEntered = true
                 }
                 floatingPoint = numeratorFloatingPoint
-                reduceWidth(1)
             }else{
                 if !numberlineEntered {
                     if count(numerator)==1 { //Deleting last digit in numerator
                         numerator = "0"
-                        allWidth[currentCursor.0][currentCursor.1] = 2
                     }else{ 
                         if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{ //Deleting floating point in numerator
                             floatpointEntered = false
-                            reduceWidth(1)
                         }else{  //Deleting a digit in numerator
-                            reduceWidth(2)
                             if floatpointEntered{
                                 floatingPoint--
                             }
@@ -190,9 +129,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 }else{
                     if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{ //Deleting floatingPoint in denominator
                         floatpointEntered = false
-                        reduceWidth(1)
                     }else{  //Deleting a digit in denominator
-                        reduceWidth(2)
                         if floatpointEntered{
                             floatingPoint--
                         }
@@ -210,13 +147,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     denominator+="."
                 }
                 floatpointEntered = true
-                addWidth(1)
             }
         case "/":
             if !numberlineEntered{
                 if numerator[numerator.endIndex.predecessor()] != "."{ //Previous character is not floating point
                     numeratorFloatingPoint = floatingPoint
-                    addWidth(1)
                 }else{
                     numerator.removeAtIndex(numerator.endIndex.predecessor())
                 }
@@ -225,16 +160,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 floatpointEntered = false
             }
         case "+/-":
-            if negative {
-                reduceWidth(1)
-            }else{
-                if !numberlineEntered && numerator=="0"{ //no digit entered yet
-                    allWidth[currentCursor.0][currentCursor.1] = 3
-                    updateWidth()
-                }else{
-                    addWidth(1)
-                }
-            }
             negative = !negative
         default:
             if floatingPoint<FLOATPOINTUPPER {
@@ -244,17 +169,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     }else{
                         if floatpointEntered {floatingPoint++}
                         numerator += sender.titleLabel!.text!
-                        addWidth(2)
                     }
                 }else{
                     if floatpointEntered {floatingPoint++}
                     denominator += sender.titleLabel!.text!
-                    addWidth(2)
                 }
             }
         }
         entering = true
-        updateLabel()
+        let entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
+		matrixView.setLabel(currentCursor.0,currentCursor.1,entry)
     }
 
     //This function is called when user finish editing a cell and move to another cell
@@ -275,19 +199,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if d.n == 0 { d = Fraction(i: 1)}
 
         matrix.matrix[currentCursor.0][currentCursor.1] = n/d
+		matrix.decimal[currentCursor.0][currentCursor.1] = !numberlineEntered
 
-        //change width
-        let fraction = matrix.matrix[currentCursor.0][currentCursor.1]
-        var deduct = 0
-        if fraction.d != 1{ //The width of numberline
-            deduct++
-        }
-
-        if fraction.toString()[0] == "-" { //The width of minus sign
-            deduct++
-        }
-        allWidth[currentCursor.0][currentCursor.1] = count(fraction.toString())*2-deduct
-        updateWidth()
+        matrixView.setMatrix(matrix:matrix,underline:currentCursor)
 
         //reset to default
         numerator = "0"
@@ -310,22 +224,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             case UISwipeGestureRecognizerDirection.Left:
                 if currentCursor.1-1>=0 {
                     currentCursor.1--
-                    updateLabel()
+                    matrixView.shiftUnderline(2)
                 }
             case UISwipeGestureRecognizerDirection.Right:
                 if (currentCursor.1+1) < matrix.column {
                     currentCursor.1++
-                    updateLabel()
+                    matrixView.shiftUnderline(3)
                 }
             case UISwipeGestureRecognizerDirection.Up:
                 if currentCursor.0-1>=0 {
                     currentCursor.0--
-                    updateLabel()
+                    matrixView.shiftUnderline(0)
                 }
             case UISwipeGestureRecognizerDirection.Down:
                 if currentCursor.0+1 < matrix.row {
                     currentCursor.0++
-                    updateLabel()
+                    matrixView.shiftUnderline(1)
                 }
             default:
                 break
@@ -342,8 +256,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             case 0 : //addrow
                 if matrix.row+1<=MAXROW {
                     matrix = matrix.addRow()
-                    allWidth.append([Int](count:matrix.column,repeatedValue:2))
-                    updateLabel()
+                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
                 }
             case 1 : //removerow
                 if matrix.row-1>0 {
@@ -351,18 +264,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.0 >= matrix.row {
                          currentCursor.0--
                     }
-                    allWidth.removeLast()
-                    updateWidth()
-                    updateLabel()
+                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
                 }
             case 2 : //addcolumn
                 if matrix.column+1<=MAXCOLUMN {
                     matrix = matrix.addColumn()
-                    for i in 0..<allWidth.count{
-                        allWidth[i].append(2)
-                    }
-                    width.append(2)
-                    updateLabel()
+                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
                 }
             case 3 : //removecolumn
                 if matrix.column-1>0 {
@@ -370,11 +277,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.1 >= matrix.column {
                          currentCursor.1--
                     }
-                    for i in 0..<allWidth.count{
-                        allWidth[i].removeLast()
-                    }
-                    width.removeLast()
-                    updateLabel()
+                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
                 }
             default: ()
         }
@@ -485,7 +388,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         }
                     }else{
                         
-                        //Use something like SVM to separate out the columns
+                        //Use clustering to separate out the columns
                         
                         //As the digit in same column must be close to each other
                         //while the digit in different column must be wider apart
@@ -542,8 +445,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         }
                     }
                     
-                    self.allWidth = [[Int]](count: finished.count, repeatedValue: [Int](count: maxColumn+1,repeatedValue:0))
-                    self.width = [Int](count:maxColumn+1, repeatedValue: 0)
                     self.matrix = Matrix(r: finished.count,c: maxColumn+1)
                     currentrow = 0
                     //Use NN to calculate corresponding digit
@@ -559,26 +460,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                             let thisDigit = self.NN.calculate(c.output())
                             print(thisDigit.description+" ")
                             currentEntry = currentEntry*10+thisDigit
-                            self.allWidth[currentrow][currentCol] += 2
                         }
                         println()
                         self.matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
                         currentrow++
                     }
                     
-                    for i in 0..<self.allWidth.count{
-                        for j in 0..<self.allWidth[i].count {
-                            if self.allWidth[i][j] == 0 { self.allWidth[i][j] = 2 }
-                        }
-                    }
                 }
                 println("finished")
                 dispatch_async(dispatch_get_main_queue(), {
                     UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     LoadingOverlay.shared.hideOverlayView()
                     self.currentCursor = (0,0)
-                    self.updateWidth()
-                    self.updateLabel()
+					self.matrixView.setMatrix(matrix:self.matrix,underline:currentCursor)
                 })
             })
             

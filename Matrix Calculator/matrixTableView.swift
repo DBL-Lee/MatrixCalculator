@@ -20,6 +20,8 @@ class matrixTableView: UIView {
     
     let xMARGIN:CGFloat = 10.0
     let yMARGIN:CGFloat = 5.0
+	var widthLimit:CGFloat = 100000 //No limit
+	var heightLimit:CGFloat = 100000 //No limit
 	
 	//Matrix borders
 	let borderWidth:CGFloat = 1
@@ -30,9 +32,37 @@ class matrixTableView: UIView {
 	let rightu:UIView!
 	let right:UIView!
 	let rightd:UIView!
+	var underline:(Int,Int)!
 	
+	func setLabel(i:Int,j:Int,s:String){
+		let underlineString = NSMutableAttributedString(string: s)
+		underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry))
+		label[i][j].attributedText = underlineString
+		label[i][j].sizeToFit()
+		maxWidth[j] = max(maxWidth[j],label[i][j].frame.width)
+		adjustLayout()
+	}
 	
-    func setMatrix(matrix:Matrix){
+	//0 Up, 1 Down, 2 Left, 3 Right
+	func shiftUnderline(direction:Int){
+		label[underline.0][underline.1].text = label[underline.0][underline.1].attributedText.string()
+		maxWidth[j] = max(maxWidth[j],label.frame.width)
+		switch direction{
+		case 0:
+			underline.1 --
+		case 1:
+			underline.1 ++
+		case 2:
+			underline.0 --
+		case 3:
+			underline.0 ++
+		default: ()
+		}
+		setLabel(underline.0,underline.1,label[underline.0][underline.1].text)		
+	}
+	
+    func setMatrix(matrix:Matrix,underline:(Int,Int)! = nil){
+		self.underline = underline
         self.matrix = matrix
         for v in self.subviews {
             if v is UILabel {
@@ -47,18 +77,28 @@ class matrixTableView: UIView {
         for i in 0..<nrow{
             label.append([])
             for j in 0..<ncol{
-                let toAppend = matrix.matrix[i][j].toString()
-                label[i].append(UILabel())
-                label[i][j].text = toAppend
+				label[i].append(UILabel())
                 label[i][j].numberOfLines = 1
+				if let (underlinei,underlinej) = underline{
+					if i==underlinei && j==underlinej{
+						let underlineString = NSMutableAttributedString(string: matrix.matrix[i][j].toString())
+						underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry))
+						label[i][j].attributedText = underlineString
+					}else{
+						let toAppend = matrix.matrix[i][j].toString()
+						label[i][j].text = toAppend
+					}
+				}
+				}else{
+					let toAppend = matrix.matrix[i][j].toString()
+					label[i][j].text = toAppend
+				}
                 label[i][j].sizeToFit()
-                maxWidth[j] = max(maxWidth[j],label[i][j].frame.size.width)
+                maxWidth[j] = max(maxWidth[j],label[i][j].frame.width)
             }
         }
 		currentFontSize = label[0][0].font.pointSize
-        adjustLayout()
-		
-		
+        adjustLayout()		
     }
 	
 	func adjustLayout(){
@@ -74,7 +114,7 @@ class matrixTableView: UIView {
         let totalHeight:CGFloat = maxHeight * CGFloat(label.count) + yMARGIN * CGFloat(nrow+1)
         widthConstraint.constant = totalWidth
         heightConstraint.constant = totalHeight
-        if totalWidth > self.superview!.frame.width * 3/4{
+        if totalWidth > widthLimit || totalHeight > heightLimit{
             decreaseFont()
         }else{
             self.setNeedsLayout()
