@@ -96,7 +96,11 @@ class Fraction{
 		if !decimal{
 			return toString()
 		}else{
-			return (n/d).description
+            if d==1{
+                return n.description
+            }else{
+                return (Double(n)/Double(d)).description
+            }
 		}
 	}
     

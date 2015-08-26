@@ -36,29 +36,32 @@ class matrixTableView: UIView {
 	
 	func setLabel(i:Int,j:Int,s:String){
 		let underlineString = NSMutableAttributedString(string: s)
-		underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry))
+		underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: count(s)))
 		label[i][j].attributedText = underlineString
 		label[i][j].sizeToFit()
-		maxWidth[j] = max(maxWidth[j],label[i][j].frame.width)
+        maxWidth[j] = 0
+        for k in 0..<label.count{
+            maxWidth[j] = max(maxWidth[j],label[k][j].frame.width)
+        }
 		adjustLayout()
 	}
 	
 	//0 Up, 1 Down, 2 Left, 3 Right
 	func shiftUnderline(direction:Int){
-		label[underline.0][underline.1].text = label[underline.0][underline.1].attributedText.string()
-		maxWidth[j] = max(maxWidth[j],label.frame.width)
+		label[underline.0][underline.1].text = label[underline.0][underline.1].attributedText.string
+		maxWidth[underline.1] = max(maxWidth[underline.1],label[underline.0][underline.1].frame.width)
 		switch direction{
 		case 0:
-			underline.1 --
+			underline.0--
 		case 1:
-			underline.1 ++
+			underline.0++
 		case 2:
-			underline.0 --
+			underline.1--
 		case 3:
-			underline.0 ++
+			underline.1++
 		default: ()
 		}
-		setLabel(underline.0,underline.1,label[underline.0][underline.1].text)		
+		setLabel(underline.0,j: underline.1,s: label[underline.0][underline.1].text!)		
 	}
 	
     func setMatrix(matrix:Matrix,underline:(Int,Int)! = nil){
@@ -81,16 +84,15 @@ class matrixTableView: UIView {
                 label[i][j].numberOfLines = 1
 				if let (underlinei,underlinej) = underline{
 					if i==underlinei && j==underlinej{
-						let underlineString = NSMutableAttributedString(string: matrix.matrix[i][j].toString())
-						underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: spaceBefore, length: count(entry))
+						let underlineString = NSMutableAttributedString(string: matrix.matrix[i][j].toString(matrix.decimal[i][j]))
+						underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: count(matrix.matrix[i][j].toString(matrix.decimal[i][j]))))
 						label[i][j].attributedText = underlineString
 					}else{
-						let toAppend = matrix.matrix[i][j].toString()
+						let toAppend = matrix.matrix[i][j].toString(matrix.decimal[i][j])
 						label[i][j].text = toAppend
 					}
-				}
 				}else{
-					let toAppend = matrix.matrix[i][j].toString()
+					let toAppend = matrix.matrix[i][j].toString(matrix.decimal[i][j])
 					label[i][j].text = toAppend
 				}
                 label[i][j].sizeToFit()

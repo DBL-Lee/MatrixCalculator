@@ -197,19 +197,6 @@
                                     <action selector="sizeChange:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="ZPT-Zp-mHD"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wej-rn-SnK">
-                                <rect key="frame" x="16" y="85" width="278" height="154"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="Label">
-                                        <attributes>
-                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A60-Uv-M20">
                                 <rect key="frame" x="195" y="338" width="50" height="50"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -269,6 +256,20 @@
                                     <action selector="done:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="CCx-Pv-WsT"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Llq-Ta-6HF">
+                                <rect key="frame" x="12" y="58" width="292" height="285"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ae9-mp-Joj" customClass="matrixTableView" customModule="Matrix_Calculator" customModuleProvider="target">
+                                        <rect key="frame" x="54" y="43" width="184" height="199"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="centerY" secondItem="ae9-mp-Joj" secondAttribute="centerY" id="3eI-im-o2i"/>
+                                    <constraint firstAttribute="centerX" secondItem="ae9-mp-Joj" secondAttribute="centerX" id="qqO-rr-8xQ"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -278,7 +279,8 @@
                     </view>
                     <connections>
                         <outlet property="CameraButton" destination="kKs-Yw-N9b" id="d0d-da-nqU"/>
-                        <outlet property="matrixLabel" destination="wej-rn-SnK" id="e7Z-8v-hEb"/>
+                        <outlet property="containerView" destination="Llq-Ta-6HF" id="M2H-QB-HoD"/>
+                        <outlet property="matrixView" destination="ae9-mp-Joj" id="KhE-7m-Hzt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

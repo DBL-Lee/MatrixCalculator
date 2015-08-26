@@ -49,6 +49,17 @@ class Matrix {
 	//decimal or fractional representation
 	var decimal:[[Bool]] = []
     
+    convenience init(r:Int, c:Int, var value:[Fraction],decimal:[[Bool]]){
+        self.init(r: r,c: c,value: value)
+        for i in 0..<decimal.count{
+            for j in 0..<decimal[i].count{
+                if i<self.decimal.count && j<self.decimal[i].count {
+                    self.decimal[i][j] = decimal[i][j]
+                }
+            }
+        }
+    }
+    
     init(r:Int, c:Int, var value:[Fraction]){
         assert(value.count==r*c, "length does not match")
         row = r
@@ -84,23 +95,23 @@ class Matrix {
     }
 
     func matrixCopy() -> Matrix{        
-        return Matrix(r: row, c: column, value: newEntries(row,newcolumn: column))
+        return Matrix(r: row, c: column, value: newEntries(row,newcolumn: column),decimal: decimal)
     }
     
     func removeRow() -> Matrix {
-        return Matrix(r: row-1, c: column, value: newEntries(row-1,newcolumn: column))
+        return Matrix(r: row-1, c: column, value: newEntries(row-1,newcolumn: column),decimal: decimal)
     }
 
     func removeColumn() -> Matrix {
-        return Matrix(r: row, c: column-1, value: newEntries(row,newcolumn: column-1))
+        return Matrix(r: row, c: column-1, value: newEntries(row,newcolumn: column-1),decimal: decimal)
     }
 
     func addRow() -> Matrix {
-        return Matrix(r: row+1, c: column, value: newEntries(row+1,newcolumn: column))
+        return Matrix(r: row+1, c: column, value: newEntries(row+1,newcolumn: column),decimal: decimal)
     }
 
     func addColumn() -> Matrix {
-        return Matrix(r: row, c: column+1, value: newEntries(row,newcolumn: column+1))
+        return Matrix(r: row, c: column+1, value: newEntries(row,newcolumn: column+1),decimal: decimal)
     }
 
 

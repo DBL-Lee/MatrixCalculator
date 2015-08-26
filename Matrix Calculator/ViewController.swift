@@ -30,16 +30,18 @@ extension String
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
     
 
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var matrixLabel: UILabel!
     
     var delegate:inputMatrixDelegate!
     
     @IBOutlet weak var CameraButton: UIButton!
     
+    @IBOutlet weak var matrixView: matrixTableView!
+    
     var NN:NeuralNetwork!
     var newMedia:Bool?
     var image:UIImage!
-	var matrixView:matrixTableView = matrixTableView(frame: CGRect.zeroRect)
 
     var imagePicker:UIImagePickerController!
     
@@ -71,7 +73,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         swipeUp.direction = UISwipeGestureRecognizerDirection.Up
         self.view.addGestureRecognizer(swipeUp)
         
-		matrixView.setMatrix(matrix:matrix,underline:currentCursor)
+		matrixView.setMatrix(matrix,underline:currentCursor)
+        matrixView.heightLimit = containerView.frame.height
+        matrixView.widthLimit = containerView.frame.width
     }
     
    
@@ -178,7 +182,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         entering = true
         let entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
-		matrixView.setLabel(currentCursor.0,currentCursor.1,entry)
+		matrixView.setLabel(currentCursor.0,j: currentCursor.1,s: entry)
     }
 
     //This function is called when user finish editing a cell and move to another cell
@@ -201,7 +205,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         matrix.matrix[currentCursor.0][currentCursor.1] = n/d
 		matrix.decimal[currentCursor.0][currentCursor.1] = !numberlineEntered
 
-        matrixView.setMatrix(matrix:matrix,underline:currentCursor)
+        matrixView.setMatrix(matrix,underline:currentCursor)
 
         //reset to default
         numerator = "0"
@@ -256,7 +260,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             case 0 : //addrow
                 if matrix.row+1<=MAXROW {
                     matrix = matrix.addRow()
-                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
+                    matrixView.setMatrix(matrix,underline:currentCursor)
                 }
             case 1 : //removerow
                 if matrix.row-1>0 {
@@ -264,12 +268,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.0 >= matrix.row {
                          currentCursor.0--
                     }
-                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
+                    matrixView.setMatrix(matrix,underline:currentCursor)
                 }
             case 2 : //addcolumn
                 if matrix.column+1<=MAXCOLUMN {
                     matrix = matrix.addColumn()
-                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
+                    matrixView.setMatrix(matrix,underline:currentCursor)
                 }
             case 3 : //removecolumn
                 if matrix.column-1>0 {
@@ -277,7 +281,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if currentCursor.1 >= matrix.column {
                          currentCursor.1--
                     }
-                    matrix.setMatrix(matrix:matrix,underline:currentCursor)
+                    matrixView.setMatrix(matrix,underline:currentCursor)
                 }
             default: ()
         }
@@ -472,7 +476,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     LoadingOverlay.shared.hideOverlayView()
                     self.currentCursor = (0,0)
-					self.matrixView.setMatrix(matrix:self.matrix,underline:currentCursor)
+					self.matrixView.setMatrix(self.matrix,underline:self.currentCursor)
                 })
             })
             
