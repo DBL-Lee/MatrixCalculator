@@ -12,6 +12,7 @@ class MatrixCalculationCell: UITableViewCell {
 
     
     @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var resultLabel: UILabel!
     
     @IBOutlet weak var resultMatrixView: matrixTableView!    
     

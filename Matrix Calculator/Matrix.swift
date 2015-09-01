@@ -22,14 +22,13 @@ func -(m1:Matrix,m2:Matrix)->Matrix{
 
 
 // this class is immutable
-class Matrix { 
-
+class Matrix {
 
     //static functions
-    class func identity(n:Int) -> Matrix{
+    class func identity(row:Int,column:Int)-> Matrix{
         var v:[Fraction]=[]
-        for i in 0..<n{
-            for j in 0..<n{
+        for i in 0..<row{
+            for j in 0..<column{
                 if (i == j){
                     v.append(Fraction(i: 1))
                 }
@@ -38,7 +37,16 @@ class Matrix {
                 }
             }
         }
-        return Matrix(r: n, c: n, value: v)
+        return Matrix(r: row, c: column, value: v)
+    }
+    
+    class func identity(n:Int) -> Matrix{
+        return Matrix.identity(n, column: n)
+    }
+    
+    class func houseHolder(w:Matrix) -> Matrix{
+        let n = w.matrix.count
+        return Matrix.identity(n) - w*w.transpose().multScalar(Fraction(i:2)/(w.transpose()*w).matrix[0][0])
     }
 
 
@@ -80,10 +88,10 @@ class Matrix {
 		self.decimal = [[Bool]](count:row,repeatedValue:[Bool](count: column, repeatedValue: false))
 	}
 
-    private func newEntries(newrow:Int,newcolumn:Int) -> [Fraction] {
+    private func newEntries(newrow:Range<Int>,newcolumn:Range<Int>) -> [Fraction] {
         var v:[Fraction]=[]
-        for i in 0..<newrow{
-            for j in 0..<newcolumn{
+        for i in newrow{
+            for j in newcolumn{
                 if i<row && j<column {
                     v.append(matrix[i][j])
                 }else{
@@ -95,26 +103,60 @@ class Matrix {
     }
 
     func matrixCopy() -> Matrix{        
-        return Matrix(r: row, c: column, value: newEntries(row,newcolumn: column),decimal: decimal)
+        return Matrix(r: row, c: column, value: newEntries(0..<row,newcolumn: 0..<column),decimal: decimal)
     }
     
-    func removeRow() -> Matrix {
-        return Matrix(r: row-1, c: column, value: newEntries(row-1,newcolumn: column),decimal: decimal)
+    func removeTopRow() -> Matrix{
+        return Matrix(r: row-1, c: column, value: newEntries(1..<row, newcolumn: 0..<column), decimal: decimal)
+    }
+    
+    func removeFirstColumn() -> Matrix{
+        return Matrix(r: row, c: column-1, value: newEntries(0..<row, newcolumn: 1..<column), decimal: decimal)
+    }
+    
+    func removeBotRow() -> Matrix {
+        return Matrix(r: row-1, c: column, value: newEntries(0..<(row-1),newcolumn: 0..<column),decimal: decimal)
     }
 
-    func removeColumn() -> Matrix {
-        return Matrix(r: row, c: column-1, value: newEntries(row,newcolumn: column-1),decimal: decimal)
+    func removeLastColumn() -> Matrix {
+        return Matrix(r: row, c: column-1, value: newEntries(0..<row,newcolumn: 0..<(column-1)),decimal: decimal)
     }
 
     func addRow() -> Matrix {
-        return Matrix(r: row+1, c: column, value: newEntries(row+1,newcolumn: column),decimal: decimal)
+        return Matrix(r: row+1, c: column, value: newEntries(0...row,newcolumn: 0..<column),decimal: decimal)
     }
 
     func addColumn() -> Matrix {
-        return Matrix(r: row, c: column+1, value: newEntries(row,newcolumn: column+1),decimal: decimal)
+        return Matrix(r: row, c: column+1, value: newEntries(0..<row,newcolumn: 0...column),decimal: decimal)
+    }
+    
+    func rowVector(i:Int)->Matrix{
+        return Matrix(r: 1, c: column, value: matrix[i], decimal: [decimal[i]])
+    }
+    
+    func columnVector(j:Int) -> Matrix{
+        var value:[Fraction] = []
+        var newdec:[[Bool]] = []
+        for i in 0..<row{
+            value.append(matrix[i][j])
+            newdec.append([decimal[i][j]])
+        }
+        return Matrix(r: row, c: 1, value: value, decimal: newdec)
     }
 
-
+    func lower() -> Matrix{
+        var v:[Fraction] = []
+        for i in 0..<row{
+            for j in 0..<column{
+                if i>j {
+                    v.append(self.matrix[i][j])
+                }else{
+                    v.append(Fraction(i: 0))
+                }
+            }
+        }
+        return Matrix(r: row, c: column, value: v)
+    }
 
     
     func mult(m:Matrix) -> Matrix {
@@ -130,6 +172,16 @@ class Matrix {
             }
         }
         return Matrix(r: row, c: m.column, value: value)
+    }
+    
+    func multScalar(s:Fraction) -> Matrix{
+        var value:[Fraction]=[]
+        for i in 0..<row{
+            for j in 0..<column{
+                value.append(self.matrix[i][j]*s)
+            }
+        }
+        return Matrix(r: row, c: column, value: value, decimal: decimal)
     }
    
     func add(m:Matrix) -> Matrix{
@@ -160,7 +212,7 @@ class Matrix {
         return deter(self)
     }
     
-    func deter(m:Matrix) -> Fraction{
+    private func deter(m:Matrix) -> Fraction{
         if m.column == 1 {
             return m.matrix[0][0]
         }
@@ -194,7 +246,7 @@ class Matrix {
  
     
     //divide row r by d, normally d equals to the first element of row r
-    func dividerow(r:Int,d:Fraction)-> Matrix{
+    private func dividerow(r:Int,d:Fraction)-> Matrix{
         //assert(r >= 0 && r < row && d != 0, message: "can not divide row")
         var v:[Fraction]=[]
         for i in 0..<row{
@@ -211,7 +263,7 @@ class Matrix {
     }
     
     //subtract row r1 by multiple m of row r2
-    func subtractrow(r1:Int, r2:Int, m:Fraction) -> Matrix{
+    private func subtractrow(r1:Int, r2:Int, m:Fraction) -> Matrix{
         assert(r1 >= 0 && r1 < row && r2 >= 0 && r2 < row, "matrix does not contain row")
         var v:[Fraction]=[]
         for i in 0..<row{
@@ -237,7 +289,7 @@ class Matrix {
         return Matrix(r: column, c: row, value: v)
     }
     
-    func exchangerow(r1:Int, r2:Int) -> Matrix{
+    private func exchangerow(r1:Int, r2:Int) -> Matrix{
         var v: [Fraction] = []
         for i in 0..<row{
             for j in 0..<column{
@@ -253,44 +305,65 @@ class Matrix {
         return Matrix(r: row, c: column, value: v)
     }
     
-    func ref() -> Matrix{
+    func REF() -> Matrix{
+        return self.GJe(false).1
+    }
+    
+    func RREF() -> Matrix{
+        return self.GJe(true).1
+    }
+    
+    //0 for swap rows, 1 for dividerow, 2 for subtract row
+    func GJe(reduced:Bool,LU:Bool = false) -> ([(Int,Matrix)],Matrix){
         var copy = matrixCopy()
+        var sequence:[(Int,Matrix)] = []
         for i in 0..<row{
             var allzero = false
-            if copy.matrix[i][i].n == 0 {
-                var c = i+1
-                while  c<copy.row && copy.matrix[c][i].n == 0 {
-                    c++
-                }
-                if c != copy.row{
-                    copy = copy.exchangerow(i, r2: c)
-                } else{
-                    allzero = true
+            var largest = copy.matrix[i][i]
+            var largestIndex = i
+            for j in (i+1)..<row{
+                if abs(copy.matrix[j][i])>largest{
+                    largest = copy.matrix[j][i]
+                    largestIndex = j
                 }
             }
-            if !allzero {
-                let d = copy.matrix[i][i]
-                copy = copy.dividerow(i, d: d)
-                //  println(copy.toString())
-                for j in i+1..<row{
-                    let m = copy.matrix[j][i]
-                    copy = copy.subtractrow(j, r2: i, m: m)
-                    //      println(copy.toString())
+            if largestIndex != i {
+                copy = copy.exchangerow(i, r2: largestIndex)
+                sequence.append(0,Matrix.identity(row, column: column).exchangerow(i, r2: largestIndex))
+            }
+            if largest != Fraction(i: 0){
+                if !LU {
+                    let d = copy.matrix[i][i]
+                    copy = copy.dividerow(i, d: d)
+                    sequence.append(1,Matrix.identity(row, column: column).dividerow(i, d: d))
+                }
+                var range:Range<Int>!
+                if reduced {
+                    range = 0..<row
+                }else{
+                    range = (i+1)..<row
+                }
+                for j in range{
+                    if j != i {
+                        let m = copy.matrix[j][i]/copy.matrix[i][i]
+                        copy = copy.subtractrow(j, r2: i, m: m)
+                        sequence.append(2,Matrix.identity(row, column: column).subtractrow(j, r2: i, m: m))
+                    }
                 }
             }
         }
-        return copy
+        return (sequence,copy)
     }
     
-    func rank() -> Int{
-        let r = ref()
+    func rank() -> Fraction{
+        let r = GJe(false).1
         var rank: Int = 0
         for i in 0..<r.row{
             if !r.zeroRow(i) {
                 rank++
             }
         }
-        return rank
+        return Fraction(i: rank)
     }
     
     func zeroRow(r:Int) ->Bool{
@@ -302,44 +375,57 @@ class Matrix {
         return flag
     }
     
-    func GJe() -> Matrix{
+    func inverse() -> Matrix{
         assert(determinant().n != 0, "matrix does not have inverse")
-        var inverse = Matrix.identity(row)
-        var copy = matrixCopy()
-        for i in 0..<row{
-            if copy.matrix[i][i].n == 0 {
-                var c = i+1
-                while copy.matrix[c][i].n == 0{
-                    c++
-                }
-                copy = copy.exchangerow(i, r2: c)
-                inverse = inverse.exchangerow(i, r2: c)
-            }
-            let d = copy.matrix[i][i]
-            copy = copy.dividerow(i, d: d)
-          //  println(copy.toString())
-            inverse = inverse.dividerow(i, d: d)
-            for j in i+1..<row{
-                let m = copy.matrix[j][i]
-                copy = copy.subtractrow(j, r2: i, m: m)
-          //      println(copy.toString())
-                inverse = inverse.subtractrow(j, r2: i, m: m)
-            }
+        let GJ = self.GJe(true)
+        let sequence = GJ.0
+        var res = Matrix.identity(row)
+        for (type,m) in sequence{
+            res = m*res
         }
-        for var i = row-1; i >= 0; --i {
-            for var j = i-1; j >= 0; --j {
-                let m = copy.matrix[j][i]
-                copy = copy.subtractrow(j, r2: i, m: m)
-           //     println(copy.toString())
-                inverse = inverse.subtractrow(j, r2: i, m: m)
-            }
-        }
-        
-        return inverse
+        return res
     }
 
-
-
+    func trace() -> Fraction{
+        var res = Fraction(i: 0)
+        for i in 0..<matrix.count{
+            res = res + matrix[i][i]
+        }
+        return res
+    }
+    
+    func LU() -> (Matrix,Matrix,Matrix){
+        var GJ = GJe(false, LU: true)
+        let U = GJ.1
+        var L = Matrix.identity(row, column: U.row)
+        var P = Matrix.identity(row, column: column)
+        let sequence = GJ.0
+        for (type,m) in sequence{
+            if type == 0 {
+                P = m*P
+                L = m*L.lower() + Matrix.identity(row, column: L.column)
+            }else if type == 2{
+                L = L + m.lower()
+            }
+        }
+        for i in 0..<L.row{
+            for j in 0..<i{
+                L.matrix[i][j].n = -L.matrix[i][j].n
+            }
+        }
+        return (P,L,U)
+    }
+    
+//    func QR()->(Matrix,Matrix){
+//        
+//    }
+//    
+//    private func QRauxillary()->([Matrix]){
+//        for j in 0..<column-1{
+//            let u = self.columnVector(j)
+//            let alpha = sqrt((u.transpose()*u).matrix[0][0])
+//        }
+//    }
     
     func toString() -> String{
         var s:String = "(  "

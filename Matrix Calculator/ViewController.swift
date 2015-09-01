@@ -50,13 +50,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //how small is small
     let DETECTIONTHRESHOLD = 100
     
-    
 
+    @IBOutlet var grayButtons: [UIButton]!
+    
+    @IBOutlet var orangeButtons: [UIButton]!
+
+    @IBOutlet var redButtons: [UIButton]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0), {
-            self.NN = NeuralNetwork()
-        })
+//        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0), {
+//            self.NN = NeuralNetwork()
+//        })
+        self.view.backgroundColor = UIColor(white: 0.25, alpha: 1)
         var swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
         swipeRight.direction = UISwipeGestureRecognizerDirection.Right
         self.view.addGestureRecognizer(swipeRight)
@@ -74,8 +80,30 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         self.view.addGestureRecognizer(swipeUp)
         
 		matrixView.setMatrix(matrix,underline:currentCursor)
+        matrixView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
         matrixView.heightLimit = containerView.frame.height
         matrixView.widthLimit = containerView.frame.width
+        
+        
+        let darkGray = UIColor(white: 0.8, alpha: 1.0)
+        for button in grayButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
+        for button in orangeButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
+        for button in redButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor()), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor().darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
     }
     
    
@@ -264,7 +292,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 }
             case 1 : //removerow
                 if matrix.row-1>0 {
-                    matrix = matrix.removeRow()
+                    matrix = matrix.removeBotRow()
                     if currentCursor.0 >= matrix.row {
                          currentCursor.0--
                     }
@@ -277,7 +305,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 }
             case 3 : //removecolumn
                 if matrix.column-1>0 {
-                    matrix = matrix.removeColumn()
+                    matrix = matrix.removeLastColumn()
                     if currentCursor.1 >= matrix.column {
                          currentCursor.1--
                     }
@@ -665,11 +693,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             inputTextField?.delegate = self
         })
 
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: {
+            action in
+        }))
+        
         alert.addAction(UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: ({
             action in
             self.delegate.didFinishInputMatrix(self.matrix,alias: inputTextField!.text!)
             self.dismissViewControllerAnimated(true,completion:nil)
         })))
+        
+
         self.presentViewController(alert, animated: true, completion: nil)
 
         

@@ -126,10 +126,12 @@ class matrixTableView: UIView {
                 var x:CGFloat = xMARGIN + maxWidth[0]/2
                 label[i][0].center = CGPoint(x: x, y: y)
                 self.addSubview(label[i][0])
+                label[i][0].textColor = UIColor.whiteColor()
                 for j in 1..<ncol{
                     x += xMARGIN + maxWidth[j-1]/2 + maxWidth[j]/2
                     label[i][j].center = CGPoint(x: x, y: y)
                     self.addSubview(label[i][j])
+                    label[i][j].textColor = UIColor.whiteColor()
                 }
                 y += yMARGIN + maxHeight
             }
@@ -151,7 +153,7 @@ class matrixTableView: UIView {
     
     class func preconfig()->UIView{
         let view = UIView(frame:CGRect.zeroRect)
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = UIColor.whiteColor()
         return(view)
     }
     

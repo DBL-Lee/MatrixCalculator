@@ -24,8 +24,19 @@ func -(left:Fraction, right:Fraction) -> Fraction{
     return left.subtract(right)
 }
 
+func < (lhs:Fraction,rhs:Fraction) -> Bool {
+    return Double(lhs.n)/Double(lhs.d) < Double(rhs.n)/Double(lhs.d)
+}
 
-class Fraction{
+func == (lhs:Fraction,rhs:Fraction) -> Bool {
+    return Double(lhs.n)==Double(rhs.n) && Double(lhs.d)==Double(lhs.d)
+}
+
+func abs(f:Fraction) -> Fraction {
+    return Fraction(n: abs(f.n), d: f.d)
+}
+
+class Fraction:Comparable{
     var n:Int
     var d:Int
     
@@ -103,6 +114,8 @@ class Fraction{
             }
 		}
 	}
+    
+
     
     
     class func reduce(var n:Int, var d:Int) -> (Int,Int){

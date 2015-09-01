@@ -38,16 +38,20 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         containerView.layer.borderWidth = borderWidth
         self.addSubview(containerView)
         
-        let button   = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
-        let buttonframe = CGRectMake(0, 0, frame.width*0.1, frame.width*0.1)
+        let button   = UIButton()
+        let buttonframe = CGRectMake(0, 0, frame.width*0.3, frame.width*0.2)
         button.frame = buttonframe
-        button.center = CGPoint(x: frame.width*0.85,y: frame.height*0.15)
+        button.setTitle("New", forState: UIControlState.Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        button.setTitleColor(UIColor.whiteColor().darker(), forState: UIControlState.Highlighted)
+        button.center = CGPoint(x: frame.width*0.8,y: frame.height*0.15)
         button.addTarget(self, action: "addMatrix:", forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(button)
         
         smallframe = CGRect(x: frame.width*0.1,y: frame.height*0.2,width: frame.width*0.8,height: frame.height*0.7)
         storedTableView.frame = smallframe
-        
+        storedTableView.backgroundColor = UIColor(white: 0.25, alpha: 1)
+        storedTableView.backgroundView?.backgroundColor = UIColor(white: 0.25, alpha: 1)
         storedTableView.rowHeight = UITableViewAutomaticDimension
         storedTableView.estimatedRowHeight = 100.0
         storedTableView.showsVerticalScrollIndicator = false
@@ -74,9 +78,10 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         let cell:MatrixCalculationCell = storedTableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
         let text = sortedKeys[indexPath.row]
         cell.label.text = text
-		cell.resultMatrixView.widthLimit = self.frame.width * 3/4
+		cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width
 		cell.label.sizeToFit()
         cell.resultMatrixView.setMatrix(storedMatrices[text]!)
+        cell.resultMatrixView.hidden = false
         return cell
     }
 	
