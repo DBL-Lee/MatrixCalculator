@@ -12,6 +12,7 @@ enum MatrixOperations{
 	case add
 	case subtract
 	case multiplication
+	case scalarmult
     case REF
 	case RREF
 	case transpose
@@ -71,7 +72,7 @@ extension UIImage {
     }
 }
 
-class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate {
+class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate,inputFractionDelegate {
     @IBOutlet weak var tableView: UITableView!    
     
     @IBOutlet var orangeButtons: [UIButton]!
@@ -81,6 +82,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     var results:[Any] = []
 	var firstOperand:Matrix?
 	var secondOperand:Matrix?
+	var scalarOperand:Fraction?
 	var operation:MatrixOperations?
 	var storedMatricesView:storedMatrixView!
     var carryForwardAnswer:Bool = false
@@ -99,6 +101,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         storedMatricesView.delegate = self
 		self.view.addSubview(storedMatricesView)
 		storedMatricesView.hidden = true
+		storedMatricesView.alpha = 0.0
         
         let lightGray = UIColor(white: 0.9, alpha: 1.0)
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
@@ -118,9 +121,25 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+	
+	private func hideViewWithAnimation(view:UIView){
+		view.alpha = 1.0
+		view.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+			self.alpha = 0.0
+		}, completion: {
+			self.hidden = true
+		})
+	}
+	private func showViewWithAnimation(view:UIView){
+		view.alpha = 0.0
+		view.hidden = false
+		view.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+			self.alpha = 1.0
+		}, completion: nil)
+	}
     
     @IBAction func showStoredMatrices(sender: AnyObject) {
-		storedMatricesView.hidden = false
+		showViewWithAnimation(self.storedMatricesView)
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -249,16 +268,22 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             case 0:
                 self.operation = .add
                 appendToLastExpression(" + ")
+				self.showViewWithAnimation(self.storedMatricesView)
             case 1:
                 self.operation = .subtract
                 appendToLastExpression(" - ")
+				self.showViewWithAnimation(self.storedMatricesView)
             case 2:
                 self.operation = .multiplication
                 appendToLastExpression(" × ")
+				self.showViewWithAnimation(self.storedMatricesView)
+			case 4:
+				self.operation = .scalarmult
+				appendToLastExpression(" × ")
+				self.showViewWithAnimation(self.fractionInputView)
             default: ()
             }
             tableView.reloadData()
-            self.storedMatricesView.hidden = false
         }
     }
     
@@ -353,6 +378,8 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             res = firstOperand! - secondOperand!
         case .multiplication:
             res = firstOperand! * secondOperand!
+		case .scalarmult:
+			res = firstOperand!.multScalar(scalarOperand)
         //one matrix -> one matrix
         case .REF:
             res = firstOperand!.REF()
@@ -369,7 +396,13 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .QR:
 		break
 		case .LU:
-		 let (P,L,U) = firstOperand!.LU()
+			let (P,L,U) = firstOperand!.LU()
+			self.expressions[self.expressions.count-1] = "P"
+			self.expressions.append("L")
+			self.expressions.append("U")
+			self.results.append(P)
+			self.results.append(L)
+			res = U
 		case .diagonalize:
 		break
 		case .eigenpair:
@@ -392,6 +425,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }else{
             carryForwardAnswer = false
         }
+		scalarOperand = nil
 		secondOperand = nil
 		operation = nil
 		tableView.reloadData()
@@ -400,6 +434,18 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         self.tableView.reloadData()
         scrollToBottom(tableView)
     }
+	
+	func didFinishInputFraction(fraction:Fraction,decimal:Bool){
+		scalarOperand = fraction
+		appendToLastExpression(fraction.toString(decimal))
+		doCalculation()
+		hideViewWithAnimation(self.fractionInputView)
+        self.tableView.reloadData()
+        self.tableView.setNeedsLayout()
+        self.tableView.layoutIfNeeded()
+        self.tableView.reloadData()
+        scrollToBottom(tableView)
+	}
 	
     func didPickMatrixWithAlias(alias:String,matrix:Matrix){
 		if firstOperand != nil && operation != nil{
@@ -417,6 +463,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             }
 			firstOperand = matrix
 		}
+		hideViewWithAnimation(self.storedMatricesView)
         self.tableView.reloadData()
         self.tableView.setNeedsLayout()
         self.tableView.layoutIfNeeded()

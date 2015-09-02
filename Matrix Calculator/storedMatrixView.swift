@@ -88,7 +88,6 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! MatrixCalculationCell
 		delegate.didPickMatrixWithAlias(cell.label.text!,matrix: storedMatrices[cell.label.text!]!)
-		self.hidden = true
 	}
 	
 	func didFinishInputMatrix(matrix: Matrix, alias: String) {
