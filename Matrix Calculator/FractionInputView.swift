@@ -14,7 +14,8 @@ protocol inputFractionDelegate{
 
 class FractionInputView: UIView {
 	
-	@IBOutlet weak var label : UILabel! 
+	@IBOutlet weak var label : UILabel!
+    @IBOutlet weak var containerView :UIView!
 	//MARK: inputvalue
     var numerator:String = "0"
     var denominator:String = ""
@@ -27,6 +28,34 @@ class FractionInputView: UIView {
     var floatpointEntered:Bool = false
     var numberlineEntered:Bool = false
 	var delegate:inputFractionDelegate!
+
+    @IBOutlet var redButtons : [UIButton]!
+    @IBOutlet var grayButtons : [UIButton]!
+    @IBOutlet var orangeButtons : [UIButton]!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        let darkGray = UIColor(white: 0.8, alpha: 1.0)
+        for button in grayButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
+        for button in orangeButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
+        for button in redButtons{
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor()), forState: UIControlState.Normal)
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor().darker()), forState: UIControlState.Highlighted)
+            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.layer.borderWidth = 1
+        }
+        self.containerView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
+    }
 
     //user started entering
     @IBAction func digitPressed(sender: UIButton) {
@@ -101,14 +130,12 @@ class FractionInputView: UIView {
                 }
             }
         }
-        entering = true
         let entry = (negative ? "-" : "") + numerator + (numberlineEntered ? ("/"+denominator) : "")
 		self.label.text = entry
     }
 
-    //This function is called when user finish editing a cell and move to another cell
-    private func finishInput(){
-        entering = false
+
+    @IBAction func finishInput(sender:UIButton){
         if negative {
             numerator = "-"+numerator
         }
@@ -123,7 +150,7 @@ class FractionInputView: UIView {
         //When user inputs 0 at denominator
         if d.n == 0 { d = Fraction(i: 1)}
 
-		self.delegate.didFinishInputFraction(n/d,!numberlineEntered)
+		self.delegate.didFinishInputFraction(n/d,decimal: floatpointEntered)
         numerator = "0"
         denominator = ""
         floatingPoint = 0

@@ -231,7 +231,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if d.n == 0 { d = Fraction(i: 1)}
 
         matrix.matrix[currentCursor.0][currentCursor.1] = n/d
-		matrix.decimal[currentCursor.0][currentCursor.1] = !numberlineEntered
+		matrix.decimal[currentCursor.0][currentCursor.1] = floatpointEntered
 
         matrixView.setMatrix(matrix,underline:currentCursor)
 

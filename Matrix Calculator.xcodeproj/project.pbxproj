@@ -28,6 +28,7 @@
 		9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB51B7D338400894EDD /* matrixTableView.swift */; };
 		9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */; };
 		9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BF80D611B829418002AF21C /* MatrixCell.xib */; };
+		9BF80D641B9781F5002AF21C /* FractionInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D631B9781F5002AF21C /* FractionInputView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		9BDD6AB51B7D338400894EDD /* matrixTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = matrixTableView.swift; sourceTree = "<group>"; };
 		9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = storedMatrixView.swift; sourceTree = "<group>"; };
 		9BF80D611B829418002AF21C /* MatrixCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatrixCell.xib; sourceTree = "<group>"; };
+		9BF80D631B9781F5002AF21C /* FractionInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FractionInputView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 		9BF80D5E1B811264002AF21C /* CustomClasses */ = {
 			isa = PBXGroup;
 			children = (
+				9BF80D631B9781F5002AF21C /* FractionInputView.swift */,
 				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
 				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
 				9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */,
@@ -334,6 +337,7 @@
 				9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */,
 				9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */,
 				9B78E1811A8CDB3D0069CBF3 /* ViewController.swift in Sources */,
+				9BF80D641B9781F5002AF21C /* FractionInputView.swift in Sources */,
 				9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */,
 				9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */,
 				9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */,

@@ -75,6 +75,7 @@ extension UIImage {
 class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate,inputFractionDelegate {
     @IBOutlet weak var tableView: UITableView!    
     
+    @IBOutlet weak var fractionInputView: FractionInputView!
     @IBOutlet var orangeButtons: [UIButton]!
     @IBOutlet var lightGrayButtons: [UIButton]!
     let CellIdentifier = "MatrixCalculationCell"
@@ -103,6 +104,10 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		storedMatricesView.hidden = true
 		storedMatricesView.alpha = 0.0
         
+        fractionInputView.hidden = true
+        fractionInputView.alpha = 0.0
+        fractionInputView.delegate = self
+        
         let lightGray = UIColor(white: 0.9, alpha: 1.0)
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
         let darkestGray = UIColor(white: 0.7, alpha: 1.0)
@@ -124,18 +129,21 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 	
 	private func hideViewWithAnimation(view:UIView){
 		view.alpha = 1.0
-		view.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-			self.alpha = 0.0
-		}, completion: {
-			self.hidden = true
-		})
+        UIView.animateWithDuration(0.2, animations: {
+            () in
+            view.alpha = 0.0
+            }, completion: {
+                bool in
+                view.hidden = true
+        })
 	}
 	private func showViewWithAnimation(view:UIView){
 		view.alpha = 0.0
 		view.hidden = false
-		view.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-			self.alpha = 1.0
-		}, completion: nil)
+        UIView.animateWithDuration(0.2, animations: {
+            () in
+            view.alpha = 1.0
+        })
 	}
     
     @IBAction func showStoredMatrices(sender: AnyObject) {
@@ -264,6 +272,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                 self.expressions.append("Ans")
             }
             let button:UIButton = sender as! UIButton
+            print(button.tag)
             switch button.tag{
             case 0:
                 self.operation = .add
@@ -277,7 +286,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                 self.operation = .multiplication
                 appendToLastExpression(" × ")
 				self.showViewWithAnimation(self.storedMatricesView)
-			case 4:
+			case 3:
 				self.operation = .scalarmult
 				appendToLastExpression(" × ")
 				self.showViewWithAnimation(self.fractionInputView)
@@ -379,7 +388,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         case .multiplication:
             res = firstOperand! * secondOperand!
 		case .scalarmult:
-			res = firstOperand!.multScalar(scalarOperand)
+			res = firstOperand!.multScalar(scalarOperand!)
         //one matrix -> one matrix
         case .REF:
             res = firstOperand!.REF()
