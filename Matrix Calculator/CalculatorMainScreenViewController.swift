@@ -72,6 +72,19 @@ extension UIImage {
     }
 }
 
+extension UIView {
+
+    func takeSnapshot() -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
+
+        drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+}
+
 class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate,inputFractionDelegate {
     @IBOutlet weak var tableView: UITableView!    
     
@@ -162,6 +175,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		cell.label.sizeToFit()
         cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width
         cell.resultMatrixView.hidden = true
+		cell.resultLabel.textColor = UIColor.whiteColor()
         cell.resultLabel.hidden = true
         if indexPath.row < results.count{
             switch results[indexPath.row] {
@@ -172,8 +186,11 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                 cell.resultLabel.text = scalar.toString()
                 cell.resultLabel.hidden = false
                 cell.resultLabel.sizeToFit()
-            case let error as String:
-                break
+            case let error as MatrixError:
+				cell.resultLabel.text = error.description
+				cell.resultLabel.textColor = UIColor.redColor()
+				cell.resultLabel.hidden = false
+				cell.resultLabel.sizeToFit()
             default:
             break
             }
@@ -382,23 +399,38 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		switch operation!{
 		//two matrices -> one matrix
 		case .add:
-            res = firstOperand! + secondOperand!
-        case .subtract:
-            res = firstOperand! - secondOperand!
+			do{
+				res = try firstOperand! + secondOperand!
+			}catch e{
+				res = e
+			}
+		case .subtract:
+            do{
+				res = try firstOperand! - secondOperand!
+			}catch e{
+				res = e
+			}
         case .multiplication:
-            res = firstOperand! * secondOperand!
+            do{
+				res = try firstOperand! * secondOperand!
+			}catch e{
+				res = e
+			}
 		case .scalarmult:
 			res = firstOperand!.multScalar(scalarOperand!)
         //one matrix -> one matrix
         case .REF:
             res = firstOperand!.REF()
-            results.append(res)
 		case .RREF:
             res = firstOperand!.RREF()
 		case .transpose:
             res = firstOperand!.transpose()
 		case .inverse:
-            res = firstOperand!.inverse()
+			do{
+				res = try firstOperand!.inverse()
+			}catch e{
+				res = e
+			}
 		//one matrix -> two matrices
 		case .chol:
 		break
@@ -420,9 +452,17 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .rank:
             res = firstOperand!.rank()
 		case .trace:
-            res = firstOperand!.trace()
+			do{
+				res = try firstOperand!.trace()
+			}catch e{
+				res = e
+			}
 		case .det:
-            res = firstOperand!.determinant()
+			do{
+				res = try firstOperand!.determinant()
+			}catch e{
+				res = e
+			}
         default:
             break
 		}

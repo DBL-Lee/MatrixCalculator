@@ -21,7 +21,10 @@ class FractionInputView: UIView {
     var denominator:String = ""
     var floatingPoint:Int = 0
     var numeratorFloatingPoint = 0 //remember floating point of numerator
+	var integerPart:Int = 1
+	var numeratorIntegerPart = 1
     let FLOATPOINTUPPER = 5
+	let INTEGERPARTUPPER = 5
 
     //flags
     var negative = false
@@ -67,6 +70,7 @@ class FractionInputView: UIView {
                     floatpointEntered = true
                 }
                 floatingPoint = numeratorFloatingPoint
+				integerPart = numeratorIntegerPart
             }else{
                 if !numberlineEntered {
                     if count(numerator)==1 { //Deleting last digit in numerator
@@ -77,7 +81,9 @@ class FractionInputView: UIView {
                         }else{  //Deleting a digit in numerator
                             if floatpointEntered{
                                 floatingPoint--
-                            }
+                            }else{
+								integerPart--
+							}
                         }
                     }
                 }else{
@@ -86,7 +92,9 @@ class FractionInputView: UIView {
                     }else{  //Deleting a digit in denominator
                         if floatpointEntered{
                             floatingPoint--
-                        }
+                        }else{
+							integerPart--
+						}
                     }
                 }
             }
@@ -97,6 +105,7 @@ class FractionInputView: UIView {
                 }else{
                     if denominator==""{ //Case whereby denominator is empty
                         denominator = "0"
+						integerPart++
                     }
                     denominator+="."
                 }
@@ -106,26 +115,36 @@ class FractionInputView: UIView {
             if !numberlineEntered{
                 if numerator[numerator.endIndex.predecessor()] != "."{ //Previous character is not floating point
                     numeratorFloatingPoint = floatingPoint
+					numeratorIntegerPart = integerPart
                 }else{
                     numerator.removeAtIndex(numerator.endIndex.predecessor())
                 }
                 floatingPoint = 0
+				integerPart = 0
                 numberlineEntered = true
                 floatpointEntered = false
             }
         case "+/-":
             negative = !negative
         default:
-            if floatingPoint<FLOATPOINTUPPER {
+            if floatingPoint<FLOATPOINTUPPER && integerPart <INTEGERPARTUPPER {
                 if !numberlineEntered{
                     if numerator == "0" { //no digit entered yet
                         numerator = sender.titleLabel!.text!
                     }else{
-                        if floatpointEntered {floatingPoint++}
+                        if floatpointEntered {
+							floatingPoint++
+						}else{
+							intergerPart++
+						}
                         numerator += sender.titleLabel!.text!
                     }
                 }else{
-                    if floatpointEntered {floatingPoint++}
+                    if floatpointEntered {
+						floatingPoint++
+					}else{
+						intergerPart++
+					}
                     denominator += sender.titleLabel!.text!
                 }
             }

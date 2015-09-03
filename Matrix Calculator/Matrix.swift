@@ -159,8 +159,10 @@ class Matrix {
     }
 
     
-    func mult(m:Matrix) -> Matrix {
-        assert(m.row == column, "can not multiply")
+    func mult(m:Matrix) throws -> Matrix {
+		guard m.row == column else{
+			throw MatrixErrors.DimensionMismatch((row,column),(m.row,m.column))
+		}
         var value:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<m.column{
@@ -184,8 +186,10 @@ class Matrix {
         return Matrix(r: row, c: column, value: value, decimal: decimal)
     }
    
-    func add(m:Matrix) -> Matrix{
-        assert(m.row==row && m.column == column, "can not add")
+    func add(m:Matrix) throws -> Matrix{
+        guard m.row == row && m.column == column else{
+			throw MatrixErrors.DimensionMismatch((row,column),(m.row,m.column))
+		}
         var value:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<column{
@@ -195,8 +199,10 @@ class Matrix {
         return Matrix(r: row, c: column, value: value)
     }
     
-    func subtract(m:Matrix) -> Matrix{
-        assert(m.row==row && m.column == column, "can not subtract")
+    func subtract(m:Matrix) throws -> Matrix{
+        guard m.row == row && m.column == column else{
+			throw MatrixErrors.DimensionMismatch((row,column),(m.row,m.column))
+		}
         var value:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<column{
@@ -207,8 +213,10 @@ class Matrix {
     }
     
     
-    func determinant() -> Fraction{
-        assert(row==column, "not square matrix, determinant does not exist")
+    func determinant() throws -> Fraction{
+        guard row == column else{
+			throw MatrixErrors.NotSquareMatrix
+		}
         return deter(self)
     }
     
@@ -247,7 +255,6 @@ class Matrix {
     
     //divide row r by d, normally d equals to the first element of row r
     private func dividerow(r:Int,d:Fraction)-> Matrix{
-        //assert(r >= 0 && r < row && d != 0, message: "can not divide row")
         var v:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<column{
@@ -264,7 +271,6 @@ class Matrix {
     
     //subtract row r1 by multiple m of row r2
     private func subtractrow(r1:Int, r2:Int, m:Fraction) -> Matrix{
-        assert(r1 >= 0 && r1 < row && r2 >= 0 && r2 < row, "matrix does not contain row")
         var v:[Fraction]=[]
         for i in 0..<row{
             for j in 0..<column{
@@ -329,13 +335,13 @@ class Matrix {
             }
             if largestIndex != i {
                 copy = copy.exchangerow(i, r2: largestIndex)
-                sequence.append(0,Matrix.identity(row, column: column).exchangerow(i, r2: largestIndex))
+                sequence.append(0,Matrix.identity(row, column: row).exchangerow(i, r2: largestIndex))
             }
             if largest != Fraction(i: 0){
                 if !LU {
                     let d = copy.matrix[i][i]
                     copy = copy.dividerow(i, d: d)
-                    sequence.append(1,Matrix.identity(row, column: column).dividerow(i, d: d))
+                    sequence.append(1,Matrix.identity(row, column: row).dividerow(i, d: d))
                 }
                 var range:Range<Int>!
                 if reduced {
@@ -347,7 +353,7 @@ class Matrix {
                     if j != i {
                         let m = copy.matrix[j][i]/copy.matrix[i][i]
                         copy = copy.subtractrow(j, r2: i, m: m)
-                        sequence.append(2,Matrix.identity(row, column: column).subtractrow(j, r2: i, m: m))
+                        sequence.append(2,Matrix.identity(row, column: row).subtractrow(j, r2: i, m: m))
                     }
                 }
             }
@@ -367,7 +373,6 @@ class Matrix {
     }
     
     func zeroRow(r:Int) ->Bool{
-        assert(r>=0 && r<row, "row not in range")
         var flag = true
         for j in 0..<column{
             flag = flag && matrix[r][j].n != 0
@@ -375,8 +380,16 @@ class Matrix {
         return flag
     }
     
-    func inverse() -> Matrix{
-        assert(determinant().n != 0, "matrix does not have inverse")
+    func inverse() throws -> Matrix{
+		do{
+			let d = try determinant()
+			guard d != 0 else{
+			throw MatrixErrors.NotInvertible
+			}
+		}catch MatrixErrors.NotSquareMatrix{
+			throw MatrixErrors.NotSquareMatrix
+		}
+		
         let GJ = self.GJe(true)
         let sequence = GJ.0
         var res = Matrix.identity(row)
@@ -386,7 +399,10 @@ class Matrix {
         return res
     }
 
-    func trace() -> Fraction{
+    func trace() throws -> Fraction{
+		guard row == column else{
+			throw MatrixErrors.NotSquareMatrix
+		} 
         var res = Fraction(i: 0)
         for i in 0..<matrix.count{
             res = res + matrix[i][i]
@@ -398,7 +414,7 @@ class Matrix {
         var GJ = GJe(false, LU: true)
         let U = GJ.1
         var L = Matrix.identity(row, column: U.row)
-        var P = Matrix.identity(row, column: column)
+        var P = Matrix.identity(row, column: row)
         let sequence = GJ.0
         for (type,m) in sequence{
             if type == 0 {

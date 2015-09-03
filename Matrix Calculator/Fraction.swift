@@ -103,8 +103,19 @@ class Fraction:Comparable{
         }
     }
 	
+	private func isFiniteDecimal() -> Bool {
+		var numerator = n
+		while (n%%2==0){
+			numerator = numerator/2
+		}
+		while (n%%5==0){
+			numerator = numerator/5
+		}
+		return numerator==1
+	}
+	
 	func toString(decimal:Bool) -> String{
-		if !decimal{
+		if !decimal || !isFiniteDecimal{
 			return toString()
 		}else{
             if d==1{
