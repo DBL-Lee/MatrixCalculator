@@ -8,16 +8,28 @@
 
 import UIKit
 
-func *(m1:Matrix,m2:Matrix)->Matrix{
-    return m1.mult(m2)
+func *(m1:Matrix,m2:Matrix) throws ->Matrix{
+    do{
+        return try m1.mult(m2)
+    }catch {
+        throw error
+    }
 }
 
-func +(m1:Matrix,m2:Matrix)->Matrix{
-    return m1.add(m2)
+func +(m1:Matrix,m2:Matrix) throws ->Matrix{
+    do{
+        return try m1.add(m2)
+    }catch {
+        throw error
+    }
 }
 
-func -(m1:Matrix,m2:Matrix)->Matrix{
-    return m1.subtract(m2)
+func -(m1:Matrix,m2:Matrix) throws ->Matrix{
+    do{
+        return try m1.subtract(m2)
+    }catch {
+        throw error
+    }
 }
 
 
@@ -46,7 +58,7 @@ class Matrix {
     
     class func houseHolder(w:Matrix) -> Matrix{
         let n = w.matrix.count
-        return Matrix.identity(n) - w*w.transpose().multScalar(Fraction(i:2)/(w.transpose()*w).matrix[0][0])
+        return try! Matrix.identity(n) - w*w.transpose().multScalar(Fraction(i:2)/(w.transpose()*w).matrix[0][0])
     }
 
 
@@ -57,7 +69,7 @@ class Matrix {
 	//decimal or fractional representation
 	var decimal:[[Bool]] = []
     
-    convenience init(r:Int, c:Int, var value:[Fraction],decimal:[[Bool]]){
+    convenience init(r:Int, c:Int, value:[Fraction],decimal:[[Bool]]){
         self.init(r: r,c: c,value: value)
         for i in 0..<decimal.count{
             for j in 0..<decimal[i].count{
@@ -74,7 +86,7 @@ class Matrix {
         column = c
         for i in 0..<r{
             matrix.append([])
-            for j in 0..<c {
+            for _ in 0..<c {
                 matrix[i].append(value.removeAtIndex(0))
             }
         }
@@ -240,7 +252,7 @@ class Matrix {
                         }
                     }
                 }
-                var subm = Matrix(r: m.row-1, c: m.column-1, value: v)
+                let subm = Matrix(r: m.row-1, c: m.column-1, value: v)
                 var subv = deter(subm)*m.matrix[0][i]
                 if i%2 == 1 {
                     subv = subv * Fraction(i: -1)
@@ -324,7 +336,6 @@ class Matrix {
         var copy = matrixCopy()
         var sequence:[(Int,Matrix)] = []
         for i in 0..<row{
-            var allzero = false
             var largest = copy.matrix[i][i]
             var largestIndex = i
             for j in (i+1)..<row{
@@ -335,13 +346,13 @@ class Matrix {
             }
             if largestIndex != i {
                 copy = copy.exchangerow(i, r2: largestIndex)
-                sequence.append(0,Matrix.identity(row, column: row).exchangerow(i, r2: largestIndex))
+                sequence.append((0,Matrix.identity(row, column: row).exchangerow(i, r2: largestIndex)))
             }
             if largest != Fraction(i: 0){
                 if !LU {
                     let d = copy.matrix[i][i]
                     copy = copy.dividerow(i, d: d)
-                    sequence.append(1,Matrix.identity(row, column: row).dividerow(i, d: d))
+                    sequence.append((1,Matrix.identity(row, column: row).dividerow(i, d: d)))
                 }
                 var range:Range<Int>!
                 if reduced {
@@ -353,7 +364,7 @@ class Matrix {
                     if j != i {
                         let m = copy.matrix[j][i]/copy.matrix[i][i]
                         copy = copy.subtractrow(j, r2: i, m: m)
-                        sequence.append(2,Matrix.identity(row, column: row).subtractrow(j, r2: i, m: m))
+                        sequence.append((2,Matrix.identity(row, column: row).subtractrow(j, r2: i, m: m)))
                     }
                 }
             }
@@ -383,7 +394,7 @@ class Matrix {
     func inverse() throws -> Matrix{
 		do{
 			let d = try determinant()
-			guard d != 0 else{
+            guard d != Fraction(i:0) else{
 			throw MatrixErrors.NotInvertible
 			}
 		}catch MatrixErrors.NotSquareMatrix{
@@ -393,8 +404,8 @@ class Matrix {
         let GJ = self.GJe(true)
         let sequence = GJ.0
         var res = Matrix.identity(row)
-        for (type,m) in sequence{
-            res = m*res
+        for (_,m) in sequence{
+            res = try! m*res
         }
         return res
     }
@@ -411,17 +422,17 @@ class Matrix {
     }
     
     func LU() -> (Matrix,Matrix,Matrix){
-        var GJ = GJe(false, LU: true)
+        let GJ = GJe(false, LU: true)
         let U = GJ.1
         var L = Matrix.identity(row, column: U.row)
         var P = Matrix.identity(row, column: row)
         let sequence = GJ.0
         for (type,m) in sequence{
             if type == 0 {
-                P = m*P
-                L = m*L.lower() + Matrix.identity(row, column: L.column)
+                P = try! m*P
+                L = try! m*L.lower() + Matrix.identity(row, column: L.column)
             }else if type == 2{
-                L = L + m.lower()
+                L = try! L + m.lower()
             }
         }
         for i in 0..<L.row{

@@ -50,32 +50,32 @@ class NeuralNetwork {
     var nLayers:Int = 0
     init () {
         let path = NSBundle.mainBundle().pathForResource("weight", ofType: "txt")
-        let string = String(contentsOfFile: path!, encoding: NSUTF8StringEncoding, error: nil)
-        var scanner = NSScanner(string: string!)
+        let string = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
+        let scanner = NSScanner(string: string)
         
         scanner.scanInteger(&nLayers)
-        for i in 0..<nLayers {
-            var layer = NNLayer()
+        for _ in 0..<nLayers {
+            let layer = NNLayer()
             var nNeuron:Int = 0
             var nWeight:Int = 0
             layers.append(layer)
             scanner.scanInteger(&nNeuron)
             scanner.scanInteger(&nWeight)
-            for j in 0..<nNeuron{
-                var neuron = NNNeuron()
+            for _ in 0..<nNeuron{
+                let neuron = NNNeuron()
                 layer.neurons.append(neuron)
                 var nConnection:Int = 0
                 scanner.scanInteger(&nConnection)
                 
-                for k in 0..<nConnection{
-                    var connection = NNConnection()
+                for _ in 0..<nConnection{
+                    let connection = NNConnection()
                     scanner.scanInteger(&connection.NeuronIndex)
                     scanner.scanInteger(&connection.WeightIndex)
                     neuron.connections.append(connection)
                 }
             }
             
-            for j in 0..<nWeight {
+            for _ in 0..<nWeight {
                 var value:Double = 0.0
                 scanner.scanDouble(&value)
                 layer.weights.append(NNWeight(weight: value))

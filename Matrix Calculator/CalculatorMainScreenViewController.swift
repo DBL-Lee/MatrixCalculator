@@ -27,6 +27,15 @@ enum MatrixOperations{
 	case det
 }
 
+extension String {
+    func localized(lang:String) ->String {
+        
+        let path = NSBundle.mainBundle().pathForResource(lang, ofType: "lproj")
+        let bundle = NSBundle(path: path!)
+        
+        return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
+    }}
+
 extension UIColor {
     
     func lighter(amount : CGFloat = 0.25) -> UIColor {
@@ -100,13 +109,15 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 	var operation:MatrixOperations?
 	var storedMatricesView:storedMatrixView!
     var carryForwardAnswer:Bool = false
+    var tutorialView:TutorialOverlayView!
+    var detectTouch = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100.0
         tableView.showsVerticalScrollIndicator = false
-        tableView.tableFooterView = UIView(frame: CGRect.zeroRect)
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
         tableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
         tableView.backgroundView?.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
@@ -121,9 +132,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         fractionInputView.alpha = 0.0
         fractionInputView.delegate = self
         
-        let lightGray = UIColor(white: 0.9, alpha: 1.0)
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
-        let darkestGray = UIColor(white: 0.7, alpha: 1.0)
         for button in lightGrayButtons{
             button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
             button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
@@ -133,6 +142,18 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         for button in orangeButtons{
             button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
             button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
+        }
+        for view in self.view.subviews{
+            if view is UIButton{
+                (view as! UIButton).titleLabel?.adjustsFontSizeToFitWidth = true
+            }
+        }
+        
+        if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTut1"){
+            self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: NSLocalizedString("FirstTimeEnter", comment: ""))
+            self.view.addSubview(tutorialView)
+            self.detectTouch = true
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTut1")
         }
     }
     override func didReceiveMemoryWarning() {
@@ -177,6 +198,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         cell.resultMatrixView.hidden = true
 		cell.resultLabel.textColor = UIColor.whiteColor()
         cell.resultLabel.hidden = true
+        cell.resultLabel.adjustsFontSizeToFitWidth = true
         if indexPath.row < results.count{
             switch results[indexPath.row] {
             case let matrix as Matrix:
@@ -186,7 +208,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                 cell.resultLabel.text = scalar.toString()
                 cell.resultLabel.hidden = false
                 cell.resultLabel.sizeToFit()
-            case let error as MatrixError:
+            case let error as MatrixErrors:
 				cell.resultLabel.text = error.description
 				cell.resultLabel.textColor = UIColor.redColor()
 				cell.resultLabel.hidden = false
@@ -204,37 +226,36 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        var error:NSError?
-        var regex:NSRegularExpression = NSRegularExpression(pattern: "[a-zA-Z]", options: .CaseInsensitive, error: &error)!
-        if ((range.length + range.location > count(textField.text)) || (string=="") || (regex.matchesInString(string, options: nil, range: NSMakeRange(0, count(string))).count == 0))
+        let regex:NSRegularExpression = try! NSRegularExpression(pattern: "[a-zA-Z]", options: NSRegularExpressionOptions.CaseInsensitive)
+        if ((range.length + range.location > textField.text!.characters.count) || (string=="") || (regex.matchesInString(string, options: [], range: NSMakeRange(0, string.characters.count)).count == 0))
         {
             return false;
         }
         textField.text = string.uppercaseString
-        let newLength = count(textField.text) + count(string) - range.length
+        let newLength = textField.text!.characters.count + string.characters.count - range.length
         return newLength <= 1
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row < self.results.count {
             if self.results[indexPath.row] is Matrix {
-                let usedCharacter = NSSet(array: storedMatricesView.storedMatrices.keys.array)
+                let usedCharacter = NSSet(array: Array(storedMatricesView.storedMatrices.keys))
                 var inputTextField: UITextField?
-                var message = "Used Characters: "
+                var message = NSLocalizedString("usedCharacter", comment: "")
                 if usedCharacter.count == 0{
-                    message += "None"
+                    message += NSLocalizedString("none", comment: "")
                 }else{
-                    for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"{
+                    for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
                         if usedCharacter.containsObject(String(c)){
                             message += String(c) + ","
                         }
                     }
                     message.removeAtIndex(message.endIndex.predecessor())
                 }
-                message += "\nUsing same character will overwrite existing matrix."
-                var alert = UIAlertController(title: "Save Matrix As", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+                message += NSLocalizedString("alertMsg", comment: "")
+                let alert = UIAlertController(title: NSLocalizedString("saveTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
-                    for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"{
+                    for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
                         if !usedCharacter.containsObject(String(c)){
                             textField.text = String(c)
                             break
@@ -246,11 +267,11 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                     inputTextField?.delegate = self
                 })
                 
-                alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: {
+                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
                     action in
                 }))
                 
-                alert.addAction(UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: ({
+                alert.addAction(UIAlertAction(title: NSLocalizedString("save", comment: ""), style: UIAlertActionStyle.Default, handler: ({
                     action in
                     self.storedMatricesView.didFinishInputMatrix((self.results[indexPath.row] as! Matrix),alias: inputTextField!.text!)
                     self.dismissViewControllerAnimated(true,completion:nil)
@@ -276,9 +297,9 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         let string = expressions[expressions.count-1] as! String
         let att = NSMutableAttributedString(string: string)
         let fontsize:CGFloat = 17
-        att.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(fontsize), range: NSRange(location: 0, length: count(string)))
+        att.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(fontsize), range: NSRange(location: 0, length: string.characters.count))
         let addition = NSMutableAttributedString(string: str)
-        addition.addAttributes([NSFontAttributeName : UIFont.systemFontOfSize(fontsize/2), NSBaselineOffsetAttributeName : fontsize/2], range: NSRange(location: 0, length: count(str)))
+        addition.addAttributes([NSFontAttributeName : UIFont.systemFontOfSize(fontsize/2), NSBaselineOffsetAttributeName : fontsize/2], range: NSRange(location: 0, length: str.characters.count))
         att.appendAttributedString(addition)
         expressions[expressions.count-1] = att
     }
@@ -401,20 +422,20 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .add:
 			do{
 				res = try firstOperand! + secondOperand!
-			}catch e{
-				res = e
+			}catch{
+				res = error
 			}
 		case .subtract:
             do{
 				res = try firstOperand! - secondOperand!
-			}catch e{
-				res = e
+			}catch{
+				res = error
 			}
         case .multiplication:
             do{
 				res = try firstOperand! * secondOperand!
-			}catch e{
-				res = e
+			}catch{
+				res = error
 			}
 		case .scalarmult:
 			res = firstOperand!.multScalar(scalarOperand!)
@@ -428,8 +449,8 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .inverse:
 			do{
 				res = try firstOperand!.inverse()
-			}catch e{
-				res = e
+			}catch{
+				res = error
 			}
 		//one matrix -> two matrices
 		case .chol:
@@ -454,17 +475,15 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .trace:
 			do{
 				res = try firstOperand!.trace()
-			}catch e{
-				res = e
+			}catch {
+				res = error
 			}
 		case .det:
 			do{
 				res = try firstOperand!.determinant()
-			}catch e{
-				res = e
+			}catch {
+				res = error
 			}
-        default:
-            break
 		}
         self.results.append(res)
 		firstOperand = nil
@@ -530,9 +549,16 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         case "insertMatrixSegue" :
             let vc = segue.destinationViewController as! ViewController
             vc.delegate = storedMatricesView
-            vc.usedCharacter = NSSet(array: storedMatricesView.storedMatrices.keys.array)
+            vc.usedCharacter = NSSet(array: Array(storedMatricesView.storedMatrices.keys))
         default:
             break
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if detectTouch {
+            self.tutorialView.removeFromSuperview()
+            self.detectTouch = false
         }
     }
    

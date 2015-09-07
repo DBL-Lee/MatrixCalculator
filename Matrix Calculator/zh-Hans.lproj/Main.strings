@@ -1,0 +1,150 @@
+
+/* Class = "UIButton"; normalTitle = "5"; ObjectID = "1vq-55-tEg"; */
+"1vq-55-tEg.normalTitle" = "5";
+
+/* Class = "UIButton"; normalTitle = "3"; ObjectID = "6LP-Wj-9HL"; */
+"6LP-Wj-9HL.normalTitle" = "3";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "7lr-S4-9Mq"; */
+"7lr-S4-9Mq.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "9"; ObjectID = "A60-Uv-M20"; */
+"A60-Uv-M20.normalTitle" = "9";
+
+/* Class = "UIButton"; normalTitle = "0"; ObjectID = "A7K-oe-7jz"; */
+"A7K-oe-7jz.normalTitle" = "0";
+
+/* Class = "UIButton"; normalTitle = "6"; ObjectID = "AO6-Uz-Vjf"; */
+"AO6-Uz-Vjf.normalTitle" = "6";
+
+/* Class = "UIButton"; normalTitle = "+/-"; ObjectID = "Bc8-V5-Hhr"; */
+"Bc8-V5-Hhr.normalTitle" = "+/-";
+
+/* Class = "UIButton"; normalTitle = "-Row"; ObjectID = "C5g-lO-kiI"; */
+"C5g-lO-kiI.normalTitle" = "删行";
+
+/* Class = "UIButton"; normalTitle = "×"; ObjectID = "FDC-MM-q7D"; */
+"FDC-MM-q7D.normalTitle" = "×";
+
+/* Class = "UIButton"; normalTitle = "DEL"; ObjectID = "Hu6-HT-6U7"; */
+"Hu6-HT-6U7.normalTitle" = "退格";
+
+/* Class = "UIButton"; normalTitle = "7"; ObjectID = "I7S-EW-haf"; */
+"I7S-EW-haf.normalTitle" = "7";
+
+/* Class = "UIButton"; normalTitle = "5"; ObjectID = "L0r-fO-WTl"; */
+"L0r-fO-WTl.normalTitle" = "5";
+
+/* Class = "UIButton"; normalTitle = "DEL"; ObjectID = "LE9-GQ-vUj"; */
+"LE9-GQ-vUj.normalTitle" = "退格";
+
+/* Class = "UIButton"; normalTitle = "3"; ObjectID = "O2v-XX-pjt"; */
+"O2v-XX-pjt.normalTitle" = "3";
+
+/* Class = "UIButton"; normalTitle = "det"; ObjectID = "Orc-d2-hLH"; */
+"Orc-d2-hLH.normalTitle" = "行列式";
+
+/* Class = "UIButton"; normalTitle = "REF"; ObjectID = "PQe-9N-kFG"; */
+"PQe-9N-kFG.normalTitle" = "行阶梯形";
+
+/* Class = "UIButton"; normalTitle = "8"; ObjectID = "PX8-af-Fon"; */
+"PX8-af-Fon.normalTitle" = "8";
+
+/* Class = "UIButton"; normalTitle = "0"; ObjectID = "RDP-2N-LYx"; */
+"RDP-2N-LYx.normalTitle" = "0";
+
+/* Class = "UIButton"; normalTitle = "1"; ObjectID = "Rdn-yC-Awr"; */
+"Rdn-yC-Awr.normalTitle" = "1";
+
+/* Class = "UIButton"; normalTitle = "2"; ObjectID = "SPK-zO-GB4"; */
+"SPK-zO-GB4.normalTitle" = "2";
+
+/* Class = "UIButton"; normalTitle = "+/-"; ObjectID = "TPg-nC-BJ4"; */
+"TPg-nC-BJ4.normalTitle" = "+/-";
+
+/* Class = "UIButton"; normalTitle = "Matrix"; ObjectID = "Ux5-Sz-nY6"; */
+"Ux5-Sz-nY6.normalTitle" = "已存矩阵";
+
+/* Class = "UIButton"; normalTitle = "8"; ObjectID = "W8z-4A-ES3"; */
+"W8z-4A-ES3.normalTitle" = "8";
+
+/* Class = "UIButton"; normalTitle = "+Col"; ObjectID = "ZRe-M2-vAh"; */
+"ZRe-M2-vAh.normalTitle" = "加列";
+
+/* Class = "UIButton"; normalTitle = "4"; ObjectID = "bPp-hX-VUY"; */
+"bPp-hX-VUY.normalTitle" = "4";
+
+/* Class = "UIButton"; normalTitle = "1"; ObjectID = "cY8-NE-1cy"; */
+"cY8-NE-1cy.normalTitle" = "1";
+
+/* Class = "UIButton"; normalTitle = "/"; ObjectID = "cYI-sX-46e"; */
+"cYI-sX-46e.normalTitle" = "/";
+
+/* Class = "UIButton"; normalTitle = "+"; ObjectID = "eIK-xH-Q09"; */
+"eIK-xH-Q09.normalTitle" = "+";
+
+/* Class = "UIButton"; normalTitle = "7"; ObjectID = "f9e-Go-KDp"; */
+"f9e-Go-KDp.normalTitle" = "7";
+
+/* Class = "UIButton"; normalTitle = "-Col"; ObjectID = "hqh-HO-tUu"; */
+"hqh-HO-tUu.normalTitle" = "删列";
+
+/* Class = "UIButton"; normalTitle = "."; ObjectID = "iBU-ak-BvX"; */
+"iBU-ak-BvX.normalTitle" = ".";
+
+/* Class = "UIButton"; normalTitle = "Done"; ObjectID = "iNY-tk-61q"; */
+"iNY-tk-61q.normalTitle" = "完成";
+
+/* Class = "UIButton"; normalTitle = "+Row"; ObjectID = "jV0-y9-hYQ"; */
+"jV0-y9-hYQ.normalTitle" = "加行";
+
+/* Class = "UIButton"; normalTitle = "Camera"; ObjectID = "kKs-Yw-N9b"; */
+"kKs-Yw-N9b.normalTitle" = "Camera";
+
+/* Class = "UIButton"; normalTitle = "."; ObjectID = "keq-9B-ijL"; */
+"keq-9B-ijL.normalTitle" = ".";
+
+/* Class = "UIButton"; normalTitle = "Trace"; ObjectID = "kyx-Gd-9X7"; */
+"kyx-Gd-9X7.normalTitle" = "迹数";
+
+/* Class = "UIButton"; normalTitle = "/"; ObjectID = "l9H-wl-EIW"; */
+"l9H-wl-EIW.normalTitle" = "/";
+
+/* Class = "UIButton"; normalTitle = "RREF"; ObjectID = "lR7-6t-PYt"; */
+"lR7-6t-PYt.normalTitle" = "化简行阶梯形";
+
+/* Class = "UIButton"; normalTitle = "LU"; ObjectID = "nZs-Tw-aq1"; */
+"nZs-Tw-aq1.normalTitle" = "LU分解";
+
+/* Class = "UIButton"; normalTitle = "Rank"; ObjectID = "ooW-rE-jFq"; */
+"ooW-rE-jFq.normalTitle" = "秩";
+
+/* Class = "UIButton"; normalTitle = "Done"; ObjectID = "qE4-6k-eBx"; */
+"qE4-6k-eBx.normalTitle" = "完成";
+
+/* Class = "UIButton"; normalTitle = "× Scalar"; ObjectID = "r6W-Wo-RZn"; */
+"r6W-Wo-RZn.normalTitle" = "× 标量";
+
+/* Class = "UIButton"; normalTitle = "-"; ObjectID = "r6u-kF-evm"; */
+"r6u-kF-evm.normalTitle" = "-";
+
+/* Class = "UIButton"; normalTitle = "Inverse"; ObjectID = "s5K-hv-CcB"; */
+"s5K-hv-CcB.normalTitle" = "逆矩阵";
+
+/* Class = "UIButton"; normalTitle = "9"; ObjectID = "tDV-77-CYg"; */
+"tDV-77-CYg.normalTitle" = "9";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "wrb-SE-b6p"; */
+"wrb-SE-b6p.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "T"; ObjectID = "xAi-QO-KCL"; */
+"xAi-QO-KCL.normalTitle" = "转置";
+
+/* Class = "UIButton"; normalTitle = "2"; ObjectID = "yna-5g-nIG"; */
+"yna-5g-nIG.normalTitle" = "2";
+
+/* Class = "UIButton"; normalTitle = "4"; ObjectID = "zUt-5t-kgg"; */
+"zUt-5t-kgg.normalTitle" = "4";
+
+/* Class = "UIButton"; normalTitle = "6"; ObjectID = "zbQ-QT-uJo"; */
+"zbQ-QT-uJo.normalTitle" = "6";

@@ -36,7 +36,7 @@ class matrixTableView: UIView {
 	
 	func setLabel(i:Int,j:Int,s:String){
 		let underlineString = NSMutableAttributedString(string: s)
-		underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: count(s)))
+		underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: s.characters.count))
 		label[i][j].attributedText = underlineString
 		label[i][j].sizeToFit()
         maxWidth[j] = 0
@@ -48,7 +48,7 @@ class matrixTableView: UIView {
 	
 	//0 Up, 1 Down, 2 Left, 3 Right
 	func shiftUnderline(direction:Int){
-		label[underline.0][underline.1].text = label[underline.0][underline.1].attributedText.string
+		label[underline.0][underline.1].text = label[underline.0][underline.1].attributedText!.string
 		maxWidth[underline.1] = max(maxWidth[underline.1],label[underline.0][underline.1].frame.width)
 		switch direction{
 		case 0:
@@ -75,7 +75,6 @@ class matrixTableView: UIView {
         self.label = []
         let nrow = matrix.matrix.count
         let ncol = matrix.matrix[0].count
-        var strings:[[String]] = []
         maxWidth = [CGFloat](count:ncol,repeatedValue:0)
         for i in 0..<nrow{
             label.append([])
@@ -85,7 +84,7 @@ class matrixTableView: UIView {
 				if let (underlinei,underlinej) = underline{
 					if i==underlinei && j==underlinej{
 						let underlineString = NSMutableAttributedString(string: matrix.matrix[i][j].toString(matrix.decimal[i][j]))
-						underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: count(matrix.matrix[i][j].toString(matrix.decimal[i][j]))))
+						underlineString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: NSRange(location: 0, length: (matrix.matrix[i][j].toString(matrix.decimal[i][j])).characters.count))
 						label[i][j].attributedText = underlineString
 					}else{
 						let toAppend = matrix.matrix[i][j].toString(matrix.decimal[i][j])
@@ -152,12 +151,12 @@ class matrixTableView: UIView {
 	}
     
     class func preconfig()->UIView{
-        let view = UIView(frame:CGRect.zeroRect)
+        let view = UIView(frame:CGRect.zero)
         view.backgroundColor = UIColor.whiteColor()
         return(view)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
 
         leftu = matrixTableView.preconfig()
         left = matrixTableView.preconfig()
@@ -171,33 +170,34 @@ class matrixTableView: UIView {
         self.addConstraints([widthConstraint,heightConstraint])
         
         self.addSubview(left)
-        left.setTranslatesAutoresizingMaskIntoConstraints(true)
+        left.translatesAutoresizingMaskIntoConstraints = true
         left.frame = CGRect(x: 0, y: 0, width: borderWidth, height: self.frame.height)
-        left.autoresizingMask = UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleHeight
+        left.autoresizingMask = [.FlexibleRightMargin , .FlexibleHeight]
         
         self.addSubview(leftu)
-        leftu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftu.translatesAutoresizingMaskIntoConstraints = true
         leftu.frame = CGRect(x: 0, y: 0, width: borderLength, height: borderWidth)
-        leftu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleRightMargin
+        leftu.autoresizingMask = [.FlexibleBottomMargin , .FlexibleRightMargin]
         
         self.addSubview(leftd)
-        leftd.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftd.translatesAutoresizingMaskIntoConstraints = true
         leftd.frame = CGRect(x: 0, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
-        leftd.autoresizingMask = UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleRightMargin
+        leftd.autoresizingMask = [.FlexibleTopMargin , .FlexibleRightMargin]
         
         self.addSubview(right)
-        right.setTranslatesAutoresizingMaskIntoConstraints(true)
+        right.translatesAutoresizingMaskIntoConstraints = true
         right.frame = CGRect(x: self.frame.width-borderWidth, y: 0, width: borderWidth, height: self.frame.height)
-        right.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleLeftMargin
+        right.autoresizingMask = [.FlexibleHeight , .FlexibleLeftMargin]
         
         self.addSubview(rightu)
-        rightu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        rightu.translatesAutoresizingMaskIntoConstraints = true
         rightu.frame = CGRect(x: self.frame.width-borderLength, y: 0, width: borderLength, height: borderWidth)
-        rightu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleLeftMargin
+        rightu.autoresizingMask = [.FlexibleBottomMargin , .FlexibleLeftMargin]
         
         self.addSubview(rightd)
+        rightd.translatesAutoresizingMaskIntoConstraints = true
         rightd.frame = CGRect(x: self.frame.width-borderLength, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
-        rightd.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleTopMargin
+        rightd.autoresizingMask = [.FlexibleLeftMargin , .FlexibleTopMargin]
         
     }
     
@@ -214,33 +214,34 @@ class matrixTableView: UIView {
         self.addConstraints([widthConstraint,heightConstraint])
         
         self.addSubview(left)
-        left.setTranslatesAutoresizingMaskIntoConstraints(true)
+        left.translatesAutoresizingMaskIntoConstraints = true
         left.frame = CGRect(x: 0, y: 0, width: borderWidth, height: self.frame.height)
-        left.autoresizingMask = UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleHeight
+        left.autoresizingMask = [.FlexibleRightMargin , .FlexibleHeight]
         
         self.addSubview(leftu)
-        leftu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftu.translatesAutoresizingMaskIntoConstraints = true
         leftu.frame = CGRect(x: 0, y: 0, width: borderLength, height: borderWidth)
-        leftu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleRightMargin
+        leftu.autoresizingMask = [.FlexibleBottomMargin , .FlexibleRightMargin]
         
         self.addSubview(leftd)
-        leftd.setTranslatesAutoresizingMaskIntoConstraints(true)
+        leftd.translatesAutoresizingMaskIntoConstraints = true
         leftd.frame = CGRect(x: 0, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
-        leftd.autoresizingMask = UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleRightMargin
+        leftd.autoresizingMask = [.FlexibleTopMargin , .FlexibleRightMargin]
         
         self.addSubview(right)
-        right.setTranslatesAutoresizingMaskIntoConstraints(true)
+        right.translatesAutoresizingMaskIntoConstraints = true
         right.frame = CGRect(x: self.frame.width-borderWidth, y: 0, width: borderWidth, height: self.frame.height)
-        right.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleLeftMargin
+        right.autoresizingMask = [.FlexibleHeight , .FlexibleLeftMargin]
         
         self.addSubview(rightu)
-        rightu.setTranslatesAutoresizingMaskIntoConstraints(true)
+        rightu.translatesAutoresizingMaskIntoConstraints = true
         rightu.frame = CGRect(x: self.frame.width-borderLength, y: 0, width: borderLength, height: borderWidth)
-        rightu.autoresizingMask = UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleLeftMargin
+        rightu.autoresizingMask = [.FlexibleBottomMargin , .FlexibleLeftMargin]
         
         self.addSubview(rightd)
+        rightd.translatesAutoresizingMaskIntoConstraints = true
         rightd.frame = CGRect(x: self.frame.width-borderLength, y: self.frame.height-borderWidth, width: borderLength, height: borderWidth)
-        rightd.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleTopMargin
+        rightd.autoresizingMask = [.FlexibleLeftMargin , .FlexibleTopMargin]
     }
     
 }

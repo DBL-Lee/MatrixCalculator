@@ -58,6 +58,11 @@ class FractionInputView: UIView {
             button.layer.borderWidth = 1
         }
         self.containerView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
+        for view in self.subviews{
+            if view is UIButton{
+                (view as! UIButton).titleLabel?.adjustsFontSizeToFitWidth = true
+            }
+        }
     }
 
     //user started entering
@@ -73,7 +78,7 @@ class FractionInputView: UIView {
 				integerPart = numeratorIntegerPart
             }else{
                 if !numberlineEntered {
-                    if count(numerator)==1 { //Deleting last digit in numerator
+                    if numerator.characters.count==1 { //Deleting last digit in numerator
                         numerator = "0"
                     }else{ 
                         if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{ //Deleting floating point in numerator
@@ -127,25 +132,25 @@ class FractionInputView: UIView {
         case "+/-":
             negative = !negative
         default:
-            if floatingPoint<FLOATPOINTUPPER && integerPart <INTEGERPARTUPPER {
-                if !numberlineEntered{
-                    if numerator == "0" { //no digit entered yet
-                        numerator = sender.titleLabel!.text!
+            if (floatpointEntered && floatingPoint<FLOATPOINTUPPER) || (!floatpointEntered && integerPart<INTEGERPARTUPPER) {
+                if !self.numberlineEntered{
+                    if self.numerator == "0" { //no digit entered yet
+                        self.numerator = sender.titleLabel!.text!
                     }else{
-                        if floatpointEntered {
-							floatingPoint++
+                        if self.floatpointEntered {
+							self.floatingPoint++
 						}else{
-							intergerPart++
+							integerPart++
 						}
-                        numerator += sender.titleLabel!.text!
+                        self.numerator += sender.titleLabel!.text!
                     }
                 }else{
-                    if floatpointEntered {
-						floatingPoint++
+                    if self.floatpointEntered {
+						self.floatingPoint++
 					}else{
-						intergerPart++
+						integerPart++
 					}
-                    denominator += sender.titleLabel!.text!
+                    self.denominator += sender.titleLabel!.text!
                 }
             }
         }

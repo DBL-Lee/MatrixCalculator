@@ -37,25 +37,35 @@ func abs(f:Fraction) -> Fraction {
 }
 
 class Fraction:Comparable{
-    var n:Int
-    var d:Int
+    var n:Int64
+    var d:Int64
     
     // polarity indicated in numerator
-    init(n:Int,d:Int){
-        assert(d != 0, "denominator can not be zero")
+    init(n:Int64,d:Int64){
         let (rn, rd) = Fraction.reduce(n , d: d)
         self.n = rn
         self.d = rd
     }
     
-    init(i:Int){
+    init(i:Int64){
         self.n = i
         self.d = 1
     }
     
+    init(n:Int,d:Int){
+        let (rn, rd) = Fraction.reduce(Int64(n) , d: Int64(d))
+        self.n = rn
+        self.d = rd
+    }
+    
+    init(i:Int){
+        self.n = Int64(i)
+        self.d = 1
+    }
+    
     init(i:Double){
-        var newn:Int = Int(round(i*100000))
-        var newd:Int = 100000
+        let newn:Int64 = Int64(round(i*100000))
+        let newd:Int64 = 100000
         let (rn, rd) = Fraction.reduce(newn , d: newd)
         self.n = rn
         self.d = rd
@@ -71,27 +81,27 @@ class Fraction:Comparable{
     }
     
     func add(f:Fraction) ->Fraction{
-        let newn:Int = self.n * f.d + f.n * self.d
-        let newd:Int = self.d * f.d
-        var newf = Fraction(n: newn, d: newd)
+        let newn:Int64 = self.n &* f.d &+ f.n &* self.d
+        let newd:Int64 = self.d &* f.d
+        let newf = Fraction(n: newn, d: newd)
         return newf
     }
     
     func subtract(f:Fraction) ->Fraction{
-        var newf = Fraction(n: f.n * (-1), d: f.d)
+        let newf = Fraction(n: f.n * (-1), d: f.d)
         return add(newf)
     }
     
     func mult(f:Fraction) ->Fraction{
-        let newn:Int = self.n * f.n
-        let newd:Int = self.d * f.d
-        var newf = Fraction(n: newn, d: newd)
+        let newn:Int64 = self.n &* f.n
+        let newd:Int64 = self.d &* f.d
+        let newf = Fraction(n: newn, d: newd)
         return newf
     }
     
     func div(f:Fraction) -> Fraction{
         assert(f.n != 0, "can not divide by 0")
-        var newf = Fraction(n: f.d, d: f.n)
+        let newf = Fraction(n: f.d, d: f.n)
         return mult(newf)
     }
     
@@ -105,17 +115,17 @@ class Fraction:Comparable{
 	
 	private func isFiniteDecimal() -> Bool {
 		var numerator = n
-		while (n%%2==0){
+		while (n%2==0){
 			numerator = numerator/2
 		}
-		while (n%%5==0){
+		while (n%5==0){
 			numerator = numerator/5
 		}
 		return numerator==1
 	}
 	
 	func toString(decimal:Bool) -> String{
-		if !decimal || !isFiniteDecimal{
+		if !decimal || !isFiniteDecimal(){
 			return toString()
 		}else{
             if d==1{
@@ -129,10 +139,10 @@ class Fraction:Comparable{
 
     
     
-    class func reduce(var n:Int, var d:Int) -> (Int,Int){
-        let gcd: Int = Fraction.gcd(n, b: d)
-        var newn:Int
-        var newd:Int
+    class func reduce(n:Int64, d:Int64) -> (Int64,Int64){
+        let gcd: Int64 = Fraction.gcd(n, b: d)
+        var newn:Int64
+        var newd:Int64
         if (n<0 && d<0){
             newn = n/gcd*(-1)
             newd = d/gcd*(-1)
@@ -147,7 +157,7 @@ class Fraction:Comparable{
     }
     
     
-    class func gcd(var a: Int, var b: Int) -> Int {
+    class func gcd(var a: Int64, var b: Int64) -> Int64 {
         a = abs(a); b = abs(b)
         if (b > a) { swap(&a, &b) }
         while (b > 0) { (a, b) = (b, a % b) }

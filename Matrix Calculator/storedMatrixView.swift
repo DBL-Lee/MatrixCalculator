@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 protocol storeMatrixViewDelegate{
     func didPickMatrixWithAlias(alias:String,matrix:Matrix)
     func performSegue(identifier: String?)
@@ -19,9 +21,10 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
 	var storedMatrices:[String:Matrix] = [String:Matrix]()
 	var sortedKeys:[String] {
 		get {
-			return Array(storedMatrices.keys).sorted(<)
+			return storedMatrices.keys.sort()
 		}
 	}
+    
 	var storedTableView:UITableView!
 	var delegate:storeMatrixViewDelegate!
 	
@@ -32,7 +35,7 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         
 		let borderWidth:CGFloat = 2
         var smallframe = CGRect(x: frame.width*0.1-borderWidth,y: frame.height*0.1-borderWidth,width: frame.width*0.8+borderWidth*2,height: frame.height*0.8+borderWidth*2)
-        var containerView = UIView()
+        let containerView = UIView()
         containerView.frame = smallframe
         containerView.backgroundColor = UIColor.blackColor()
         containerView.layer.borderWidth = borderWidth
@@ -41,7 +44,7 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         let button   = UIButton()
         let buttonframe = CGRectMake(0, 0, frame.width*0.3, frame.width*0.2)
         button.frame = buttonframe
-        button.setTitle("New", forState: UIControlState.Normal)
+        button.setTitle(NSLocalizedString("new", comment: ""), forState: UIControlState.Normal)
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         button.setTitleColor(UIColor.whiteColor().darker(), forState: UIControlState.Highlighted)
         button.center = CGPoint(x: frame.width*0.8,y: frame.height*0.15)
@@ -55,11 +58,16 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         storedTableView.rowHeight = UITableViewAutomaticDimension
         storedTableView.estimatedRowHeight = 100.0
         storedTableView.showsVerticalScrollIndicator = false
-        storedTableView.tableFooterView = UIView(frame: CGRect.zeroRect)
+        storedTableView.tableFooterView = UIView(frame: CGRect.zero)
         storedTableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
         storedTableView.delegate = self
         storedTableView.dataSource = self
         self.addSubview(storedTableView)
+        for view in self.subviews{
+            if view is UIButton{
+                (view as! UIButton).titleLabel?.adjustsFontSizeToFitWidth = true
+            }
+        }
     }
 
     required init(coder aDecoder: NSCoder) {

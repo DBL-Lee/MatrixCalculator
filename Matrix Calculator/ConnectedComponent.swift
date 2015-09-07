@@ -30,10 +30,10 @@ class ConnectedComponent: NSObject {
     }
     
     private func center()->[[Double]]{
-        var side:Int = Int(Double(max(height,width))*1.5)
+        let side:Int = Int(Double(max(height,width))*1.5)
         var result = [[Double]](count: side, repeatedValue: ([Double](count: side, repeatedValue: 255.0)))
-        var horizontaloffset = (side-width)/2
-        var verticaloffset = (side-height)/2
+        let horizontaloffset = (side-width)/2
+        let verticaloffset = (side-height)/2
         for (y,x) in pixel {
             result[y-Int(boundBox.origin.y)+verticaloffset][x-Int(boundBox.origin.x)+horizontaloffset] = 0.0
         }
@@ -46,8 +46,8 @@ class ConnectedComponent: NSObject {
         var result:[Double] = []
         for i in 0..<outputSide{
             for j in 0..<outputSide{
-                var previ = Int(Double(i)*ratio)
-                var prevj = Int(Double(j)*ratio)
+                let previ = Int(Double(i)*ratio)
+                let prevj = Int(Double(j)*ratio)
                 var sum:Double = 0
                 var count = 0
                 for ii in -2...2{

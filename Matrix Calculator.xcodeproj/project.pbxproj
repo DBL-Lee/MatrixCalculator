@@ -23,12 +23,16 @@
 		9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */; };
 		9B78E1951A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */; };
 		9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */; };
+		9BB6D5961B9CC763008E5B13 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BB6D5981B9CC763008E5B13 /* Localizable.strings */; };
+		9BB6D59D1B9E423A008E5B13 /* TutorialOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */; settings = {ASSET_TAGS = (); }; };
 		9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */; };
 		9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */; };
 		9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB51B7D338400894EDD /* matrixTableView.swift */; };
 		9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */; };
 		9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BF80D611B829418002AF21C /* MatrixCell.xib */; };
 		9BF80D641B9781F5002AF21C /* FractionInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D631B9781F5002AF21C /* FractionInputView.swift */; };
+		9BF80D661B98B4CC002AF21C /* MatrixErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */; };
+		9BFC135F1B98E00F00904FC2 /* MatrixErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,12 +100,17 @@
 		9B78E1931A8CDB3D0069CBF3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix_CalculatorTests.swift; sourceTree = "<group>"; };
 		9BA1C8B91A9632D20052C9A4 /* NeuralNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeuralNetwork.swift; sourceTree = "<group>"; };
+		9BB6D5931B9B2235008E5B13 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		9BB6D5971B9CC763008E5B13 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9BB6D5991B9CC777008E5B13 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialOverlayView.swift; sourceTree = "<group>"; };
 		9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixCalculationCell.swift; sourceTree = "<group>"; };
 		9BDD6AB51B7D338400894EDD /* matrixTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = matrixTableView.swift; sourceTree = "<group>"; };
 		9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = storedMatrixView.swift; sourceTree = "<group>"; };
 		9BF80D611B829418002AF21C /* MatrixCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatrixCell.xib; sourceTree = "<group>"; };
 		9BF80D631B9781F5002AF21C /* FractionInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FractionInputView.swift; sourceTree = "<group>"; };
+		9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixErrors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +200,7 @@
 		9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9BB6D5981B9CC763008E5B13 /* Localizable.strings */,
 				9B6CD83B1A9E3766000C1841 /* Resize.h */,
 				9B6CD83C1A9E3766000C1841 /* Resize.m */,
 				9B78E17D1A8CDB3C0069CBF3 /* Info.plist */,
@@ -218,6 +228,8 @@
 		9BF80D5E1B811264002AF21C /* CustomClasses */ = {
 			isa = PBXGroup;
 			children = (
+				9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */,
+				9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */,
 				9BF80D631B9781F5002AF21C /* FractionInputView.swift */,
 				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
 				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
@@ -275,7 +287,9 @@
 		9B78E1711A8CDB3C0069CBF3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Zichuan Huang";
 				TargetAttributes = {
 					9B78E1781A8CDB3C0069CBF3 = {
@@ -295,6 +309,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 9B78E1701A8CDB3C0069CBF3;
 			productRefGroup = 9B78E17A1A8CDB3C0069CBF3 /* Products */;
@@ -313,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B4980B71B51AB9900F2BC47 /* weight.txt in Resources */,
+				9BB6D5961B9CC763008E5B13 /* Localizable.strings in Resources */,
 				9B78E1841A8CDB3D0069CBF3 /* Main.storyboard in Resources */,
 				9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */,
 				9B78E1861A8CDB3D0069CBF3 /* Images.xcassets in Resources */,
@@ -341,11 +357,13 @@
 				9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */,
 				9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */,
 				9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */,
+				9BF80D661B98B4CC002AF21C /* MatrixErrors.swift in Sources */,
 				9B589F371B42DFA30009A355 /* ConnectedComponent.swift in Sources */,
 				9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */,
 				9B6CD83D1A9E3766000C1841 /* Resize.m in Sources */,
 				9B78E17F1A8CDB3C0069CBF3 /* AppDelegate.swift in Sources */,
 				9B589F3A1B4355100009A355 /* Queue.swift in Sources */,
+				9BB6D59D1B9E423A008E5B13 /* TutorialOverlayView.swift in Sources */,
 				9BA1C8BA1A9632D20052C9A4 /* NeuralNetwork.swift in Sources */,
 				9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */,
 				9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */,
@@ -357,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BFC135F1B98E00F00904FC2 /* MatrixErrors.swift in Sources */,
 				9B78E1951A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -376,6 +395,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				9B78E1831A8CDB3D0069CBF3 /* Base */,
+				9BB6D5931B9B2235008E5B13 /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -386,6 +406,15 @@
 				9B78E1881A8CDB3D0069CBF3 /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		9BB6D5981B9CC763008E5B13 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BB6D5971B9CC763008E5B13 /* en */,
+				9BB6D5991B9CC777008E5B13 /* zh-Hans */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -411,6 +440,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -477,6 +507,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Matrix Calculator/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hzc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Matrix Calculator/Matrix Calculator-Bridging-Header.h";
@@ -493,6 +524,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Matrix Calculator/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hzc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Matrix Calculator/Matrix Calculator-Bridging-Header.h";
@@ -513,6 +545,7 @@
 				);
 				INFOPLIST_FILE = "Matrix CalculatorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hzc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Matrix Calculator.app/Matrix Calculator";
 			};
@@ -528,6 +561,7 @@
 				);
 				INFOPLIST_FILE = "Matrix CalculatorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hzc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Matrix Calculator.app/Matrix Calculator";
 			};

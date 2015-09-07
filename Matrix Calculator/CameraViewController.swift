@@ -34,15 +34,14 @@ class CameraViewController: UIViewController {
     }
     
     func beginSession() {
-        var err : NSError? = nil
-        captureSession.addInput(AVCaptureDeviceInput(device: captureDevice, error: &err))
-        
-        if err != nil {
-            println("error: \(err?.localizedDescription)")
+        do{
+            captureSession.addInput(try AVCaptureDeviceInput(device: captureDevice))
+        }catch{
+            print(error)
         }
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.view.layer.addSublayer(previewLayer)
+        self.view.layer.addSublayer(previewLayer!)
         previewLayer?.frame = self.view.layer.frame
         captureSession.startRunning()
     }

@@ -1,3 +1,5 @@
+import UIKit
+
 enum MatrixErrors : ErrorType{
 	case NotInvertible
 	case NotSquareMatrix
@@ -8,11 +10,11 @@ extension MatrixErrors : CustomStringConvertible {
     var description: String {
         switch self {
             case .NotInvertible:
-                return "Matrix is not invertible!"            
+                return NSLocalizedString("notInvertible", comment: "")
             case .NotSquareMatrix:
-                return "Matrix is not square matrix!"
-			case .DimensionMismatch((a,b),(c,d)):
-				return "Cannot perform operation on \(a)×\(b) and \(c)×\(d) matrices."
+                return NSLocalizedString("notSquare", comment: "")
+			case .DimensionMismatch(let (a,b),let (c,d)):
+				return String(format: NSLocalizedString("dimensionMismatch", comment: ""), arguments: [a,b,c,d])
         }
     }
 }
