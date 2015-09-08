@@ -44,6 +44,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var image:UIImage!
 
     var imagePicker:UIImagePickerController!
+	
+	var tutorialView:TutorialOverlayView!
+	var detectTouch = false
     
     //how black is black
     let BLACKTHRESHOLD = 80
@@ -109,8 +112,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 (view as! UIButton).titleLabel?.adjustsFontSizeToFitWidth = true
             }
         }
+		
+		if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTutSwipe"){
+            showTutorialView(NSLocalizedString("FirstTimeSwipe", comment: ""))            
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTutSwipe")
+        }
     }
-    
+	
+ 	private func showTutorialView(text:String){
+		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
+		tutorialView.translatesAutoresizingMaskIntoConstraints = false
+		let viewsDict = ["tutorialView": tutorialView]
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
+        tutorialView.alpha = 0.0
+        self.view.addSubview(tutorialView)
+		UIView.animateWithDuration(0.5, animations: {
+            () in
+            self.tutorialView.alpha = 1.0
+        })
+		self.detectTouch = true
+	}   
    
     
     override func didReceiveMemoryWarning() {
@@ -729,5 +751,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
         
     }    
+	
+	override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if detectTouch {
+            UIView.animateWithDuration(0.5, animations: {
+				() in
+				self.tutorialView.alpha = 0.0
+				}, completion: {
+					bool in
+					self.tutorialView.removeFromSuperview()
+			})
+            self.detectTouch = false
+        }
+    }
 }
 

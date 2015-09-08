@@ -9,11 +9,10 @@
 import UIKit
 
 class TutorialOverlayView: UIView {
-    let OFFSET:CGFloat = 30
     var label:UILabel!
     init(frame: CGRect,text:String) {
 
-        self.label = UILabel(frame: CGRect(x: 0, y: OFFSET, width: frame.width-2*OFFSET, height: frame.height))
+        self.label = UILabel(frame: CGRect(x: 50, y: 0, width: frame.width-2*50, height: frame.height))
         super.init(frame: frame)
         self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.8)
         self.label.text = text
@@ -22,7 +21,11 @@ class TutorialOverlayView: UIView {
         self.label.numberOfLines = 0
         self.label.lineBreakMode = .ByWordWrapping
         self.label.textColor = UIColor.whiteColor()
-        self.addSubview(self.label)
+		self.label.translatesAutoresizingMaskIntoConstraints = false
+		let viewsDict = ["label": label]
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[label]-50-|", options: .allZeros, metrics: nil, views: viewsDict))
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[label]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
+		addSubview(self.label)
         
     }
 

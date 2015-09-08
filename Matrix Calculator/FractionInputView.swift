@@ -175,8 +175,11 @@ class FractionInputView: UIView {
         if d.n == 0 { d = Fraction(i: 1)}
 
 		self.delegate.didFinishInputFraction(n/d,decimal: floatpointEntered)
+		
         numerator = "0"
         denominator = ""
+		integerPart = 1
+		numeratorIntegerPart = 1
         floatingPoint = 0
         numeratorFloatingPoint = 0
         negative = false

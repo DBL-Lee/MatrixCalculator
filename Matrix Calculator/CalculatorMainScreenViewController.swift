@@ -150,12 +150,26 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
         
         if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTut1"){
-            self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: NSLocalizedString("FirstTimeEnter", comment: ""))
-            self.view.addSubview(tutorialView)
-            self.detectTouch = true
+            showTutorialView(NSLocalizedString("FirstTimeEnter", comment: ""))            
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTut1")
         }
     }
+	
+	private func showTutorialView(text:String){
+		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
+		tutorialView.translatesAutoresizingMaskIntoConstraints = false
+		let viewsDict = ["tutorialView": tutorialView]
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
+		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
+        tutorialView.alpha = 0.0
+        self.view.addSubview(tutorialView)
+		UIView.animateWithDuration(0.5, animations: {
+            () in
+            self.tutorialView.alpha = 1.0
+        })
+		self.detectTouch = true
+	}
+	
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -490,6 +504,12 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         if res is Matrix{
             firstOperand = res as? Matrix
             carryForwardAnswer = true
+			
+			if !NSUserDefaults.standardUserDefaults().boolForKey("SeenAnsTut"){
+				showTutorialView(NSLocalizedString("FirstTimeMatrixAns", comment: ""))            
+				NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenAnsTut")
+			}
+			
         }else{
             carryForwardAnswer = false
         }
@@ -557,7 +577,13 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if detectTouch {
-            self.tutorialView.removeFromSuperview()
+			UIView.animateWithDuration(0.5, animations: {
+				() in
+				self.tutorialView.alpha = 0.0
+				}, completion: {
+					bool in
+					self.tutorialView.removeFromSuperview()
+			})
             self.detectTouch = false
         }
     }
