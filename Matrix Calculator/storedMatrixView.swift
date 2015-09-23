@@ -86,8 +86,8 @@ class storedMatrixView: UIView,UITableViewDataSource,UITableViewDelegate,inputMa
         let cell:MatrixCalculationCell = storedTableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
         let text = sortedKeys[indexPath.row]
         cell.label.text = text
-		cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width
 		cell.label.sizeToFit()
+		cell.resultMatrixView.widthLimit = tableView.frame.width*0.8
         cell.resultMatrixView.setMatrix(storedMatrices[text]!)
         cell.resultMatrixView.hidden = false
         return cell

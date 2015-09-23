@@ -68,7 +68,7 @@ class FractionInputView: UIView {
     //user started entering
     @IBAction func digitPressed(sender: UIButton) {
         switch sender.titleLabel!.text! {
-        case "DEL":
+        case "DEL","退格":
             if numberlineEntered && denominator=="" { //Deleting numberline
                 numberlineEntered = false
                 if numeratorFloatingPoint > 0 { //Numerator is float

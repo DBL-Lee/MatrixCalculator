@@ -22,11 +22,16 @@ class TutorialOverlayView: UIView {
         self.label.lineBreakMode = .ByWordWrapping
         self.label.textColor = UIColor.whiteColor()
 		self.label.translatesAutoresizingMaskIntoConstraints = false
-		let viewsDict = ["label": label]
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[label]-50-|", options: .allZeros, metrics: nil, views: viewsDict))
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[label]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
-		addSubview(self.label)
+		
         
+    }
+    
+    override func didMoveToSuperview() {
+        addSubview(self.label)
+        let viewsDict = ["label": label]
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[label]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+
     }
 
     required init?(coder aDecoder: NSCoder) {

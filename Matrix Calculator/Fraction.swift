@@ -114,14 +114,14 @@ class Fraction:Comparable{
     }
 	
 	private func isFiniteDecimal() -> Bool {
-		var numerator = n
-		while (n%2==0){
-			numerator = numerator/2
+		var denominator = d
+		while (denominator%2==0){
+			denominator = denominator/2
 		}
-		while (n%5==0){
-			numerator = numerator/5
+		while (denominator%5==0){
+			denominator = denominator/5
 		}
-		return numerator==1
+		return denominator==1
 	}
 	
 	func toString(decimal:Bool) -> String{

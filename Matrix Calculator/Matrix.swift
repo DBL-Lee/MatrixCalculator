@@ -113,6 +113,10 @@ class Matrix {
         }
         return v
     }
+    
+    func matrixCopyWithDecimal(showDecimal:Bool)->Matrix{
+        return Matrix(r: row, c: column, value: newEntries(0..<row, newcolumn: 0..<column), decimal: [[Bool]](count: row, repeatedValue: [Bool](count: column, repeatedValue: showDecimal)))
+    }
 
     func matrixCopy() -> Matrix{        
         return Matrix(r: row, c: column, value: newEntries(0..<row,newcolumn: 0..<column),decimal: decimal)

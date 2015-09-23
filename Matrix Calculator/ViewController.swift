@@ -12,26 +12,11 @@ protocol inputMatrixDelegate{
     func didFinishInputMatrix(matrix:Matrix,alias:String)
 }
 
-extension String
-{
-    subscript(integerIndex: Int) -> Character {
-        let index = startIndex.advancedBy(integerIndex)
-        return self[index]
-    }
-    
-    subscript(integerRange: Range<Int>) -> String {
-        let start = startIndex.advancedBy(integerRange.startIndex)
-        let end = startIndex.advancedBy(integerRange.endIndex)
-        let range = start..<end
-        return self[range]
-    }
-}
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
     
 
     @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var matrixLabel: UILabel!
     
     var delegate:inputMatrixDelegate!
     
@@ -121,12 +106,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	
  	private func showTutorialView(text:String){
 		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
-		tutorialView.translatesAutoresizingMaskIntoConstraints = false
-		let viewsDict = ["tutorialView": tutorialView]
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
-        tutorialView.alpha = 0.0
+        tutorialView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(tutorialView)
+		let viewsDict = ["tutorialView": tutorialView]
+		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
+		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+        tutorialView.alpha = 0.0
 		UIView.animateWithDuration(0.5, animations: {
             () in
             self.tutorialView.alpha = 1.0
@@ -168,7 +153,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //user started entering
     @IBAction func digitPressed(sender: UIButton) {
         switch sender.titleLabel!.text! {
-        case "DEL":
+        case "DEL","退格":
             if numberlineEntered && denominator=="" { //Deleting numberline
                 numberlineEntered = false
                 if numeratorFloatingPoint > 0 { //Numerator is float
@@ -560,13 +545,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //First Step: scale the image down to 1280*960 or 960*1280
     func scaledownImage(image:UIImage)->UIImage {
-        var rect:CGRect! //= CGRectMake(0, 0, image.size.width/2, image.size.height/2)
-        if image.size.width > image.size.height {
-            rect = CGRectMake(0, 0, 1280, 960)
-        }else{
-            rect = CGRectMake(0, 0, 960, 1280)
-        }
-        return image.resizedImage(rect.size, interpolationQuality: CGInterpolationQuality.High)
+//        var rect:CGRect! //= CGRectMake(0, 0, image.size.width/2, image.size.height/2)
+//        if image.size.width > image.size.height {
+//            rect = CGRectMake(0, 0, 1280, 960)
+//        }else{
+//            rect = CGRectMake(0, 0, 960, 1280)
+//        }
+        return UIImage()
+//        return image.resizedImage(rect.size, interpolationQuality: CGInterpolationQuality.High)
     }
     
     //First Turn image to grayscale then apply threshold to obtain Binary image

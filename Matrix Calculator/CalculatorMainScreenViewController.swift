@@ -8,91 +8,7 @@
 
 import UIKit
 
-enum MatrixOperations{
-	case add
-	case subtract
-	case multiplication
-	case scalarmult
-    case REF
-	case RREF
-	case transpose
-	case inverse
-	case chol
-	case QR
-	case LU
-	case diagonalize
-	case eigenpair
-	case rank
-	case trace
-	case det
-}
 
-extension String {
-    func localized(lang:String) ->String {
-        
-        let path = NSBundle.mainBundle().pathForResource(lang, ofType: "lproj")
-        let bundle = NSBundle(path: path!)
-        
-        return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
-    }}
-
-extension UIColor {
-    
-    func lighter(amount : CGFloat = 0.25) -> UIColor {
-        return hueColorWithBrightnessAmount(1 + amount)
-    }
-    
-    func darker(amount : CGFloat = 0.25) -> UIColor {
-        return hueColorWithBrightnessAmount(1 - amount)
-    }
-    
-    private func hueColorWithBrightnessAmount(amount: CGFloat) -> UIColor {
-        var hue         : CGFloat = 0
-        var saturation  : CGFloat = 0
-        var brightness  : CGFloat = 0
-        var alpha       : CGFloat = 0
-            
-            if getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
-                return UIColor( hue: hue,
-                    saturation: saturation,
-                    brightness: brightness * amount,
-                    alpha: alpha )
-            } else {
-                return self
-            }
-        
-    }
-    
-}
-
-extension UIImage {
-    class func imageWithColor(color: UIColor) -> UIImage {
-        let rect = CGRectMake(0.0, 0.0, 1.0, 1.0)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image
-    }
-}
-
-extension UIView {
-
-    func takeSnapshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
-
-        drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
-
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
-    }
-}
 
 class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate,inputFractionDelegate {
     @IBOutlet weak var tableView: UITableView!    
@@ -111,6 +27,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     var carryForwardAnswer:Bool = false
     var tutorialView:TutorialOverlayView!
     var detectTouch = false
+    var showDecimal = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,20 +66,74 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             }
         }
         
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        swipeLeft.numberOfTouchesRequired = 2
+        self.view.addGestureRecognizer(swipeLeft)
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        swipeRight.numberOfTouchesRequired = 2
+        self.view.addGestureRecognizer(swipeRight)
+        
         if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTut1"){
-            showTutorialView(NSLocalizedString("FirstTimeEnter", comment: ""))            
+            showTutorialView(NSLocalizedString("FirstTimeEnter", comment: ""))
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTut1")
         }
+        
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        NSUserDefaults.standardUserDefaults().setInteger(NSUserDefaults.standardUserDefaults().integerForKey("UseTimes")+1, forKey: "UseTimes")
+        if NSUserDefaults.standardUserDefaults().integerForKey("UseTimes")%10 == 0 && !NSUserDefaults.standardUserDefaults().boolForKey("Rated") && !NSUserDefaults.standardUserDefaults().boolForKey("NeverRate"){
+            presentRatingViewController()
+        }
+    }
+    
+    private func presentRatingViewController(){
+        let message = NSLocalizedString("likeMessage", comment: "")
+        let alert = UIAlertController(title: NSLocalizedString("likeTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("likeYes", comment: ""), style: .Default, handler: {
+            action in
+            let rateAlert = UIAlertController(title: NSLocalizedString("rateTitle", comment: ""), message: NSLocalizedString("rateMessage", comment: ""), preferredStyle: UIAlertControllerStyle.Alert)
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateYes", comment: ""), style: .Default, handler: {
+                action in
+                UIApplication.sharedApplication().openURL(NSURL(string : "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1038193869&onlyLatestVersion=true&pageNumber=0&sortOrdering=1")!)
+                rateAlert.removeFromParentViewController()
+            }))
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateNo", comment: ""), style: .Default, handler: {
+                action in
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "NeverRate")
+                rateAlert.removeFromParentViewController()
+            }))
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateLater", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+                action in
+            }))
+            alert.removeFromParentViewController()
+            self.presentViewController(rateAlert, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("likeNo", comment: ""), style: .Default, handler: {
+            action in
+            let email = "lee_developer@hotmail.com"
+            let url = NSURL(string: "mailto:\(email)")!
+            UIApplication.sharedApplication().openURL(url)
+            alert.removeFromParentViewController()
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+            action in
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 	
 	private func showTutorialView(text:String){
 		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
 		tutorialView.translatesAutoresizingMaskIntoConstraints = false
-		let viewsDict = ["tutorialView": tutorialView]
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
-		addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: .allZeros, metrics: nil, views: viewsDict))
-        tutorialView.alpha = 0.0
+        let viewsDict = ["tutorialView": tutorialView]
         self.view.addSubview(tutorialView)
+		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
+		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+        tutorialView.alpha = 0.0
 		UIView.animateWithDuration(0.5, animations: {
             () in
             self.tutorialView.alpha = 1.0
@@ -198,6 +169,20 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		showViewWithAnimation(self.storedMatricesView)
     }
     
+    func respondToSwipeGesture(gesture: UIGestureRecognizer){
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            showDecimal = !showDecimal
+            switch swipeGesture.direction{
+            case UISwipeGestureRecognizerDirection.Left:
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Left)
+            case UISwipeGestureRecognizerDirection.Right:
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Right)
+            default:()
+            }
+            
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
         switch expressions[indexPath.row]{
@@ -208,7 +193,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         default: ()
         }
 		cell.label.sizeToFit()
-        cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width
+        cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width-10
         cell.resultMatrixView.hidden = true
 		cell.resultLabel.textColor = UIColor.whiteColor()
         cell.resultLabel.hidden = true
@@ -216,7 +201,8 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         if indexPath.row < results.count{
             switch results[indexPath.row] {
             case let matrix as Matrix:
-                cell.resultMatrixView.setMatrix(matrix)
+                let displayMatrix = matrix.matrixCopyWithDecimal(showDecimal)
+                cell.resultMatrixView.setMatrix(displayMatrix)
                 cell.resultMatrixView.hidden = false
             case let scalar as Fraction:
                 cell.resultLabel.text = scalar.toString()
@@ -508,8 +494,12 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 			if !NSUserDefaults.standardUserDefaults().boolForKey("SeenAnsTut"){
 				showTutorialView(NSLocalizedString("FirstTimeMatrixAns", comment: ""))            
 				NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenAnsTut")
-			}
-			
+            }else if !NSUserDefaults.standardUserDefaults().boolForKey("SeenDecimalTut"){
+                showTutorialView(NSLocalizedString("DecimalTut", comment: ""))
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenDecimalTut")
+            }
+
+            
         }else{
             carryForwardAnswer = false
         }
