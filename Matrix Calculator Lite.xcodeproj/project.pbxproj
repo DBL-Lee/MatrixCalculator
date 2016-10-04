@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */; };
+		9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D01B5DA09300F2BC47 /* Matrix.swift */; };
+		9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D11B5DA09300F2BC47 /* Polynomial.swift */; };
+		9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4980D41B5DA19A00F2BC47 /* Fraction.swift */; };
+		9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696261AED23EF00AE0BEF /* CameraViewController.swift */; };
+		9B78E17F1A8CDB3C0069CBF3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */; };
+		9B78E1811A8CDB3D0069CBF3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B78E1801A8CDB3D0069CBF3 /* ViewController.swift */; };
+		9B78E1841A8CDB3D0069CBF3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */; };
+		9B78E1861A8CDB3D0069CBF3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */; };
+		9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */; };
+		9BB6D5961B9CC763008E5B13 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BB6D5981B9CC763008E5B13 /* Localizable.strings */; };
+		9BB6D59D1B9E423A008E5B13 /* TutorialOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */; };
+		9BB6D59F1BA0B585008E5B13 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB6D59E1BA0B585008E5B13 /* Util.swift */; };
+		9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */; };
+		9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */; };
+		9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD6AB51B7D338400894EDD /* matrixTableView.swift */; };
+		9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */; };
+		9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BF80D611B829418002AF21C /* MatrixCell.xib */; };
+		9BF80D641B9781F5002AF21C /* FractionInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D631B9781F5002AF21C /* FractionInputView.swift */; };
+		9BF80D661B98B4CC002AF21C /* MatrixErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */; };
+		E5CB986E4B2CAE0C875EF33E /* Pods_Matrix_Calculator_Lite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC382E2FEFAE638D6813BC67 /* Pods_Matrix_Calculator_Lite.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B4980C51B5BFB3C00F2BC47 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B6CD8351A9CA0D6000C1841 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B6CD8361A9CA127000C1841 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4CF8A5A8A9BFD315582DECF3 /* Pods-Matrix Calculator Lite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Matrix Calculator Lite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Matrix Calculator Lite/Pods-Matrix Calculator Lite.debug.xcconfig"; sourceTree = "<group>"; };
+		9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorMainScreenViewController.swift; sourceTree = "<group>"; };
+		9B4980D01B5DA09300F2BC47 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		9B4980D11B5DA09300F2BC47 /* Polynomial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Polynomial.swift; sourceTree = "<group>"; };
+		9B4980D41B5DA19A00F2BC47 /* Fraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
+		9B5696261AED23EF00AE0BEF /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		9B78E1791A8CDB3C0069CBF3 /* Matrix Calculator Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Matrix Calculator Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B78E17D1A8CDB3C0069CBF3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9B78E1801A8CDB3D0069CBF3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9B78E1831A8CDB3D0069CBF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9B78E1881A8CDB3D0069CBF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		9B78E1931A8CDB3D0069CBF3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix_CalculatorTests.swift; sourceTree = "<group>"; };
+		9BB6D5931B9B2235008E5B13 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		9BB6D5971B9CC763008E5B13 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9BB6D5991B9CC777008E5B13 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialOverlayView.swift; sourceTree = "<group>"; };
+		9BB6D59E1BA0B585008E5B13 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
+		9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixCalculationCell.swift; sourceTree = "<group>"; };
+		9BDD6AB51B7D338400894EDD /* matrixTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = matrixTableView.swift; sourceTree = "<group>"; };
+		9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = storedMatrixView.swift; sourceTree = "<group>"; };
+		9BF80D611B829418002AF21C /* MatrixCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatrixCell.xib; sourceTree = "<group>"; };
+		9BF80D631B9781F5002AF21C /* FractionInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FractionInputView.swift; sourceTree = "<group>"; };
+		9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixErrors.swift; sourceTree = "<group>"; };
+		C241947EBD66790021716D4D /* Pods-Matrix Calculator Lite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Matrix Calculator Lite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Matrix Calculator Lite/Pods-Matrix Calculator Lite.release.xcconfig"; sourceTree = "<group>"; };
+		EC382E2FEFAE638D6813BC67 /* Pods_Matrix_Calculator_Lite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Matrix_Calculator_Lite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B78E1761A8CDB3C0069CBF3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5CB986E4B2CAE0C875EF33E /* Pods_Matrix_Calculator_Lite.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5940B594D18348765A926E7B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4CF8A5A8A9BFD315582DECF3 /* Pods-Matrix Calculator Lite.debug.xcconfig */,
+				C241947EBD66790021716D4D /* Pods-Matrix Calculator Lite.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		8573BFC3CA7A911E5B51EC30 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC382E2FEFAE638D6813BC67 /* Pods_Matrix_Calculator_Lite.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9B4980CE1B5D8EB700F2BC47 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				9B4980CC1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift */,
+				9B5696261AED23EF00AE0BEF /* CameraViewController.swift */,
+				9B78E1801A8CDB3D0069CBF3 /* ViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		9B4980D61B5DA1A700F2BC47 /* MatrixClasses */ = {
+			isa = PBXGroup;
+			children = (
+				9B4980D01B5DA09300F2BC47 /* Matrix.swift */,
+				9B4980D11B5DA09300F2BC47 /* Polynomial.swift */,
+				9B4980D41B5DA19A00F2BC47 /* Fraction.swift */,
+			);
+			name = MatrixClasses;
+			sourceTree = "<group>";
+		};
+		9B78E1701A8CDB3C0069CBF3 = {
+			isa = PBXGroup;
+			children = (
+				9B78E17B1A8CDB3C0069CBF3 /* Matrix Calculator */,
+				9B78E1911A8CDB3D0069CBF3 /* Matrix CalculatorTests */,
+				9B78E17A1A8CDB3C0069CBF3 /* Products */,
+				5940B594D18348765A926E7B /* Pods */,
+				8573BFC3CA7A911E5B51EC30 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9B78E17A1A8CDB3C0069CBF3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B78E1791A8CDB3C0069CBF3 /* Matrix Calculator Lite.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9B78E17B1A8CDB3C0069CBF3 /* Matrix Calculator */ = {
+			isa = PBXGroup;
+			children = (
+				9B4980CE1B5D8EB700F2BC47 /* ViewControllers */,
+				9B4980D61B5DA1A700F2BC47 /* MatrixClasses */,
+				9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */,
+				9BF80D5E1B811264002AF21C /* CustomClasses */,
+				9B78E17E1A8CDB3C0069CBF3 /* AppDelegate.swift */,
+				9B78E1851A8CDB3D0069CBF3 /* Images.xcassets */,
+				9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */,
+				9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */,
+			);
+			path = "Matrix Calculator";
+			sourceTree = "<group>";
+		};
+		9B78E17C1A8CDB3C0069CBF3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9BB6D59E1BA0B585008E5B13 /* Util.swift */,
+				9BB6D5981B9CC763008E5B13 /* Localizable.strings */,
+				9B78E17D1A8CDB3C0069CBF3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9B78E1911A8CDB3D0069CBF3 /* Matrix CalculatorTests */ = {
+			isa = PBXGroup;
+			children = (
+				9B78E1941A8CDB3D0069CBF3 /* Matrix_CalculatorTests.swift */,
+				9B78E1921A8CDB3D0069CBF3 /* Supporting Files */,
+			);
+			path = "Matrix CalculatorTests";
+			sourceTree = "<group>";
+		};
+		9B78E1921A8CDB3D0069CBF3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9B78E1931A8CDB3D0069CBF3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9BF80D5E1B811264002AF21C /* CustomClasses */ = {
+			isa = PBXGroup;
+			children = (
+				9BF80D651B98B4CC002AF21C /* MatrixErrors.swift */,
+				9BB6D59C1B9E423A008E5B13 /* TutorialOverlayView.swift */,
+				9BF80D631B9781F5002AF21C /* FractionInputView.swift */,
+				9BF80D5F1B8116C0002AF21C /* storedMatrixView.swift */,
+				9BDD6AB51B7D338400894EDD /* matrixTableView.swift */,
+				9BDD6AB31B7D2ED200894EDD /* MatrixCalculationCell.swift */,
+				9BF80D611B829418002AF21C /* MatrixCell.xib */,
+				9BDD6AB11B7A346000894EDD /* LoadingOverlay.swift */,
+			);
+			name = CustomClasses;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B78E1781A8CDB3C0069CBF3 /* Matrix Calculator Lite */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B78E1981A8CDB3D0069CBF3 /* Build configuration list for PBXNativeTarget "Matrix Calculator Lite" */;
+			buildPhases = (
+				5E872A75A8BA36C6C4B923AD /* Check Pods Manifest.lock */,
+				9B78E1751A8CDB3C0069CBF3 /* Sources */,
+				9B78E1761A8CDB3C0069CBF3 /* Frameworks */,
+				9B78E1771A8CDB3C0069CBF3 /* Resources */,
+				9B6CD8351A9CA0D6000C1841 /* Embed Frameworks */,
+				9B6CD8361A9CA127000C1841 /* CopyFiles */,
+				9B4980C51B5BFB3C00F2BC47 /* Embed App Extensions */,
+				475746F3FE4288D698431500 /* Embed Pods Frameworks */,
+				4A8A78EDE8DB5A52E10E3256 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Matrix Calculator Lite";
+			productName = "Matrix Calculator";
+			productReference = 9B78E1791A8CDB3C0069CBF3 /* Matrix Calculator Lite.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B78E1711A8CDB3C0069CBF3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Zichuan Huang";
+				TargetAttributes = {
+					9B78E1781A8CDB3C0069CBF3 = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 62ZFR423PJ;
+						LastSwiftMigration = 0800;
+					};
+				};
+			};
+			buildConfigurationList = 9B78E1741A8CDB3C0069CBF3 /* Build configuration list for PBXProject "Matrix Calculator Lite" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hans",
+			);
+			mainGroup = 9B78E1701A8CDB3C0069CBF3;
+			productRefGroup = 9B78E17A1A8CDB3C0069CBF3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B78E1781A8CDB3C0069CBF3 /* Matrix Calculator Lite */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9B78E1771A8CDB3C0069CBF3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BB6D5961B9CC763008E5B13 /* Localizable.strings in Resources */,
+				9B78E1841A8CDB3D0069CBF3 /* Main.storyboard in Resources */,
+				9B78E1891A8CDB3D0069CBF3 /* LaunchScreen.xib in Resources */,
+				9B78E1861A8CDB3D0069CBF3 /* Images.xcassets in Resources */,
+				9BF80D621B829419002AF21C /* MatrixCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		475746F3FE4288D698431500 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Matrix Calculator Lite/Pods-Matrix Calculator Lite-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4A8A78EDE8DB5A52E10E3256 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Matrix Calculator Lite/Pods-Matrix Calculator Lite-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5E872A75A8BA36C6C4B923AD /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B78E1751A8CDB3C0069CBF3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BF80D601B8116C0002AF21C /* storedMatrixView.swift in Sources */,
+				9BDD6AB61B7D338400894EDD /* matrixTableView.swift in Sources */,
+				9B78E1811A8CDB3D0069CBF3 /* ViewController.swift in Sources */,
+				9BF80D641B9781F5002AF21C /* FractionInputView.swift in Sources */,
+				9B4980D31B5DA09300F2BC47 /* Polynomial.swift in Sources */,
+				9B4980CD1B5C00C100F2BC47 /* CalculatorMainScreenViewController.swift in Sources */,
+				9B4980D21B5DA09300F2BC47 /* Matrix.swift in Sources */,
+				9BF80D661B98B4CC002AF21C /* MatrixErrors.swift in Sources */,
+				9B5696271AED23EF00AE0BEF /* CameraViewController.swift in Sources */,
+				9B78E17F1A8CDB3C0069CBF3 /* AppDelegate.swift in Sources */,
+				9BB6D59F1BA0B585008E5B13 /* Util.swift in Sources */,
+				9BB6D59D1B9E423A008E5B13 /* TutorialOverlayView.swift in Sources */,
+				9B4980D51B5DA19A00F2BC47 /* Fraction.swift in Sources */,
+				9BDD6AB21B7A346000894EDD /* LoadingOverlay.swift in Sources */,
+				9BDD6AB41B7D2ED200894EDD /* MatrixCalculationCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9B78E1821A8CDB3D0069CBF3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9B78E1831A8CDB3D0069CBF3 /* Base */,
+				9BB6D5931B9B2235008E5B13 /* zh-Hans */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		9B78E1871A8CDB3D0069CBF3 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9B78E1881A8CDB3D0069CBF3 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		9BB6D5981B9CC763008E5B13 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BB6D5971B9CC763008E5B13 /* en */,
+				9BB6D5991B9CC777008E5B13 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9B78E1961A8CDB3D0069CBF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Zichuan Huang (62ZFR423PJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zichuan Huang (62ZFR423PJ)";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9B78E1971A8CDB3D0069CBF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Zichuan Huang (62ZFR423PJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zichuan Huang (62ZFR423PJ)";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9B78E1991A8CDB3D0069CBF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4CF8A5A8A9BFD315582DECF3 /* Pods-Matrix Calculator Lite.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "Matrix Calculator/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hzc.MatrixCalculatorLite;
+				PRODUCT_NAME = "Matrix Calculator Lite";
+				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		9B78E19A1A8CDB3D0069CBF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C241947EBD66790021716D4D /* Pods-Matrix Calculator Lite.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "Matrix Calculator/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hzc.MatrixCalculatorLite;
+				PRODUCT_NAME = "Matrix Calculator Lite";
+				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B78E1741A8CDB3C0069CBF3 /* Build configuration list for PBXProject "Matrix Calculator Lite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B78E1961A8CDB3D0069CBF3 /* Debug */,
+				9B78E1971A8CDB3D0069CBF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B78E1981A8CDB3D0069CBF3 /* Build configuration list for PBXNativeTarget "Matrix Calculator Lite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B78E1991A8CDB3D0069CBF3 /* Debug */,
+				9B78E19A1A8CDB3D0069CBF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B78E1711A8CDB3C0069CBF3 /* Project object */;
+}

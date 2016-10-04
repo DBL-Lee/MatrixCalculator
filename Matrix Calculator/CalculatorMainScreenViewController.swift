@@ -7,11 +7,11 @@
 //
 
 import UIKit
-
-
+import GoogleMobileAds
 
 class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,storeMatrixViewDelegate,UITextFieldDelegate,inputFractionDelegate {
     @IBOutlet weak var tableView: UITableView!    
+    @IBOutlet weak var bannerView: GADBannerView!
     
     @IBOutlet weak var fractionInputView: FractionInputView!
     @IBOutlet var orangeButtons: [UIButton]!
@@ -35,30 +35,32 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         tableView.estimatedRowHeight = 100.0
         tableView.showsVerticalScrollIndicator = false
         tableView.tableFooterView = UIView(frame: CGRect.zero)
-        tableView.registerNib(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
+        tableView.register(UINib(nibName: "MatrixCell", bundle: nil), forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
-        tableView.backgroundView?.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
-		
+        self.view.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
+        tableView.backgroundView = nil
+        
+        
 		storedMatricesView = storedMatrixView(frame: self.view.frame)
         storedMatricesView.delegate = self
 		self.view.addSubview(storedMatricesView)
-		storedMatricesView.hidden = true
+		storedMatricesView.isHidden = true
 		storedMatricesView.alpha = 0.0
         
-        fractionInputView.hidden = true
+        fractionInputView.isHidden = true
         fractionInputView.alpha = 0.0
         fractionInputView.delegate = self
         
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
         for button in lightGrayButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for button in orangeButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange.darker()), for: UIControlState.highlighted)
         }
         for view in self.view.subviews{
             if view is UIButton{
@@ -66,75 +68,76 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             }
         }
         
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(CalculatorMainScreenViewController.respondToSwipeGesture(_:)))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
         swipeLeft.numberOfTouchesRequired = 2
         self.view.addGestureRecognizer(swipeLeft)
         
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(CalculatorMainScreenViewController.respondToSwipeGesture(_:)))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
         swipeRight.numberOfTouchesRequired = 2
         self.view.addGestureRecognizer(swipeRight)
         
-        if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTut1"){
+        if !UserDefaults.standard.bool(forKey: "SeenTut1"){
             showTutorialView(NSLocalizedString("FirstTimeEnter", comment: ""))
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTut1")
+            UserDefaults.standard.set(true, forKey: "SeenTut1")
         }
         
-        
+        bannerView.adUnitID = "ca-app-pub-4444803405334579/4793171041"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
     
-    override func viewDidAppear(animated: Bool) {
-        NSUserDefaults.standardUserDefaults().setInteger(NSUserDefaults.standardUserDefaults().integerForKey("UseTimes")+1, forKey: "UseTimes")
-        if NSUserDefaults.standardUserDefaults().integerForKey("UseTimes")%10 == 0 && !NSUserDefaults.standardUserDefaults().boolForKey("Rated") && !NSUserDefaults.standardUserDefaults().boolForKey("NeverRate"){
+    override func viewDidAppear(_ animated: Bool) {
+        UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "UseTimes")+1, forKey: "UseTimes")
+        if UserDefaults.standard.integer(forKey: "UseTimes")%10 == 0 && !UserDefaults.standard.bool(forKey: "Rated") && !UserDefaults.standard.bool(forKey: "NeverRate"){
             presentRatingViewController()
         }
     }
     
-    private func presentRatingViewController(){
+    fileprivate func presentRatingViewController(){
         let message = NSLocalizedString("likeMessage", comment: "")
-        let alert = UIAlertController(title: NSLocalizedString("likeTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("likeYes", comment: ""), style: .Default, handler: {
+        let alert = UIAlertController(title: NSLocalizedString("likeTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("likeYes", comment: ""), style: .default, handler: {
             action in
-            let rateAlert = UIAlertController(title: NSLocalizedString("rateTitle", comment: ""), message: NSLocalizedString("rateMessage", comment: ""), preferredStyle: UIAlertControllerStyle.Alert)
-            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateYes", comment: ""), style: .Default, handler: {
+            let rateAlert = UIAlertController(title: NSLocalizedString("rateTitle", comment: ""), message: NSLocalizedString("rateMessage", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateYes", comment: ""), style: .default, handler: {
                 action in
-                UIApplication.sharedApplication().openURL(NSURL(string : "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1038193869&onlyLatestVersion=true&pageNumber=0&sortOrdering=1")!)
+                UIApplication.shared.openURL(URL(string : "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1038193869&onlyLatestVersion=true&pageNumber=0&sortOrdering=1")!)
                 rateAlert.removeFromParentViewController()
             }))
-            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateNo", comment: ""), style: .Default, handler: {
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateNo", comment: ""), style: .default, handler: {
                 action in
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "NeverRate")
+                UserDefaults.standard.set(true, forKey: "NeverRate")
                 rateAlert.removeFromParentViewController()
             }))
-            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateLater", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+            rateAlert.addAction(UIAlertAction(title: NSLocalizedString("rateLater", comment: ""), style: UIAlertActionStyle.cancel, handler: {
                 action in
             }))
             alert.removeFromParentViewController()
-            self.presentViewController(rateAlert, animated: true, completion: nil)
+            self.present(rateAlert, animated: true, completion: nil)
         }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("likeNo", comment: ""), style: .Default, handler: {
+        alert.addAction(UIAlertAction(title: NSLocalizedString("likeNo", comment: ""), style: .default, handler: {
             action in
             let email = "lee_developer@hotmail.com"
-            let url = NSURL(string: "mailto:\(email)")!
-            UIApplication.sharedApplication().openURL(url)
+            let url = URL(string: "mailto:\(email)")!
+            UIApplication.shared.openURL(url)
             alert.removeFromParentViewController()
         }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.cancel, handler: {
             action in
         }))
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 	
-	private func showTutorialView(text:String){
+	fileprivate func showTutorialView(_ text:String){
 		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
 		tutorialView.translatesAutoresizingMaskIntoConstraints = false
-        let viewsDict = ["tutorialView": tutorialView]
         self.view.addSubview(tutorialView)
-		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
-		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.alignAllCenterX, metrics: nil, views: ["tutorialView": self.tutorialView]))
+		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.alignAllCenterY, metrics: nil, views: ["tutorialView": self.tutorialView]))
         tutorialView.alpha = 0.0
-		UIView.animateWithDuration(0.5, animations: {
+		UIView.animate(withDuration: 0.5, animations: {
             () in
             self.tutorialView.alpha = 1.0
         })
@@ -146,46 +149,46 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         // Dispose of any resources that can be recreated.
     }
 	
-	private func hideViewWithAnimation(view:UIView){
+	fileprivate func hideViewWithAnimation(_ view:UIView){
 		view.alpha = 1.0
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             () in
             view.alpha = 0.0
             }, completion: {
                 bool in
-                view.hidden = true
+                view.isHidden = true
         })
 	}
-	private func showViewWithAnimation(view:UIView){
+	fileprivate func showViewWithAnimation(_ view:UIView){
 		view.alpha = 0.0
-		view.hidden = false
-        UIView.animateWithDuration(0.2, animations: {
+		view.isHidden = false
+        UIView.animate(withDuration: 0.2, animations: {
             () in
             view.alpha = 1.0
         })
 	}
     
-    @IBAction func showStoredMatrices(sender: AnyObject) {
+    @IBAction func showStoredMatrices(_ sender: AnyObject) {
 		showViewWithAnimation(self.storedMatricesView)
     }
     
-    func respondToSwipeGesture(gesture: UIGestureRecognizer){
+    func respondToSwipeGesture(_ gesture: UIGestureRecognizer){
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             showDecimal = !showDecimal
             switch swipeGesture.direction{
-            case UISwipeGestureRecognizerDirection.Left:
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Left)
-            case UISwipeGestureRecognizerDirection.Right:
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Right)
+            case UISwipeGestureRecognizerDirection.left:
+                self.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.left)
+            case UISwipeGestureRecognizerDirection.right:
+                self.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.right)
             default:()
             }
             
         }
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! MatrixCalculationCell
-        switch expressions[indexPath.row]{
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as! MatrixCalculationCell
+        switch expressions[(indexPath as NSIndexPath).row]{
         case let string as String:
             cell.label.text = string
         case let attString as NSMutableAttributedString:
@@ -194,24 +197,24 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
 		cell.label.sizeToFit()
         cell.resultMatrixView.widthLimit = cell.frame.width - cell.label.frame.width-10
-        cell.resultMatrixView.hidden = true
-		cell.resultLabel.textColor = UIColor.whiteColor()
-        cell.resultLabel.hidden = true
+        cell.resultMatrixView.isHidden = true
+		cell.resultLabel.textColor = UIColor.white
+        cell.resultLabel.isHidden = true
         cell.resultLabel.adjustsFontSizeToFitWidth = true
-        if indexPath.row < results.count{
-            switch results[indexPath.row] {
+        if (indexPath as NSIndexPath).row < results.count{
+            switch results[(indexPath as NSIndexPath).row] {
             case let matrix as Matrix:
                 let displayMatrix = matrix.matrixCopyWithDecimal(showDecimal)
                 cell.resultMatrixView.setMatrix(displayMatrix)
-                cell.resultMatrixView.hidden = false
+                cell.resultMatrixView.isHidden = false
             case let scalar as Fraction:
                 cell.resultLabel.text = scalar.toString()
-                cell.resultLabel.hidden = false
+                cell.resultLabel.isHidden = false
                 cell.resultLabel.sizeToFit()
             case let error as MatrixErrors:
 				cell.resultLabel.text = error.description
-				cell.resultLabel.textColor = UIColor.redColor()
-				cell.resultLabel.hidden = false
+				cell.resultLabel.textColor = UIColor.red
+				cell.resultLabel.isHidden = false
 				cell.resultLabel.sizeToFit()
             default:
             break
@@ -220,25 +223,25 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         return cell
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return expressions.count
     }
     
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let regex:NSRegularExpression = try! NSRegularExpression(pattern: "[a-zA-Z]", options: NSRegularExpressionOptions.CaseInsensitive)
-        if ((range.length + range.location > textField.text!.characters.count) || (string=="") || (regex.matchesInString(string, options: [], range: NSMakeRange(0, string.characters.count)).count == 0))
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let regex:NSRegularExpression = try! NSRegularExpression(pattern: "[a-zA-Z]", options: NSRegularExpression.Options.caseInsensitive)
+        if ((range.length + range.location > textField.text!.characters.count) || (string=="") || (regex.matches(in: string, options: [], range: NSMakeRange(0, string.characters.count)).count == 0))
         {
             return false;
         }
-        textField.text = string.uppercaseString
+        textField.text = string.uppercased()
         let newLength = textField.text!.characters.count + string.characters.count - range.length
         return newLength <= 1
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.row < self.results.count {
-            if self.results[indexPath.row] is Matrix {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).row < self.results.count {
+            if self.results[(indexPath as NSIndexPath).row] is Matrix {
                 let usedCharacter = NSSet(array: Array(storedMatricesView.storedMatrices.keys))
                 var inputTextField: UITextField?
                 var message = NSLocalizedString("usedCharacter", comment: "")
@@ -246,17 +249,17 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                     message += NSLocalizedString("none", comment: "")
                 }else{
                     for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
-                        if usedCharacter.containsObject(String(c)){
+                        if usedCharacter.contains(String(c)){
                             message += String(c) + ","
                         }
                     }
-                    message.removeAtIndex(message.endIndex.predecessor())
+                    message.remove(at: message.characters.index(before: message.endIndex))
                 }
                 message += NSLocalizedString("alertMsg", comment: "")
-                let alert = UIAlertController(title: NSLocalizedString("saveTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+                let alert = UIAlertController(title: NSLocalizedString("saveTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addTextField(configurationHandler: {(textField: UITextField!) in
                     for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
-                        if !usedCharacter.containsObject(String(c)){
+                        if !usedCharacter.contains(String(c)){
                             textField.text = String(c)
                             break
                         }else{
@@ -267,44 +270,44 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                     inputTextField?.delegate = self
                 })
                 
-                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.cancel, handler: {
                     action in
                 }))
                 
-                alert.addAction(UIAlertAction(title: NSLocalizedString("save", comment: ""), style: UIAlertActionStyle.Default, handler: ({
+                alert.addAction(UIAlertAction(title: NSLocalizedString("save", comment: ""), style: UIAlertActionStyle.default, handler: ({
                     action in
-                    self.storedMatricesView.didFinishInputMatrix((self.results[indexPath.row] as! Matrix),alias: inputTextField!.text!)
-                    self.dismissViewControllerAnimated(true,completion:nil)
+                    self.storedMatricesView.didFinishInputMatrix((self.results[(indexPath as NSIndexPath).row] as! Matrix),alias: inputTextField!.text!)
+                    self.dismiss(animated: true,completion:nil)
                 })))
                 
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.presentViewController(alert, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    self.present(alert, animated: true, completion: nil)
                 })
             }
         }
     }
     
-    private func appendToLastExpression(str:String){
+    fileprivate func appendToLastExpression(_ str:String){
         expressions[expressions.count-1] = (expressions.last! as! String)+str
         
     }
     
-    private func surroundLastExpression(str:String){
+    fileprivate func surroundLastExpression(_ str:String){
         expressions[expressions.count-1] = str+"("+(expressions.last! as! String)+") ="
     }
     
-    private func appendSuperscript(str:String){
+    fileprivate func appendSuperscript(_ str:String){
         let string = expressions[expressions.count-1] as! String
         let att = NSMutableAttributedString(string: string)
         let fontsize:CGFloat = 17
-        att.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(fontsize), range: NSRange(location: 0, length: string.characters.count))
+        att.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: fontsize), range: NSRange(location: 0, length: string.characters.count))
         let addition = NSMutableAttributedString(string: str)
-        addition.addAttributes([NSFontAttributeName : UIFont.systemFontOfSize(fontsize/2), NSBaselineOffsetAttributeName : fontsize/2], range: NSRange(location: 0, length: str.characters.count))
-        att.appendAttributedString(addition)
+        addition.addAttributes([NSFontAttributeName : UIFont.systemFont(ofSize: fontsize/2), NSBaselineOffsetAttributeName : fontsize/2], range: NSRange(location: 0, length: str.characters.count))
+        att.append(addition)
         expressions[expressions.count-1] = att
     }
 	
-    @IBAction func twoMatrixOperation(sender: AnyObject) {
+    @IBAction func twoMatrixOperation(_ sender: AnyObject) {
         if firstOperand != nil{
             if carryForwardAnswer {
                 self.expressions.append("Ans")
@@ -334,7 +337,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
     }
     
-    @IBAction func oneMatrixToMultipleMatrix(sender: AnyObject) {
+    @IBAction func oneMatrixToMultipleMatrix(_ sender: AnyObject) {
         if firstOperand != nil {
             if carryForwardAnswer {
                 self.expressions.append("Ans")
@@ -342,7 +345,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             let button:UIButton = sender as! UIButton
             switch button.tag{
             case 0:
-                self.operation = .LU
+                self.operation = .lu
             case 1:()
             case 2:()
             default:()
@@ -352,7 +355,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
     }
     
-    @IBAction func oneMatrixToOneMatrix(sender: AnyObject) {
+    @IBAction func oneMatrixToOneMatrix(_ sender: AnyObject) {
         if firstOperand != nil {
             if carryForwardAnswer {
                 self.expressions.append("Ans")
@@ -360,7 +363,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             let button:UIButton = sender as! UIButton
             switch button.tag{
             case 0:
-                self.operation = .RREF
+                self.operation = .rref
                 surroundLastExpression("rref")
             case 1:
                 self.operation = .transpose
@@ -369,7 +372,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
                 self.operation = .inverse
                 appendSuperscript("-1")
             case 3:
-                self.operation = .REF
+                self.operation = .ref
                 surroundLastExpression("ref")
             default:()
             }
@@ -378,7 +381,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
     }
     
-    @IBAction func oneMatrixToScalar(sender: AnyObject) {
+    @IBAction func oneMatrixToScalar(_ sender: AnyObject) {
         if firstOperand != nil{
             if carryForwardAnswer {
                 self.expressions.append("Ans")
@@ -401,16 +404,16 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
 }
     
-    private func scrollToBottom(table:UITableView){
+    fileprivate func scrollToBottom(_ table:UITableView){
         let n = self.expressions.count
         if n > 0 {
-            let indexPath: NSIndexPath = NSIndexPath(forRow: n - 1, inSection: 0)
-            self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: false)
+            let indexPath: IndexPath = IndexPath(row: n - 1, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
             let delay = 0.01 * Double(NSEC_PER_SEC)
-            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+            let time = DispatchTime.now() + Double(Int64(delay)) / Double(NSEC_PER_SEC)
             
-            dispatch_after(time, dispatch_get_main_queue(), {
-                self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: time, execute: {
+                self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
             })
         }
     }
@@ -440,9 +443,9 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		case .scalarmult:
 			res = firstOperand!.multScalar(scalarOperand!)
         //one matrix -> one matrix
-        case .REF:
+        case .ref:
             res = firstOperand!.REF()
-		case .RREF:
+		case .rref:
             res = firstOperand!.RREF()
 		case .transpose:
             res = firstOperand!.transpose()
@@ -455,9 +458,9 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
 		//one matrix -> two matrices
 		case .chol:
 		break
-		case .QR:
+		case .qr:
 		break
-		case .LU:
+		case .lu:
 			let (P,L,U) = firstOperand!.LU()
 			self.expressions[self.expressions.count-1] = "P"
 			self.expressions.append("L")
@@ -491,12 +494,12 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
             firstOperand = res as? Matrix
             carryForwardAnswer = true
 			
-			if !NSUserDefaults.standardUserDefaults().boolForKey("SeenAnsTut"){
+			if !UserDefaults.standard.bool(forKey: "SeenAnsTut"){
 				showTutorialView(NSLocalizedString("FirstTimeMatrixAns", comment: ""))            
-				NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenAnsTut")
-            }else if !NSUserDefaults.standardUserDefaults().boolForKey("SeenDecimalTut"){
+				UserDefaults.standard.set(true, forKey: "SeenAnsTut")
+            }else if !UserDefaults.standard.bool(forKey: "SeenDecimalTut"){
                 showTutorialView(NSLocalizedString("DecimalTut", comment: ""))
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenDecimalTut")
+                UserDefaults.standard.set(true, forKey: "SeenDecimalTut")
             }
 
             
@@ -513,7 +516,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         scrollToBottom(tableView)
     }
 	
-	func didFinishInputFraction(fraction:Fraction,decimal:Bool){
+	func didFinishInputFraction(_ fraction:Fraction,decimal:Bool){
 		scalarOperand = fraction
 		appendToLastExpression(fraction.toString(decimal))
 		doCalculation()
@@ -525,7 +528,7 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         scrollToBottom(tableView)
 	}
 	
-    func didPickMatrixWithAlias(alias:String,matrix:Matrix){
+    func didPickMatrixWithAlias(_ alias:String,matrix:Matrix){
 		if firstOperand != nil && operation != nil{
 			secondOperand = matrix
             appendToLastExpression(alias+" = ")
@@ -550,14 +553,14 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
     }
     
 
-    func performSegue(identifier: String?) {
-        self.performSegueWithIdentifier(identifier!, sender: self)
+    func performSegue(_ identifier: String?) {
+        self.performSegue(withIdentifier: identifier!, sender: self)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier!{
         case "insertMatrixSegue" :
-            let vc = segue.destinationViewController as! ViewController
+            let vc = segue.destination as! ViewController
             vc.delegate = storedMatricesView
             vc.usedCharacter = NSSet(array: Array(storedMatricesView.storedMatrices.keys))
         default:
@@ -565,9 +568,9 @@ class CalculatorMainScreenViewController: UIViewController,UITableViewDelegate,U
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if detectTouch {
-			UIView.animateWithDuration(0.5, animations: {
+			UIView.animate(withDuration: 0.5, animations: {
 				() in
 				self.tutorialView.alpha = 0.0
 				}, completion: {

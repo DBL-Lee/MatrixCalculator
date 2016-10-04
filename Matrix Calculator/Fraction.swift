@@ -29,10 +29,10 @@ func < (lhs:Fraction,rhs:Fraction) -> Bool {
 }
 
 func == (lhs:Fraction,rhs:Fraction) -> Bool {
-    return Double(lhs.n)==Double(rhs.n) && Double(lhs.d)==Double(lhs.d)
+    return Double(lhs.n)==Double(rhs.n) && Double(lhs.d)==Double(rhs.d)
 }
 
-func abs(f:Fraction) -> Fraction {
+func abs(_ f:Fraction) -> Fraction {
     return Fraction(n: abs(f.n), d: f.d)
 }
 
@@ -80,26 +80,26 @@ class Fraction:Comparable{
         return Double(n)/Double(d)
     }
     
-    func add(f:Fraction) ->Fraction{
+    func add(_ f:Fraction) ->Fraction{
         let newn:Int64 = self.n &* f.d &+ f.n &* self.d
         let newd:Int64 = self.d &* f.d
         let newf = Fraction(n: newn, d: newd)
         return newf
     }
     
-    func subtract(f:Fraction) ->Fraction{
+    func subtract(_ f:Fraction) ->Fraction{
         let newf = Fraction(n: f.n * (-1), d: f.d)
         return add(newf)
     }
     
-    func mult(f:Fraction) ->Fraction{
+    func mult(_ f:Fraction) ->Fraction{
         let newn:Int64 = self.n &* f.n
         let newd:Int64 = self.d &* f.d
         let newf = Fraction(n: newn, d: newd)
         return newf
     }
     
-    func div(f:Fraction) -> Fraction{
+    func div(_ f:Fraction) -> Fraction{
         assert(f.n != 0, "can not divide by 0")
         let newf = Fraction(n: f.d, d: f.n)
         return mult(newf)
@@ -113,7 +113,7 @@ class Fraction:Comparable{
         }
     }
 	
-	private func isFiniteDecimal() -> Bool {
+	fileprivate func isFiniteDecimal() -> Bool {
 		var denominator = d
 		while (denominator%2==0){
 			denominator = denominator/2
@@ -124,7 +124,7 @@ class Fraction:Comparable{
 		return denominator==1
 	}
 	
-	func toString(decimal:Bool) -> String{
+	func toString(_ decimal:Bool) -> String{
 		if !decimal || !isFiniteDecimal(){
 			return toString()
 		}else{
@@ -139,7 +139,7 @@ class Fraction:Comparable{
 
     
     
-    class func reduce(n:Int64, d:Int64) -> (Int64,Int64){
+    class func reduce(_ n:Int64, d:Int64) -> (Int64,Int64){
         let gcd: Int64 = Fraction.gcd(n, b: d)
         var newn:Int64
         var newd:Int64
@@ -157,7 +157,8 @@ class Fraction:Comparable{
     }
     
     
-    class func gcd(var a: Int64, var b: Int64) -> Int64 {
+    class func gcd(_ a: Int64, b: Int64) -> Int64 {
+        var a = a, b = b
         a = abs(a); b = abs(b)
         if (b > a) { swap(&a, &b) }
         while (b > 0) { (a, b) = (b, a % b) }

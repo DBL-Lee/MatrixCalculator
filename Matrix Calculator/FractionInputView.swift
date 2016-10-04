@@ -9,7 +9,7 @@
 import UIKit
 
 protocol inputFractionDelegate{
-	func didFinishInputFraction(fraction:Fraction,decimal:Bool)
+	func didFinishInputFraction(_ fraction:Fraction,decimal:Bool)
 }
 
 class FractionInputView: UIView {
@@ -40,21 +40,21 @@ class FractionInputView: UIView {
         super.awakeFromNib()
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
         for button in grayButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for button in orangeButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for button in redButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor()), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor().darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.red), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.red.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         self.containerView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
@@ -66,7 +66,7 @@ class FractionInputView: UIView {
     }
 
     //user started entering
-    @IBAction func digitPressed(sender: UIButton) {
+    @IBAction func digitPressed(_ sender: UIButton) {
         switch sender.titleLabel!.text! {
         case "DEL","退格":
             if numberlineEntered && denominator=="" { //Deleting numberline
@@ -81,24 +81,24 @@ class FractionInputView: UIView {
                     if numerator.characters.count==1 { //Deleting last digit in numerator
                         numerator = "0"
                     }else{ 
-                        if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{ //Deleting floating point in numerator
+                        if numerator.remove(at: numerator.characters.index(before: numerator.endIndex))=="."{ //Deleting floating point in numerator
                             floatpointEntered = false
                         }else{  //Deleting a digit in numerator
                             if floatpointEntered{
-                                floatingPoint--
+                                floatingPoint -= 1
                             }else{
-								integerPart--
+								integerPart -= 1
 							}
                         }
                     }
                 }else{
-                    if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{ //Deleting floatingPoint in denominator
+                    if denominator.remove(at: denominator.characters.index(before: denominator.endIndex))=="."{ //Deleting floatingPoint in denominator
                         floatpointEntered = false
                     }else{  //Deleting a digit in denominator
                         if floatpointEntered{
-                            floatingPoint--
+                            floatingPoint -= 1
                         }else{
-							integerPart--
+							integerPart -= 1
 						}
                     }
                 }
@@ -110,7 +110,7 @@ class FractionInputView: UIView {
                 }else{
                     if denominator==""{ //Case whereby denominator is empty
                         denominator = "0"
-						integerPart++
+						integerPart += 1
                     }
                     denominator+="."
                 }
@@ -118,11 +118,11 @@ class FractionInputView: UIView {
             }
         case "/":
             if !numberlineEntered{
-                if numerator[numerator.endIndex.predecessor()] != "."{ //Previous character is not floating point
+                if numerator[numerator.characters.index(before: numerator.endIndex)] != "."{ //Previous character is not floating point
                     numeratorFloatingPoint = floatingPoint
 					numeratorIntegerPart = integerPart
                 }else{
-                    numerator.removeAtIndex(numerator.endIndex.predecessor())
+                    numerator.remove(at: numerator.characters.index(before: numerator.endIndex))
                 }
                 floatingPoint = 0
 				integerPart = 0
@@ -138,17 +138,17 @@ class FractionInputView: UIView {
                         self.numerator = sender.titleLabel!.text!
                     }else{
                         if self.floatpointEntered {
-							self.floatingPoint++
+							self.floatingPoint += 1
 						}else{
-							integerPart++
+							integerPart += 1
 						}
                         self.numerator += sender.titleLabel!.text!
                     }
                 }else{
                     if self.floatpointEntered {
-						self.floatingPoint++
+						self.floatingPoint += 1
 					}else{
-						integerPart++
+						integerPart += 1
 					}
                     self.denominator += sender.titleLabel!.text!
                 }
@@ -159,7 +159,7 @@ class FractionInputView: UIView {
     }
 
 
-    @IBAction func finishInput(sender:UIButton){
+    @IBAction func finishInput(_ sender:UIButton){
         if negative {
             numerator = "-"+numerator
         }

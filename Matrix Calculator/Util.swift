@@ -13,13 +13,13 @@ enum MatrixOperations{
     case subtract
     case multiplication
     case scalarmult
-    case REF
-    case RREF
+    case ref
+    case rref
     case transpose
     case inverse
     case chol
-    case QR
-    case LU
+    case qr
+    case lu
     case diagonalize
     case eigenpair
     case rank
@@ -30,21 +30,21 @@ enum MatrixOperations{
 extension String
 {
     subscript(integerIndex: Int) -> Character {
-        let index = startIndex.advancedBy(integerIndex)
+        let index = characters.index(startIndex, offsetBy: integerIndex)
         return self[index]
     }
     
     subscript(integerRange: Range<Int>) -> String {
-        let start = startIndex.advancedBy(integerRange.startIndex)
-        let end = startIndex.advancedBy(integerRange.endIndex)
+        let start = characters.index(startIndex, offsetBy: integerRange.lowerBound)
+        let end = characters.index(startIndex, offsetBy: integerRange.upperBound)
         let range = start..<end
         return self[range]
     }
     
-    func localized(lang:String) ->String {
+    func localized(_ lang:String) ->String {
         
-        let path = NSBundle.mainBundle().pathForResource(lang, ofType: "lproj")
-        let bundle = NSBundle(path: path!)
+        let path = Bundle.main.path(forResource: lang, ofType: "lproj")
+        let bundle = Bundle(path: path!)
         
         return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
     }
@@ -52,15 +52,15 @@ extension String
 
 extension UIColor {
     
-    func lighter(amount : CGFloat = 0.25) -> UIColor {
+    func lighter(_ amount : CGFloat = 0.25) -> UIColor {
         return hueColorWithBrightnessAmount(1 + amount)
     }
     
-    func darker(amount : CGFloat = 0.25) -> UIColor {
+    func darker(_ amount : CGFloat = 0.25) -> UIColor {
         return hueColorWithBrightnessAmount(1 - amount)
     }
     
-    private func hueColorWithBrightnessAmount(amount: CGFloat) -> UIColor {
+    fileprivate func hueColorWithBrightnessAmount(_ amount: CGFloat) -> UIColor {
         var hue         : CGFloat = 0
         var saturation  : CGFloat = 0
         var brightness  : CGFloat = 0
@@ -80,31 +80,31 @@ extension UIColor {
 }
 
 extension UIImage {
-    class func imageWithColor(color: UIColor) -> UIImage {
-        let rect = CGRectMake(0.0, 0.0, 1.0, 1.0)
+    class func imageWithColor(_ color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect)
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
 }
 
 extension UIView {
     
     func takeSnapshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         
-        drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+        drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }
 

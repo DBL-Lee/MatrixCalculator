@@ -14,13 +14,13 @@ class TutorialOverlayView: UIView {
 
         self.label = UILabel(frame: CGRect(x: 50, y: 0, width: frame.width-2*50, height: frame.height))
         super.init(frame: frame)
-        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.8)
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         self.label.text = text
-        self.label.font = UIFont.systemFontOfSize(25.0)
-        self.label.textAlignment = .Center
+        self.label.font = UIFont.systemFont(ofSize: 25.0)
+        self.label.textAlignment = .center
         self.label.numberOfLines = 0
-        self.label.lineBreakMode = .ByWordWrapping
-        self.label.textColor = UIColor.whiteColor()
+        self.label.lineBreakMode = .byWordWrapping
+        self.label.textColor = UIColor.white
 		self.label.translatesAutoresizingMaskIntoConstraints = false
 		
         
@@ -28,9 +28,8 @@ class TutorialOverlayView: UIView {
     
     override func didMoveToSuperview() {
         addSubview(self.label)
-        let viewsDict = ["label": label]
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[label]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[label]-0-|", options: .alignAllCenterX, metrics: nil, views: ["label": self.label]))
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-50-[label]-50-|", options: NSLayoutFormatOptions.alignAllCenterY, metrics: nil, views: ["label": self.label]))
 
     }
 

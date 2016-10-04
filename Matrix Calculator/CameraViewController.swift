@@ -19,9 +19,9 @@ class CameraViewController: UIViewController {
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         let devices = AVCaptureDevice.devices()
         
-        for device in devices {
-            if (device.hasMediaType(AVMediaTypeVideo)) {
-                if(device.position == AVCaptureDevicePosition.Back) {
+        for device in devices! {
+            if ((device as AnyObject).hasMediaType(AVMediaTypeVideo)) {
+                if((device as AnyObject).position == AVCaptureDevicePosition.back) {
                     captureDevice = device as? AVCaptureDevice
                 }
             }

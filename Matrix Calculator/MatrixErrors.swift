@@ -1,19 +1,19 @@
 import UIKit
 
-enum MatrixErrors : ErrorType{
-	case NotInvertible
-	case NotSquareMatrix
-	case DimensionMismatch((Int,Int),(Int,Int))
+enum MatrixErrors : Error{
+	case notInvertible
+	case notSquareMatrix
+	case dimensionMismatch((Int,Int),(Int,Int))
 }
 
 extension MatrixErrors : CustomStringConvertible {
     var description: String {
         switch self {
-            case .NotInvertible:
+            case .notInvertible:
                 return NSLocalizedString("notInvertible", comment: "")
-            case .NotSquareMatrix:
+            case .notSquareMatrix:
                 return NSLocalizedString("notSquare", comment: "")
-			case .DimensionMismatch(let (a,b),let (c,d)):
+			case .dimensionMismatch(let (a,b),let (c,d)):
 				return String(format: NSLocalizedString("dimensionMismatch", comment: ""), arguments: [a,b,c,d])
         }
     }

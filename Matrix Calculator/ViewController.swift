@@ -7,14 +7,37 @@
 //
 import MobileCoreServices
 import UIKit
+import GoogleMobileAds
+
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 protocol inputMatrixDelegate{
-    func didFinishInputMatrix(matrix:Matrix,alias:String)
+    func didFinishInputMatrix(_ matrix:Matrix,alias:String)
 }
 
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
     
+    @IBOutlet weak var bannerView: GADBannerView!
 
     @IBOutlet weak var containerView: UIView!
     
@@ -24,19 +47,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var matrixView: matrixTableView!
     
-    var NN:NeuralNetwork!
     var newMedia:Bool?
     var image:UIImage!
-
     var imagePicker:UIImagePickerController!
 	
 	var tutorialView:TutorialOverlayView!
 	var detectTouch = false
-    
-    //how black is black
-    let BLACKTHRESHOLD = 80
-    //how small is small
-    let DETECTIONTHRESHOLD = 100
     
 
     @IBOutlet var grayButtons: [UIButton]!
@@ -47,25 +63,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0), {
-//            self.NN = NeuralNetwork()
-//        })
+        
         self.view.backgroundColor = UIColor(white: 0.25, alpha: 1)
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.respondToSwipeGesture(_:)))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
         self.view.addGestureRecognizer(swipeRight)
         
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.respondToSwipeGesture(_:)))
+        swipeDown.direction = UISwipeGestureRecognizerDirection.down
         self.view.addGestureRecognizer(swipeDown)
         
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.respondToSwipeGesture(_:)))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
         self.view.addGestureRecognizer(swipeLeft)
         
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.respondToSwipeGesture(_:)))
+        swipeUp.direction = UISwipeGestureRecognizerDirection.up
         self.view.addGestureRecognizer(swipeUp)
+        
         
 		matrixView.setMatrix(matrix,underline:currentCursor)
         matrixView.backgroundColor = UIColor(white: 0.25, alpha: 1.0)
@@ -75,21 +91,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         let darkGray = UIColor(white: 0.8, alpha: 1.0)
         for button in grayButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(darkGray.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for button in orangeButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor()), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orangeColor().darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.orange.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for button in redButtons{
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor()), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.imageWithColor(UIColor.redColor().darker()), forState: UIControlState.Highlighted)
-            button.layer.borderColor = UIColor.blackColor().CGColor
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.red), for: UIControlState())
+            button.setBackgroundImage(UIImage.imageWithColor(UIColor.red.darker()), for: UIControlState.highlighted)
+            button.layer.borderColor = UIColor.black.cgColor
             button.layer.borderWidth = 1
         }
         for view in self.view.subviews{
@@ -98,21 +114,24 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             }
         }
 		
-		if !NSUserDefaults.standardUserDefaults().boolForKey("SeenTutSwipe"){
+		if !UserDefaults.standard.bool(forKey: "SeenTutSwipe"){
             showTutorialView(NSLocalizedString("FirstTimeSwipe", comment: ""))            
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "SeenTutSwipe")
+            UserDefaults.standard.set(true, forKey: "SeenTutSwipe")
         }
+        
+        bannerView.adUnitID = "ca-app-pub-4444803405334579/4793171041"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
 	
- 	private func showTutorialView(text:String){
+ 	fileprivate func showTutorialView(_ text:String){
 		self.tutorialView = TutorialOverlayView(frame: self.view.frame, text: text)
         tutorialView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(tutorialView)
-		let viewsDict = ["tutorialView": tutorialView]
-		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: viewsDict))
-		self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: viewsDict))
+		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.alignAllCenterX, metrics: nil, views: ["tutorialView": self.tutorialView]))
+		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[tutorialView]-0-|", options: NSLayoutFormatOptions.alignAllCenterY, metrics: nil, views: ["tutorialView": self.tutorialView]))
         tutorialView.alpha = 0.0
-		UIView.animateWithDuration(0.5, animations: {
+		UIView.animate(withDuration: 0.5, animations: {
             () in
             self.tutorialView.alpha = 1.0
         })
@@ -151,7 +170,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var numberlineEntered:Bool = false
 
     //user started entering
-    @IBAction func digitPressed(sender: UIButton) {
+    @IBAction func digitPressed(_ sender: UIButton) {
         switch sender.titleLabel!.text! {
         case "DEL","退格":
             if numberlineEntered && denominator=="" { //Deleting numberline
@@ -166,24 +185,24 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     if numerator.characters.count==1 { //Deleting last digit in numerator
                         numerator = "0"
                     }else{ 
-                        if numerator.removeAtIndex(numerator.endIndex.predecessor())=="."{ //Deleting floating point in numerator
+                        if numerator.remove(at: numerator.characters.index(before: numerator.endIndex))=="."{ //Deleting floating point in numerator
                             floatpointEntered = false
                         }else{  //Deleting a digit in numerator
                             if floatpointEntered{
-                                floatingPoint--
+                                floatingPoint -= 1
                             }else{
-								integerPart--
+								integerPart -= 1
 							}
                         }
                     }
                 }else{
-                    if denominator.removeAtIndex(denominator.endIndex.predecessor())=="."{ //Deleting floatingPoint in denominator
+                    if denominator.remove(at: denominator.characters.index(before: denominator.endIndex))=="."{ //Deleting floatingPoint in denominator
                         floatpointEntered = false
                     }else{  //Deleting a digit in denominator
                         if floatpointEntered{
-                            floatingPoint--
+                            floatingPoint -= 1
                         }else{
-							integerPart--
+							integerPart -= 1
 						}
                     }
                 }
@@ -195,7 +214,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 }else{
                     if denominator==""{ //Case whereby denominator is empty
                         denominator = "0"
-						integerPart++
+						integerPart += 1
                     }
                     denominator+="."
                 }
@@ -203,11 +222,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             }
         case "/":
             if !numberlineEntered{
-                if numerator[numerator.endIndex.predecessor()] != "."{ //Previous character is not floating point
+                if numerator[numerator.characters.index(before: numerator.endIndex)] != "."{ //Previous character is not floating point
                     numeratorFloatingPoint = floatingPoint
 					numeratorIntegerPart = integerPart
                 }else{
-                    numerator.removeAtIndex(numerator.endIndex.predecessor())
+                    numerator.remove(at: numerator.characters.index(before: numerator.endIndex))
                 }
                 floatingPoint = 0
 				integerPart = 0
@@ -223,17 +242,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         self.numerator = sender.titleLabel!.text!
                     }else{
                         if self.floatpointEntered {
-							self.floatingPoint++
+							self.floatingPoint += 1
 						}else{
-							integerPart++
+							integerPart += 1
 						}
                         self.numerator += sender.titleLabel!.text!
                     }
                 }else{
                     if self.floatpointEntered {
-						self.floatingPoint++
+						self.floatingPoint += 1
 					}else{
-						integerPart++
+						integerPart += 1
 					}
                     self.denominator += sender.titleLabel!.text!
                 }
@@ -245,7 +264,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     //This function is called when user finish editing a cell and move to another cell
-    private func calculateCurrentCell(){
+    fileprivate func calculateCurrentCell(){
         entering = false
         if negative {
             numerator = "-"+numerator
@@ -279,31 +298,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     //User moving through cells
-     func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+     func respondToSwipeGesture(_ gesture: UIGestureRecognizer) {
         
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             if entering { // calculate the current value and insert to matrix
                 calculateCurrentCell()
             }
             switch swipeGesture.direction {
-            case UISwipeGestureRecognizerDirection.Left:
+            case UISwipeGestureRecognizerDirection.left:
                 if currentCursor.1-1>=0 {
-                    currentCursor.1--
+                    currentCursor.1 -= 1
                     matrixView.shiftUnderline(2)
                 }
-            case UISwipeGestureRecognizerDirection.Right:
+            case UISwipeGestureRecognizerDirection.right:
                 if (currentCursor.1+1) < matrix.column {
-                    currentCursor.1++
+                    currentCursor.1 += 1
                     matrixView.shiftUnderline(3)
                 }
-            case UISwipeGestureRecognizerDirection.Up:
+            case UISwipeGestureRecognizerDirection.up:
                 if currentCursor.0-1>=0 {
-                    currentCursor.0--
+                    currentCursor.0 -= 1
                     matrixView.shiftUnderline(0)
                 }
-            case UISwipeGestureRecognizerDirection.Down:
+            case UISwipeGestureRecognizerDirection.down:
                 if currentCursor.0+1 < matrix.row {
-                    currentCursor.0++
+                    currentCursor.0 += 1
                     matrixView.shiftUnderline(1)
                 }
             default:
@@ -313,7 +332,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     //User is changing size of matrix
-    @IBAction func sizeChange(sender: UIButton) {
+    @IBAction func sizeChange(_ sender: UIButton) {
         if entering { // calculate the current value and insert to matrix
             calculateCurrentCell()
         }
@@ -327,7 +346,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 if matrix.row-1>0 {
                     matrix = matrix.removeBotRow()
                     if currentCursor.0 >= matrix.row {
-                         currentCursor.0--
+                         currentCursor.0 -= 1
                     }
                     matrixView.setMatrix(matrix,underline:currentCursor)
                 }
@@ -340,7 +359,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 if matrix.column-1>0 {
                     matrix = matrix.removeLastColumn()
                     if currentCursor.1 >= matrix.column {
-                         currentCursor.1--
+                         currentCursor.1 -= 1
                     }
                     matrixView.setMatrix(matrix,underline:currentCursor)
                 }
@@ -353,345 +372,46 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     // MARK: Camera   
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     
-    @IBAction func useCamera(sender: UIButton) {
+    @IBAction func useCamera(_ sender: UIButton) {
         if UIImagePickerController.isSourceTypeAvailable(
-            UIImagePickerControllerSourceType.Camera) {
+            UIImagePickerControllerSourceType.camera) {
                 
                 imagePicker = UIImagePickerController()
                 
                 imagePicker.delegate = self
                 imagePicker.sourceType =
-                    UIImagePickerControllerSourceType.Camera
+                    UIImagePickerControllerSourceType.camera
                 imagePicker.mediaTypes = [kUTTypeImage as String]
                 imagePicker.allowsEditing = false
                 
                 newMedia = true
         }
 		self.entering = false
-        self.presentViewController(self.imagePicker, animated: true,
+        self.present(self.imagePicker, animated: true,
             completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
-        let mediaType = info[UIImagePickerControllerMediaType] as! NSString
-        
-        self.dismissViewControllerAnimated(true, completion: nil)
-        
-        if mediaType.isEqualToString(kUTTypeImage as String) {
-            var image:UIImage = info[UIImagePickerControllerOriginalImage]
-                as! UIImage
-        
-            LoadingOverlay.shared.showOverlay(self.view)
-            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
-                image = self.scaledownImage(image)
-                var blackWhite = self.grayScaleImage(image)
-                var cc = self.connectedComponents(blackWhite)
-                
-                print(cc.count)
-                
-                if cc.count>0 {
-                    var currentrow = 0
-                    var finished:[[ConnectedComponent]] = []
-                    
-                    //label each row
-                    while (!cc.isEmpty){
-                        finished.append([])
-                        var highest:CGFloat = CGFloat(blackWhite.count)
-                        var highestBox:CGRect!
-                        
-                        //find highest bounding box
-                        for c in cc {
-                            if c.boundBox.minY<highest{
-                                highest = c.boundBox.minY
-                                highestBox = c.boundBox
-                            }
-                        }
-                        
-                        //change the bounding box to a horizontal strip
-                        highestBox = CGRect(x: 0.0, y: highestBox.origin.y, width: CGFloat(blackWhite[0].count), height: highestBox.height)
-                        
-                        //find all cc that intersect this strip and label them in same row
-                        for c in cc {
-                            if c.boundBox.intersects(highestBox) {
-                                c.row = currentrow
-                                cc.removeAtIndex(cc.indexOf(c)!)
-                                finished[currentrow].append(c)
-                            }
-                        }
-                        
-                        //sort according to left right
-                        finished[currentrow].sortInPlace({
-                            (cc1:ConnectedComponent,cc2:ConnectedComponent) -> Bool in
-                            return cc1.boundBox.midX<cc2.boundBox.midX
-                        })
-                        
-                        currentrow++
-                    }
-                    
-                    var maxColumn = -1
-                    
-                    for cc in finished {
-                        if cc.count == 1{
-                            maxColumn = 0
-                            break
-                        }
-                    }
-                    
-                    if maxColumn == 0{
-                        for ccs in finished{
-                            for cc in ccs{
-                                cc.col = 0
-                            }
-                        }
-                    }else{
-                        
-                        //Use clustering to separate out the columns
-                        
-                        //As the digit in same column must be close to each other
-                        //while the digit in different column must be wider apart
-                        //Therefore, we first find the distance between each cc and the
-                        //next cc. Then we sort these distances, they should be grouped
-                        //around a small value and a big value.
-                        //Then we find distance between these distances. When there is a
-                        //large jump, we treat this jump as the split between the distances.
-                        
-                        //distance and index
-                        var distance:[(CGFloat,Int)] = []
-                        for i in 0..<finished[0].count-1{
-                            let dist = finished[0][i+1].boundBox.minX-finished[0][i].boundBox.maxX
-                            distance.append((max(dist,0),i))
-                        }
-                        
-                        //prevent situation of only one gap
-                        distance.append((CGFloat(10.0),finished[0].count))
-                        
-                        distance.sortInPlace({
-                            (a,b) -> Bool in
-                            return a.0<b.0
-                        })
-                        
-                        //distance between distance
-                        var distance2:[(CGFloat,Int)] = []
-                        for i in 0..<distance.count-1{
-                            distance2.append((CGFloat(distance[i+1].0)-CGFloat(distance[i].0),i))
-                        }
-                        
-                        distance2.sortInPlace({
-                            (a,b) -> Bool in
-                            return a.0<b.0
-                        })
-                        
-                        var splitDistance:CGFloat!
-                        //index of the distance
-                        let maxIndex:Int = distance2[distance2.count-1].1
-                        
-                        //take the average
-                        splitDistance = (distance[maxIndex+1].0+distance[maxIndex].0)/2
-                        
-                        
-                        //label according to the splitDistance found
-                        //if distance to next cc is less than splitDistance, they are in same column
-                        for ccs in finished{
-                            var currentCol = 0
-                            ccs[0].col = currentCol
-                            for i in 1..<ccs.count{
-                                if ccs[i].boundBox.minX-ccs[i-1].boundBox.maxX>splitDistance {currentCol++}
-                                ccs[i].col = currentCol
-                                maxColumn = max(maxColumn,currentCol)
-                            }
-                        }
-                    }
-                    
-                    self.matrix = Matrix(r: finished.count,c: maxColumn+1)
-                    currentrow = 0
-                    //Use NN to calculate corresponding digit
-                    for ccs in finished{
-                        var currentCol = 0
-                        var currentEntry = 0
-                        for c in ccs{
-                            if c.col>currentCol {
-                                self.matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
-                                currentEntry = 0
-                                currentCol=c.col
-                            }
-                            let thisDigit = self.NN.calculate(c.output())
-                            print(thisDigit.description+" ")
-                            currentEntry = currentEntry*10+thisDigit
-                        }
-                        self.matrix.matrix[currentrow][currentCol] = Fraction(i: currentEntry)
-                        currentrow++
-                    }
-                    
-                }
-                print("finished")
-                dispatch_async(dispatch_get_main_queue(), {
-                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
-                    LoadingOverlay.shared.hideOverlayView()
-                    self.currentCursor = (0,0)
-					self.matrixView.setMatrix(self.matrix,underline:self.currentCursor)
-                })
-            })
-            
-        }
-    }
-    
-    
-    //First Step: scale the image down to 1280*960 or 960*1280
-    func scaledownImage(image:UIImage)->UIImage {
-//        var rect:CGRect! //= CGRectMake(0, 0, image.size.width/2, image.size.height/2)
-//        if image.size.width > image.size.height {
-//            rect = CGRectMake(0, 0, 1280, 960)
-//        }else{
-//            rect = CGRectMake(0, 0, 960, 1280)
-//        }
-        return UIImage()
-//        return image.resizedImage(rect.size, interpolationQuality: CGInterpolationQuality.High)
-    }
-    
-    //First Turn image to grayscale then apply threshold to obtain Binary image
-    func grayScaleImage(image:UIImage) ->[[Bool]] {
-        let imageRect = CGRectMake(0, 0, image.size.width, image.size.height)
-        let colorSpace = CGColorSpaceCreateDeviceGray()
-        let context = CGBitmapContextCreate(nil, Int(image.size.width), Int(image.size.height), 8, Int(image.size.width), colorSpace, CGBitmapInfo.AlphaInfoMask.rawValue)
-        CGContextDrawImage(context, imageRect, image.CGImage)
-        let imageRef = CGBitmapContextCreateImage(context)
-        let newImage = UIImage(CGImage: imageRef!)
-        
-
-        let pixelData = CGDataProviderCopyData(CGImageGetDataProvider(newImage.CGImage))
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-        let bytesPerRow = Int(CGImageGetBytesPerRow(newImage.CGImage))
-        let bytesPerColumn = Int(newImage.size.height)
-        var imin = 10000,jmin = 10000
-        var imax:Int=0,jmax:Int = 0
-        var allempty = true
-        var flag = [[Bool]](count: bytesPerColumn, repeatedValue: ([Bool](count: bytesPerRow, repeatedValue: false)))
-        for i in 0..<bytesPerColumn {
-            allempty = true
-            var tempjmin = 10000
-            var tempjmax = 0
-            for j in 0..<bytesPerRow{
-                if Int(data[i*bytesPerRow+j])<BLACKTHRESHOLD {
-                    if j<tempjmin {tempjmin = j}
-                    if j>tempjmax {tempjmax = j}
-                    allempty = false
-                    flag[i][j] = true
-                }else{
-                    
-                }
-            }
-            if tempjmin<jmin {jmin=tempjmin}
-            if tempjmax>jmax {jmax=tempjmax}
-            if !allempty{
-                if i<imin {imin=i}
-                if i>imax {imax=i}
-            }
-        }
-        var result:[[Bool]] = []
-        for i in imin...imax{
-            result.append(Array(flag[i][jmin...jmax]))
-        }
-        return result
-    }
-    
-
-    //Find connected component of an image using BFS
-    func connectedComponents(image:[[Bool]]) -> [ConnectedComponent]{
-        let nrow = image.count
-        let ncol = image[0].count
-
-
-        var flag:[[Bool]] = []
-        
-        for i in 0..<nrow{
-            flag.append([])
-            for _ in 0..<ncol{
-                flag[i].append(false)
-            }
-        }
-        
-        var result:[ConnectedComponent] = []
-        
-        for i in 0..<nrow {
-            for j in 0..<ncol {
-                if !flag[i][j] && image[i][j] {
-                    var temp:[(Int,Int)] = [(Int,Int)]()
-                    
-                    let q = Queue<(Int,Int)>()
-                    q.enqueue(i,j)
-                    flag[i][j] = true
-                    var l = j,r = j ,u = i ,d = i
-                    
-                    while !q.isEmpty() {
-                        let (thisi,thisj) = q.dequeue()
-                        
-                        if l>thisj {l=thisj}
-                        if u<thisi {u=thisi}
-                        if r<thisj {r=thisj}
-                        if d>thisi {d=thisi}
-                        
-                        let tuple:(Int,Int) = (thisi,thisj)
-                        temp.append(tuple)
-                        
-                        if thisi+1<nrow && image[thisi+1][thisj] && !flag[thisi+1][thisj]{
-                            let tuple = (thisi+1,thisj)
-                            flag[thisi+1][thisj] = true
-                            q.enqueue(tuple)
-                        }
-                        if thisj+1<ncol && image[thisi][thisj+1] && !flag[thisi][thisj+1]{
-                            let tuple = (thisi,thisj+1)
-                            flag[thisi][thisj+1] = true
-                            q.enqueue(tuple)
-                        }
-                        if thisi-1>=0 && image[thisi-1][thisj] && !flag[thisi-1][thisj]{
-                            let tuple = (thisi-1,thisj)
-                            flag[thisi-1][thisj] = true
-                            q.enqueue(tuple)
-                        }
-                        if thisj-1>=0 && image[thisi][thisj-1] && !flag[thisi][thisj-1]{
-                            let tuple = (thisi,thisj-1)
-                            flag[thisi][thisj-1] = true
-                            q.enqueue(tuple)
-                        }
-                    }
-                    
-                    
-                    //var (l,r,u,d,answer,flag) = DFS(i,j: j,imageArray: image, pixels: temp, flag: flag)
-                    
-                    //Delete cc smaller than a threshold to remove noise
-                    if temp.count>DETECTIONTHRESHOLD{
-                        result.append(ConnectedComponent(pixel: temp, l: l, r: r, u: u, d: d))
-                    }
-                }
-            }
-        }
-        return result
-    }
-
-    
     var usedCharacter:NSSet!
 
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let regex:NSRegularExpression = try! NSRegularExpression(pattern: "[a-zA-Z]", options: NSRegularExpressionOptions.CaseInsensitive)
-        if (range.length + range.location > textField.text?.characters.count || (string=="") || (regex.matchesInString(string, options: [], range: NSMakeRange(0, string.characters.count)).count == 0))
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let regex:NSRegularExpression = try! NSRegularExpression(pattern: "[a-zA-Z]", options: NSRegularExpression.Options.caseInsensitive)
+        if (range.length + range.location > textField.text?.characters.count || (string=="") || (regex.matches(in: string, options: [], range: NSMakeRange(0, string.characters.count)).count == 0))
         {
             return false
         }
-        textField.text = string.uppercaseString
+        textField.text = string.uppercased()
         let newLength = textField.text!.characters.count + string.characters.count - range.length
         return newLength <= 1
     }
 
     
     //MARK: DONE
-    @IBAction func done(sender: UIButton) {
+    @IBAction func done(_ sender: UIButton) {
 		if entering {
 			calculateCurrentCell()
 		}
@@ -701,17 +421,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             message += NSLocalizedString("none", comment: "")
         }else{
             for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
-                if self.usedCharacter.containsObject(String(c)){
+                if self.usedCharacter.contains(String(c)){
                     message += String(c) + ","
                 }
             }
-            message.removeAtIndex(message.endIndex.predecessor())
+            message.remove(at: message.characters.index(before: message.endIndex))
         }
         message += NSLocalizedString("alertMsg", comment: "")
-        let alert = UIAlertController(title: NSLocalizedString("saveTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+        let alert = UIAlertController(title: NSLocalizedString("saveTitle", comment: ""), message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addTextField(configurationHandler: {(textField: UITextField!) in
             for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters{
-                if !self.usedCharacter.containsObject(String(c)){
+                if !self.usedCharacter.contains(String(c)){
                     textField.text = String(c)
                     break
                 }else{
@@ -722,25 +442,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             inputTextField?.delegate = self
         })
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: UIAlertActionStyle.cancel, handler: {
             action in
         }))
         
-        alert.addAction(UIAlertAction(title: NSLocalizedString("save", comment: ""), style: UIAlertActionStyle.Default, handler: ({
+        alert.addAction(UIAlertAction(title: NSLocalizedString("save", comment: ""), style: UIAlertActionStyle.default, handler: ({
             action in
             self.delegate.didFinishInputMatrix(self.matrix,alias: inputTextField!.text!)
-            self.dismissViewControllerAnimated(true,completion:nil)
+            self.dismiss(animated: true,completion:nil)
         })))
         
 
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
 
         
     }    
 	
-	override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if detectTouch {
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
 				() in
 				self.tutorialView.alpha = 0.0
 				}, completion: {
